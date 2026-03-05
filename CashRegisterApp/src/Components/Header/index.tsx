@@ -2,7 +2,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { Autocomplete, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import classes from "./HeaderSearch.module.css";
+import classes from "./styles/HeaderSearch.module.css";
 
 const links = [
   { link: "/about", label: "Features" },
@@ -26,7 +26,7 @@ export function HeaderSearch() {
   ));
 
   return (
-    <header className={classes.header}>
+    <div className={classes.header}>
       <div className={classes.inner}>
         <Group>
           <Burger
@@ -59,6 +59,6 @@ export function HeaderSearch() {
           />
         </Group>
       </div>
-    </header>
+    </div>
   );
 }
