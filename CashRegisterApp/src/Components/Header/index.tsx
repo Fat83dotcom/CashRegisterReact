@@ -3,6 +3,7 @@ import { Autocomplete, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import classes from "./styles/HeaderSearch.module.css";
+import { SwitchTheme } from "../SwitchTheme";
 
 const links = [
   { link: "/about", label: "Features" },
@@ -57,6 +58,9 @@ export function HeaderSearch() {
             ]}
             visibleFrom="xs"
           />
+          <Group>
+            <SwitchTheme />
+          </Group>
         </Group>
       </div>
     </div>
