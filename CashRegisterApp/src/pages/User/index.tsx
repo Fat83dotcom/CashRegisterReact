@@ -30,7 +30,6 @@ const userColumns: ColumnConfig<IGetAllUsersResponse>[] = [
   },
 ];
 
-// 4. O componente da página
 export function UserHome() {
   const [userId, setUserId] = useState<string | number | null>();
 
@@ -39,7 +38,7 @@ export function UserHome() {
   useEffect(() => {
     UserService.getAll()
       .then((data) => {
-        setData(data); // O TypeScript garante que 'data' é compatível com o state!
+        setData(data);
       })
       .catch((error) => {
         console.error("Erro ao buscar usuários:", error);
