@@ -1,10 +1,19 @@
 import { AppShell, Burger, Container, Group, Paper } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { HeaderSearch } from "../../Components/Header";
+import { Outlet, useMatches } from "react-router-dom";
 
-export function CollapseDesktop() {
+export function RootLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
+  const matches = useMatches();
+  const currentMatch = matches.find(
+    (match) => match.handle && (match.handle as any).navbar,
+  );
+  const NavbarContent = currentMatch
+    ? (currentMatch.handle as any).navbar
+    : null;
 
   return (
     <AppShell
@@ -37,9 +46,7 @@ export function CollapseDesktop() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        You can collapse the Navbar both on desktop and mobile. After sm
-        breakpoint, the navbar is no longer offset by padding in the main
-        element and it takes the full width of the screen when opened.
+        {NavbarContent ? NavbarContent : <p>Selecione um módulo no topo</p>}
       </AppShell.Navbar>
       <AppShell.Main>
         <Container fluid p="0">
@@ -51,13 +58,7 @@ export function CollapseDesktop() {
             withBorder
             style={{ minHeight: "calc(100vh - 100px)" }}
           >
-            <h2>Bem-vindo ao Dashboard</h2>
-            <p>
-              Tudo o que você colocar aqui dentro deste Paper (tabelas,
-              gráficos, formulários) ficará perfeitamente contido, com fundo
-              branco, bordas arredondadas e uma sombra leve. Ele nunca vai
-              sobrepor o Header ou o Navbar.
-            </p>
+            <Outlet />
           </Paper>
         </Container>
       </AppShell.Main>

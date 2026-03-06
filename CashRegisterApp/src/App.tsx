@@ -1,14 +1,15 @@
 import "./styles/global.css";
 
 import { MantineProvider } from "@mantine/core";
-import { CollapseDesktop } from "./pages/Main";
 import "@mantine/core/styles.css";
 import "./styles/global.css";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes";
 
 export function App() {
   return (
     <MantineProvider defaultColorScheme="dark">
-      <CollapseDesktop />
+      <RouterProvider router={router} />
     </MantineProvider>
   );
 }

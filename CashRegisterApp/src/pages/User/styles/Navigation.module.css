@@ -1,18 +1,3 @@
-.header {
-  height: auto;
-  margin-bottom: 0px;
-  background-color: var(--mantine-color-body);
-  padding-left: var(--mantine-spacing-md);
-  padding-right: var(--mantine-spacing-md);
-}
-
-.inner {
-  height: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .link {
   /* Os seus estilos normais para os links */
   text-decoration: none;
@@ -29,4 +14,11 @@
 .linkActive {
   color: var(--mantine-color-blue-filled);
   font-weight: 600;
+}
+
+.centerMenu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
