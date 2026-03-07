@@ -2,7 +2,6 @@ import { Title, Stack, Text } from "@mantine/core";
 import { DynamicTable, type ColumnConfig } from "../../Components/DynamicTable";
 import type { IGetAllUsersResponse } from "./Interfaces/IGetAllUsersResponse";
 import { useEffect, useState } from "react";
-
 import { UserService } from "../../services/userService";
 
 const userColumns: ColumnConfig<IGetAllUsersResponse>[] = [
@@ -30,6 +29,7 @@ const userColumns: ColumnConfig<IGetAllUsersResponse>[] = [
   },
 ];
 
+// 4. O componente da página
 export function UserHome() {
   const [userId, setUserId] = useState<string | number | null>();
 
@@ -38,7 +38,7 @@ export function UserHome() {
   useEffect(() => {
     UserService.getAll()
       .then((data) => {
-        setData(data);
+        setData(data); // O TypeScript garante que 'data' é compatível com o state!
       })
       .catch((error) => {
         console.error("Erro ao buscar usuários:", error);

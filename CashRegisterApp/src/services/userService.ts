@@ -1,20 +1,17 @@
 // src/services/userService.ts
 import { apiClient } from "../api/api";
+import type { ICreateUserResponse } from "../pages/User/Interfaces/ICreateUserResponse";
 // Importamos a interface que criamos anteriormente
-// Importamos a interface que criamos anteriormente
+import type { ICreateUserRequest } from "../pages/User/Interfaces/ICreateUserRequest";
 import type { IGetAllUsersResponse } from "../pages/User/Interfaces/IGetAllUsersResponse";
 
 export const UserService = {
-  // O TypeScript agora sabe magicamente que getAll vai retornar um array de GetAllUsersResponse
-  getAll: () => apiClient.get<IGetAllUsersResponse[]>("/User"),
+  getAll: () => apiClient.get<IGetAllUsersResponse[]>("/user"),
 
-  // Exemplo para pegar um usuário por ID
-  getById: (id: number) => apiClient.get<IGetAllUsersResponse>(`/users/${id}`),
+  getById: (id: number) => apiClient.get<IGetAllUsersResponse>(`/user/${id}`),
 
-  // Exemplo de criação (Note que omitimos o 'id' na criação)
-  create: (data: Omit<IGetAllUsersResponse, "id">) =>
-    apiClient.post<IGetAllUsersResponse, typeof data>("/users", data),
+  create: (data: ICreateUserRequest) =>
+    apiClient.post<ICreateUserResponse, typeof data>("/user", data),
 
-  // Exemplo de exclusão
-  delete: (id: number) => apiClient.delete<void>(`/users/${id}`),
+  delete: (id: number) => apiClient.delete<void>(`/user/${id}`),
 };

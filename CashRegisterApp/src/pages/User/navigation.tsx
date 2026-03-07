@@ -4,6 +4,7 @@ import classes from "./styles/Navigation.module.css";
 import { Paper } from "@mantine/core";
 
 const links = [
+  { link: "/user", label: "Usuários Cadastrados" },
   { link: "/user/create", label: "Criar Usuário" },
   { link: "/user/delete", label: "Deletar Usuário" },
 ];

@@ -1,7 +1,7 @@
 export interface IGetAllUsersResponse {
   id: number;
   name?: IName | null;
-  birthdate: string;
+  birthdate: Date | null;
   document?: string | null;
 }
 

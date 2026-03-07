@@ -5,6 +5,7 @@ import "@mantine/core/styles.css";
 import "./styles/global.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
+import "@mantine/dates/styles.css";
 
 export function App() {
   return (
