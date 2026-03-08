@@ -31,7 +31,11 @@ export function CreateUser() {
             ? `O primeiro nome deve conter até 20 caracteres, sua entrada contém ${value.length} caracteres.`
             : null,
       document: (value) =>
-        value.length === 0 ? "O documento é obrigatório." : null,
+        value.length === 0
+          ? "O documento é obrigatório."
+          : value.length > 11
+            ? `O documento deve conter no máximo 11 caracteres, sua entrada contém ${value.length} caracteres.`
+            : null,
       birthDate: (value) =>
         !value ? "A data de nascimento é obrigatória" : null,
     },
@@ -44,9 +48,7 @@ export function CreateUser() {
         ? dayjs(values.birthDate).format("YYYY-MM-DDT00:00:00Z")
         : "",
     };
-    UserService.create(transformedValues).then((data) => {
-      data.id > 0 ? form.reset() : console.log("Não foi possível salvar");
-    });
+    UserService.create(transformedValues).then(() => form.reset());
   }
 
   return (
@@ -67,7 +69,7 @@ export function CreateUser() {
             <Grid.Col span={12}>
               <TextInput
                 withAsterisk
-                size="md"
+                size="xl"
                 label="Nome"
                 placeholder="Digite o primeiro nome"
                 {...form.getInputProps("firstName")}
@@ -76,15 +78,16 @@ export function CreateUser() {
             <Grid.Col span={12}>
               <TextInput
                 withAsterisk
-                size="md"
+                size="xl"
                 label="Sobrenome"
                 placeholder="Digite o segundo nome"
                 {...form.getInputProps("lastName")}
               />
             </Grid.Col>
-            <Grid.Col>
+            <Grid.Col span={12}>
               <DateInputBr
                 label="Data de Nascimento"
+                placeholder="Digite a sua data de nascimento"
                 value={form.values.birthDate}
                 getInputProps={form.getInputProps("birthDate")}
               />
@@ -92,14 +95,14 @@ export function CreateUser() {
             <Grid.Col span={12}>
               <TextInput
                 withAsterisk
-                size="md"
+                size="xl"
                 label="Documento"
                 placeholder="Digite o documento"
                 {...form.getInputProps("document")}
               />
             </Grid.Col>
             <Grid.Col>
-              <Button fullWidth p={10} mt={15} type="submit">
+              <Button fullWidth p={10} mt={15} size="xl" type="submit">
                 Salvar
               </Button>
             </Grid.Col>
