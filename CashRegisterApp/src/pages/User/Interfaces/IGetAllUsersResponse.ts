@@ -1,8 +1,8 @@
 export interface IGetAllUsersResponse {
   id: number;
-  name?: IName | null;
-  birthdate: Date | null;
-  document?: string | null;
+  name: IName;
+  birthdate: string;
+  document: string;
 }
 
 export interface IName {
