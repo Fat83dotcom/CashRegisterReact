@@ -86,9 +86,12 @@ export function CreateUser() {
             </Grid.Col>
             <Grid.Col span={12}>
               <DateInputBr
-                label="Data de Nascimento"
-                placeholder="Digite a sua data de nascimento"
-                value={form.values.birthDate}
+                props={{
+                  label: "Data de Nascimento",
+                  placeholder: "Digite a sua data de nascimento",
+                  value: form.values.birthDate,
+                  size: "xl",
+                }}
                 getInputProps={form.getInputProps("birthDate")}
               />
             </Grid.Col>
