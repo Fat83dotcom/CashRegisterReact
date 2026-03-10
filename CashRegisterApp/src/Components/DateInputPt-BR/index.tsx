@@ -1,22 +1,18 @@
-import { DateInput, type DateValue } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 
-export function DateInputBr(props: DateInputProps) {
+export function DateInputBr({ props, getInputProps }: MyDateInputProps) {
   return (
     <DateInput
-      size="xl"
-      label={props.label}
-      locale="pt-br"
-      placeholder={props.placeholder}
-      value={props.value}
       valueFormat="DD/MM/YYYY"
-      {...props.getInputProps}
+      locale="pt-br"
+      clearable
+      {...props}
+      {...getInputProps}
     />
   );
 }
 
-export interface DateInputProps {
-  label: string;
-  placeholder: string;
-  value: DateValue | undefined;
-  getInputProps: {};
+export interface MyDateInputProps {
+  props?: Record<string, any>;
+  getInputProps: Record<string, any>;
 }
