@@ -23,12 +23,9 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     throw new Error(errorData?.message || `Erro HTTP: ${response.status}`);
   }
 
-  // Se a resposta for vazia (ex: um DELETE 204 No Content), evitamos o erro de parse do JSON
-  if (response.status === 204) {
-    return {} as T;
-  }
+  const text = await response.text();
 
-  return response.json() as Promise<T>;
+  return text ? JSON.parse(text) : ({} as T);
 }
 
 // 2. Os Métodos Expostos (O Mecanismo Genérico)
