@@ -1,8 +1,9 @@
-import { Title, Stack, Text } from "@mantine/core";
+import { Title, Stack } from "@mantine/core";
 import { DynamicTable, type ColumnConfig } from "../../Components/DynamicTable";
 import type { IGetAllUsersResponse } from "./Interfaces/IGetAllUsersResponse";
 import { useEffect, useState } from "react";
 import { UserService } from "../../services/userService";
+import { UserSearch } from "./Search";
 
 const userColumns: ColumnConfig<IGetAllUsersResponse>[] = [
   {
@@ -35,32 +36,42 @@ export function UserHome() {
 
   const [data, setData] = useState<IGetAllUsersResponse[]>();
 
-  useEffect(() => {
-    UserService.getAll()
+  const handleGetAllUasers = async () => {
+    await UserService.getAll()
       .then((data) => {
         setData(data); // O TypeScript garante que 'data' é compatível com o state!
       })
       .catch((error) => {
         console.error("Erro ao buscar usuários:", error);
       });
+  };
+
+  useEffect(() => {
+    handleGetAllUasers();
   }, []);
 
   const handleSelectRow = (id: string | number) => {
-    // Se clicar no mesmo que já está selecionado, ele limpa (deseleciona). Senão, seleciona o novo.
     setUserId(id === userId ? null : id);
+  };
+
+  const handleDeactivateUser = async (selectedId: string | number) => {
+    await UserService.deactivate(selectedId).finally(() => {
+      handleGetAllUasers();
+    });
   };
 
   return (
     <Stack gap="lg">
       <Title order={1}>Usuários Cadastrados</Title>
-      <Text>{userId}</Text>
-
+      <UserSearch />
       <DynamicTable
         data={data || []}
         columns={userColumns}
         keyExtractor={(item) => item.id}
         selectedId={userId}
         onRowSelect={handleSelectRow}
+        withPagination
+        onDeactivate={handleDeactivateUser}
       />
     </Stack>
   );
