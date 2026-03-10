@@ -28,4 +28,7 @@ export const UserService = {
       }),
 
   delete: (id: number) => apiClient.delete<void>(`/user/${id}`),
+
+  deactivate: (id: string | number) =>
+    apiClient.put<number, {}>(`/user/disable/?userId=${id}`, {}),
 };
