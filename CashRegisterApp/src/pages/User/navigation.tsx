@@ -14,7 +14,6 @@ const items = links.map((link) => (
     key={link.label}
     to={link.link}
     className={({ isActive }) =>
-      // O NavLink sabe se está ativo. Pode adicionar uma classe CSS dinâmica aqui!
       isActive ? `${classes.link} ${classes.linkActive}` : classes.link
     }
   >
