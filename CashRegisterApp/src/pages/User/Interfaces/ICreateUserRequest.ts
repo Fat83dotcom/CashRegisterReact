@@ -3,4 +3,7 @@ export interface ICreateUserRequest {
   lastName: string;
   birthDate: string;
   document: string;
+  email: string;
+  passWord: string;
+  userName: string;
 }
