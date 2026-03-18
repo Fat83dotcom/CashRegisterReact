@@ -34,11 +34,13 @@ const userColumns: ColumnConfig<IGetAllUsersResponse>[] = [
 export function UserHome() {
   const [userId, setUserId] = useState<string | number | null>();
 
-  const [data, setData] = useState<IGetAllUsersResponse[]>();
+  const [data, setData] = useState<IGetAllUsersResponse[]>([]);
 
   const handleGetAllUasers = async () => {
     await UserService.getAll()
       .then((data) => {
+        console.log(data);
+
         setData(data); // O TypeScript garante que 'data' é compatível com o state!
       })
       .catch((error) => {

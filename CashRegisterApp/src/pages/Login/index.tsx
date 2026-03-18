@@ -10,7 +10,9 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { AuthService } from "../../services/loginService";
+
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 export function Login() {
   const form = useForm<ILoginProps>({
@@ -20,8 +22,12 @@ export function Login() {
     },
   });
 
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const handleSubmit = async (values: typeof form.values) => {
-    AuthService.login({ email: values.email, password: values.password });
+    await login(values);
+    navigate("/");
   };
 
   return (

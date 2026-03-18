@@ -8,12 +8,15 @@ import "./styles/global.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { Notifications } from "@mantine/notifications";
+import { AuthProvider } from "./contexts/AuthContext";
 
 export function App() {
   return (
     <MantineProvider defaultColorScheme="dark">
       <Notifications position="bottom-right" />
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </MantineProvider>
   );
 }

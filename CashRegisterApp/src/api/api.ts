@@ -48,7 +48,6 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
       icon: React.createElement(IconExclamationCircle),
     });
   }
-
   return response as T;
 }
 

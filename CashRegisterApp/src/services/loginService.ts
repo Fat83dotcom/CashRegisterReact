@@ -17,6 +17,7 @@ export const AuthService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
+          return response;
         }
       }),
 };
