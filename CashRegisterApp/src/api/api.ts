@@ -13,6 +13,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     "Content-Type": "application/json",
     // "Authorization": token ? `Bearer ${token}` : "",
     ...options?.headers,
+    credentials: "include",
   };
 
   const response = await fetch(`${BASE_URL}${endpoint}`, {
