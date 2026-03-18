@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, TextInput } from "@mantine/core";
+import { Button, Center, Grid, Paper, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import classes from "./CreateUser.module.css";
 
@@ -37,8 +37,8 @@ export function CreateUser() {
       document: (value) =>
         value.length === 0
           ? "O documento é obrigatório."
-          : value.length > 11
-            ? `O documento deve conter no máximo 11 caracteres, sua entrada contém ${value.length} caracteres.`
+          : value.length !== 11
+            ? `O documento deve conter exatamente 11 caracteres, sua entrada contém ${value.length} caracteres.`
             : null,
       birthDate: (value) =>
         !value ? "A data de nascimento é obrigatória" : null,
@@ -51,7 +51,7 @@ export function CreateUser() {
       passWord: (value) =>
         value.length === 0
           ? "A senha é obrigatória."
-          : value.length <= 12
+          : value.length < 12
             ? "A senha deve conter no mínimo 12 caracteres"
             : null,
       userName: (value) =>
@@ -70,7 +70,7 @@ export function CreateUser() {
         ? dayjs(values.birthDate).format("YYYY-MM-DDT00:00:00Z")
         : "",
     };
-    UserService.create(transformedValues).then(() => form.reset());
+    UserService.create(transformedValues, form.reset).then();
   }
 
   return (
@@ -160,13 +160,12 @@ export function CreateUser() {
                 {...form.getInputProps("userName")}
               />
             </Grid.Col>
-
-            <Grid.Col>
-              <Button fullWidth p={10} mt={15} size="md" type="submit">
-                Salvar
-              </Button>
-            </Grid.Col>
           </Grid>
+          <Center>
+            <Button miw="50%" p={10} mt={15} size="md" type="submit">
+              Salvar
+            </Button>
+          </Center>
         </form>
       </>
     </Paper>

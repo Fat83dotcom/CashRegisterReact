@@ -1,3 +1,7 @@
+import { notifications } from "@mantine/notifications";
+import { IconExclamationCircle } from "@tabler/icons-react";
+import React from "react";
+
 const BASE_URL = "http://localhost:5294/api";
 
 // 1. A Função Base que faz o trabalho sujo
@@ -16,16 +20,35 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     headers,
   });
 
-  // Tratamento de Erros Genérico
   if (!response.ok) {
-    // Aqui você pode disparar notificações globais de erro, deslogar o usuário se for 401, etc.
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.message || `Erro HTTP: ${response.status}`);
+
+    const title = errorData?.Message || "Erro na requisição";
+
+    let formattedMessage = `Ocorreu um erro inesperado (HTTP ${response.statusText}).`;
+
+    if (
+      errorData?.Errors &&
+      Array.isArray(errorData.Errors) &&
+      errorData.Errors.length > 0
+    ) {
+      formattedMessage = errorData.Errors.map(
+        (e: any) => e.text || e.ErrorMessage || e,
+      ).join(" \n ");
+    } else if (errorData?.Message) {
+      formattedMessage = errorData.Message;
+    }
+
+    notifications.show({
+      title: title,
+      message: formattedMessage,
+      color: "red",
+      autoClose: 5000,
+      icon: React.createElement(IconExclamationCircle),
+    });
   }
 
-  const text = await response.text();
-
-  return text ? JSON.parse(text) : ({} as T);
+  return response as T;
 }
 
 // 2. Os Métodos Expostos (O Mecanismo Genérico)

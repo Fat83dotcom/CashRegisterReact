@@ -4,11 +4,17 @@ import { CreateUser } from "./pages/User/Create";
 import { CreateUserNavigation } from "./pages/User/navigation";
 import { UserHome } from "./pages/User";
 import { DeleteUser } from "./pages/User/Delete";
+import { Login } from "./pages/Login";
+import { ProtectedRoute } from "./Components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: (
+      <ProtectedRoute>
+        <RootLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -44,5 +50,9 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "login",
+    element: <Login />,
   },
 ]);

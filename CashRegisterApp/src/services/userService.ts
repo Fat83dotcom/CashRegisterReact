@@ -12,7 +12,7 @@ export const UserService = {
 
   getById: (id: number) => apiClient.get<IGetAllUsersResponse>(`/user/${id}`),
 
-  create: (data: ICreateUserRequest) =>
+  create: (data: ICreateUserRequest, resetForm: () => void) =>
     apiClient
       .post<ICreateUserResponse, typeof data>("/user", data)
       .then((response) => {
@@ -24,8 +24,10 @@ export const UserService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
+          resetForm();
         }
-      }),
+      })
+      .catch((e) => console.log(e)),
 
   delete: (id: number) => apiClient.delete<void>(`/user/${id}`),
 
