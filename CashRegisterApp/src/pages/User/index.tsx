@@ -36,12 +36,10 @@ export function UserHome() {
 
   const [data, setData] = useState<IGetAllUsersResponse[]>([]);
 
-  const handleGetAllUasers = async () => {
+  const handleGetAllUsers = async () => {
     await UserService.getAll()
       .then((data) => {
-        console.log(data);
-
-        setData(data); // O TypeScript garante que 'data' é compatível com o state!
+        setData(data);
       })
       .catch((error) => {
         console.error("Erro ao buscar usuários:", error);
@@ -49,7 +47,7 @@ export function UserHome() {
   };
 
   useEffect(() => {
-    handleGetAllUasers();
+    handleGetAllUsers();
   }, []);
 
   const handleSelectRow = (id: string | number) => {
@@ -58,7 +56,7 @@ export function UserHome() {
 
   const handleDeactivateUser = async (selectedId: string | number) => {
     await UserService.deactivate(selectedId).finally(() => {
-      handleGetAllUasers();
+      handleGetAllUsers();
     });
   };
 

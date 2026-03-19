@@ -1,9 +1,16 @@
-import { createContext, useState, useContext, type ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  type ReactNode,
+  useEffect,
+} from "react";
 import { AuthService } from "../services/loginService";
 import type { ILoginProps } from "../pages/Login";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isLoading: boolean; // <-- NOVO
   login: (credentials: ILoginProps) => Promise<void>;
   logout: () => void;
 }
@@ -13,23 +20,34 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   // Inicia como falso, pois não sabemos se há um cookie válido ainda
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        await AuthService.verify(); // Pergunta pro .NET
+        setIsAuthenticated(true); // O cookie é válido!
+      } catch {
+        setIsAuthenticated(false); // O cookie expirou ou não existe
+      } finally {
+        setIsLoading(false); // Terminou a verificação, pode liberar a tela!
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const login = async (credentials: ILoginProps) => {
-    // Se a chamada da API (que você configurou no AuthService) der sucesso,
-    // o cookie HttpOnly será salvo automaticamente pelo navegador.
     await AuthService.login(credentials);
-
-    // Avisamos o React que o usuário agora está autenticado!
     setIsAuthenticated(true);
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    // Aqui você também chamaria um endpoint no backend para invalidar o Cookie
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

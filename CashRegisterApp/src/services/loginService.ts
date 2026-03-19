@@ -20,4 +20,8 @@ export const AuthService = {
           return response;
         }
       }),
+  verify: async () => {
+    await apiClient.get<Response>("/auth/verify", { silent: true });
+    return true;
+  },
 };

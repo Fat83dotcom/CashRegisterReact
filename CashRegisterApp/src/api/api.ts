@@ -4,21 +4,23 @@ import React from "react";
 
 const BASE_URL = "http://localhost:5294/api";
 
-// 1. A Função Base que faz o trabalho sujo
-async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  // Aqui você pode buscar o token do localStorage, por exemplo:
-  // const token = localStorage.getItem("auth_token");
+export interface ApiRequestOptions extends RequestInit {
+  silent?: boolean;
+}
 
+async function request<T>(
+  endpoint: string,
+  options?: ApiRequestOptions,
+): Promise<T> {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    // "Authorization": token ? `Bearer ${token}` : "",
     ...options?.headers,
-    credentials: "include",
   };
 
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -39,26 +41,31 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     } else if (errorData?.Message) {
       formattedMessage = errorData.Message;
     }
-
-    notifications.show({
-      title: title,
-      message: formattedMessage,
-      color: "red",
-      autoClose: 5000,
-      icon: React.createElement(IconExclamationCircle),
-    });
+    if (!options?.silent) {
+      notifications.show({
+        title: title,
+        message: formattedMessage,
+        color: "red",
+        autoClose: 5000,
+        icon: React.createElement(IconExclamationCircle),
+      });
+    }
   }
-  return response as T;
+  const text = await response.text();
+
+  const data = text ? JSON.parse(text) : {};
+
+  return data as T;
 }
 
 // 2. Os Métodos Expostos (O Mecanismo Genérico)
 export const apiClient = {
   // GET: T é o tipo do retorno esperado
-  get: <T>(endpoint: string, options?: RequestInit) =>
+  get: <T>(endpoint: string, options?: ApiRequestOptions) =>
     request<T>(endpoint, { ...options, method: "GET" }),
 
   // POST: T é o retorno, U é o corpo (body) enviado
-  post: <T, U>(endpoint: string, body: U, options?: RequestInit) =>
+  post: <T, U>(endpoint: string, body: U, options?: ApiRequestOptions) =>
     request<T>(endpoint, {
       ...options,
       method: "POST",
@@ -66,7 +73,7 @@ export const apiClient = {
     }),
 
   // PUT: T é o retorno, U é o corpo (body) enviado
-  put: <T, U>(endpoint: string, body: U, options?: RequestInit) =>
+  put: <T, U>(endpoint: string, body: U, options?: ApiRequestOptions) =>
     request<T>(endpoint, {
       ...options,
       method: "PUT",
@@ -74,6 +81,6 @@ export const apiClient = {
     }),
 
   // DELETE: T é o retorno (geralmente void ou boolean)
-  delete: <T>(endpoint: string, options?: RequestInit) =>
+  delete: <T>(endpoint: string, options?: ApiRequestOptions) =>
     request<T>(endpoint, { ...options, method: "DELETE" }),
 };
