@@ -3,8 +3,8 @@ import { Autocomplete, Burger, Center, Group, Menu } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import classes from "./styles/HeaderSearch.module.css";
-import { SwitchTheme } from "../SwitchTheme";
 import { NavLink } from "react-router-dom";
+import { UserMenu } from "../UserMenu";
 
 const links = [
   { link: "/", label: "Home" },
@@ -105,7 +105,7 @@ export function HeaderSearch() {
             visibleFrom="xs"
           />
           <Group>
-            <SwitchTheme />
+            <UserMenu />
           </Group>
         </Group>
       </div>

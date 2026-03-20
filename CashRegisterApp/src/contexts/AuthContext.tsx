@@ -5,35 +5,46 @@ import {
   type ReactNode,
   useEffect,
 } from "react";
-import { AuthService } from "../services/loginService";
+import { AuthService } from "../services/authServices";
 import type { ILoginProps } from "../pages/Login";
 
-interface AuthContextType {
+interface IAuthContextType {
   isAuthenticated: boolean;
-  isLoading: boolean; // <-- NOVO
+  isLoading: boolean;
   login: (credentials: ILoginProps) => Promise<void>;
   logout: () => void;
+  user: ILoginResponse | null;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export interface ILoginResponse {
+  id: number;
+  userName: { firstName: string; lastName: string };
+}
+
+const AuthContext = createContext<IAuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Inicia como falso, pois não sabemos se há um cookie válido ainda
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<ILoginResponse | null>(() => {
+    const storedData = localStorage.getItem("user_data");
+    return storedData ? JSON.parse(storedData) : null;
+  });
+
+  const checkSession = async () => {
+    try {
+      await AuthService.verify();
+      setIsAuthenticated(true);
+    } catch {
+      setIsAuthenticated(false);
+      setUser(null);
+      localStorage.removeItem("user_data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        await AuthService.verify(); // Pergunta pro .NET
-        setIsAuthenticated(true); // O cookie é válido!
-      } catch {
-        setIsAuthenticated(false); // O cookie expirou ou não existe
-      } finally {
-        setIsLoading(false); // Terminou a verificação, pode liberar a tela!
-      }
-    };
-
     checkSession();
   }, []);
 
@@ -42,12 +53,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await AuthService.logout();
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, isLoading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
