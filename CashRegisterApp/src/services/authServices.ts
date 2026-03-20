@@ -10,7 +10,6 @@ export const AuthService = {
     apiClient
       .post<ILoginResponse, ILoginProps>("/auth", { email, password })
       .then((response) => {
-        console.log(response);
         localStorage.setItem("user_data", JSON.stringify(response));
         notifications.show({
           title: "Sucesso",

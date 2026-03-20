@@ -7,7 +7,12 @@ import {
   Text,
   MenuItem,
 } from "@mantine/core";
-import { IconChevronDown, IconSettings, IconLogout } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconSettings,
+  IconLogout,
+  IconScreenShare,
+} from "@tabler/icons-react";
 import cx from "clsx";
 import classes from "./styles/UserMenu.module.css";
 import { useAuth } from "../../contexts/AuthContext";
@@ -61,7 +66,9 @@ export function UserMenu() {
         >
           Sair
         </Menu.Item>
-        <MenuItem leftSection={<SwitchTheme />}></MenuItem>
+        <MenuItem leftSection={<IconScreenShare size={16} stroke={1.5} />}>
+          <SwitchTheme />
+        </MenuItem>
       </Menu.Dropdown>
     </Menu>
   );
