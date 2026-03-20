@@ -49,7 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (credentials: ILoginProps) => {
-    await AuthService.login(credentials);
+    await AuthService.login(credentials).then((response) => {
+      setUser(response);
+    });
     setIsAuthenticated(true);
   };
 
