@@ -1,13 +1,23 @@
-import { Button, Center, Grid, Paper, TextInput } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Grid,
+  Paper,
+  Select,
+  TextInput,
+  Divider,
+  Text,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import classes from "./CreateUser.module.css";
 
 import { UserService } from "../../../services/userService";
 import type { ICreateUserRequest } from "../Interfaces/ICreateUserRequest";
 
-import { DateInputBr } from "../../../Components/DateInputPt-BR";
 import dayjs from "dayjs";
 import { PasswordManager } from "../../../Components/PasswordManager";
+import { PersonForm } from "../../../Components/Person/PersonForm";
+import { PersonSelect } from "../../../Components/Person/PersonSelect";
 
 export function CreateUser() {
   const form = useForm<ICreateUserRequest>({
@@ -17,61 +27,71 @@ export function CreateUser() {
       birthDate: "",
       document: "",
       email: "",
-      passWord: "",
+      cellPhone: "",
+      phone: "",
+      gender: "Other",
+      role: "Business",
+      password: "",
       userName: "",
+      personId: undefined,
     },
     validate: {
-      firstName: (value) =>
-        value.length == 0
-          ? `Nome é obrigatório.`
-          : value.length > 20
-            ? `O primeiro nome deve conter até 20 caracteres, sua entrada contém ${value.length} caracteres.`
-            : null,
-
-      lastName: (value) =>
-        value.length === 0
-          ? `O segundo nome é obrigatório.`
-          : value.length > 20
-            ? `O primeiro nome deve conter até 20 caracteres, sua entrada contém ${value.length} caracteres.`
-            : null,
-      document: (value) =>
-        value.length === 0
-          ? "O documento é obrigatório."
-          : value.length !== 11
-            ? `O documento deve conter exatamente 11 caracteres, sua entrada contém ${value.length} caracteres.`
-            : null,
-      birthDate: (value) =>
-        !value ? "A data de nascimento é obrigatória" : null,
-      email: (value) =>
-        value.length === 0
-          ? "O email é obrigatório."
-          : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-            ? null
-            : "Formato de e-mail inválido.",
-      passWord: (value) =>
-        value.length === 0
+      userName: (value) =>
+        value.length === 0 ? "O nome de usuário é obrigatório." : null,
+      role: (value) => (value ? null : "O papel do usuário é obrigatório"),
+      password: (value) =>
+        !value || value.length === 0
           ? "A senha é obrigatória."
           : value.length < 12
             ? "A senha deve conter no mínimo 12 caracteres"
             : null,
-      userName: (value) =>
-        value.length > 50
-          ? "O nome deve ser menor ou igual a 50 caracteres."
-          : value.length === 0
-            ? "O nome de usuário é obrigatório."
-            : null,
+
+      // Validações condicionais: Só validam se personId não estiver preenchido
+      firstName: (value, values) =>
+        !values.personId && (!value || value.trim().length === 0)
+          ? "Nome é obrigatório."
+          : null,
+
+      lastName: (value, values) =>
+        !values.personId && (!value || value.trim().length === 0)
+          ? "Sobrenome é obrigatório."
+          : null,
+
+      birthDate: (value, values) =>
+        !values.personId && !value ? "Data de nascimento é obrigatória." : null,
+
+      document: (value, values) =>
+        !values.personId && (!value || value.length !== 11)
+          ? "Documento deve ter 11 dígitos."
+          : null,
+
+      email: (value, values) =>
+        !values.personId &&
+        (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          ? "E-mail inválido."
+          : null,
+
+      phone: (value, values) =>
+        !values.personId && (!value || value.length < 10)
+          ? "Telefone inválido."
+          : null,
     },
   });
 
-  function handleSubmit(values: typeof form.values) {
+  function handleSubmit(values: ICreateUserRequest) {
     const transformedValues = {
       ...values,
-      birthDate: values.birthDate
-        ? dayjs(values.birthDate).format("YYYY-MM-DDT00:00:00Z")
-        : "",
+      personId: values.personId ? Number(values.personId) : undefined,
+      // Se tiver personId, ignoramos os campos de nova pessoa no envio
+      birthDate:
+        values.birthDate && !values.personId
+          ? dayjs(values.birthDate).format("YYYY-MM-DDT00:00:00Z")
+          : undefined,
     };
     UserService.create(transformedValues, form.reset).then();
   }
+
+  const isExistingPerson = !!form.values.personId;
 
   return (
     <Paper
@@ -79,95 +99,101 @@ export function CreateUser() {
       shadow="md"
       p="xl"
       radius="md"
-      maw="100%"
+      maw="800px"
       mx="auto"
       mt="xl"
-      h="100%"
     >
-      <>
-        <h1 className={`${classes.centerText}`}>Cadastrar Usuário</h1>
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Grid grow gutter={{ base: 5, xs: "md", md: "xl", xl: 50 }}>
-            <Grid.Col span={6}>
-              <TextInput
-                withAsterisk
-                size="md"
-                label="Nome"
-                placeholder="Digite o primeiro nome"
-                {...form.getInputProps("firstName")}
-              />
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <TextInput
-                withAsterisk
-                size="md"
-                label="Sobrenome"
-                placeholder="Digite o segundo nome"
-                {...form.getInputProps("lastName")}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <DateInputBr
-                props={{
-                  label: "Data de Nascimento",
-                  placeholder: "Digite a sua data de nascimento",
-                  value: form.values.birthDate,
-                  size: "md",
-                  withAsterisk: true,
-                }}
-                getInputProps={form.getInputProps("birthDate")}
-              />
-            </Grid.Col>
-            <Grid.Col span={8}>
-              <TextInput
-                withAsterisk
-                size="md"
-                label="Documento"
-                placeholder="Digite o documento"
-                {...form.getInputProps("document")}
-              />
-            </Grid.Col>
+      <h1 className={classes.centerText}>Cadastrar Usuário</h1>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Grid gutter="md">
+          {/* Seção 1: Seleção de Pessoa */}
+          <Grid.Col span={12}>
+            <PersonSelect
+              value={form.values.personId?.toString() || null}
+              onChange={(val) => {
+                const id = val ? parseInt(val) : undefined;
+                form.setFieldValue("personId", id);
+                // Limpa erros de campos de pessoa quando uma pessoa é selecionada
+                if (id) {
+                  form.clearErrors();
+                }
+              }}
+              error={form.errors.personId}
+            />
+          </Grid.Col>
 
-            <Grid.Col span={6}>
-              <TextInput
-                withAsterisk
-                size="md"
-                label="Email"
-                placeholder="Digite seu email."
-                {...form.getInputProps("email")}
-              />
-            </Grid.Col>
+          {!isExistingPerson && (
+            <>
+              <Grid.Col span={12}>
+                <Divider
+                  label="Dados da Nova Pessoa"
+                  labelPosition="center"
+                  my="md"
+                />
+              </Grid.Col>
+              <Grid.Col span={12}>
+                <PersonForm form={form} />
+              </Grid.Col>
+            </>
+          )}
 
-            <Grid.Col span={6}>
-              <PasswordManager
-                getInputProps={form.getInputProps("passWord")}
-                props={{
-                  label: "Senha",
-                  size: "md",
-                  placeholder: "Digite a senha.",
-                  withAsterisk: true,
-                  value: form.values.passWord,
-                }}
-              />
+          {isExistingPerson && (
+            <Grid.Col span={12}>
+              <Paper p="sm" withBorder bg="var(--mantine-color-blue-light)">
+                <Text size="sm" ta="center" fw={500}>
+                  Modo de Vínculo: A pessoa selecionada será associada a este
+                  novo usuário.
+                </Text>
+              </Paper>
             </Grid.Col>
+          )}
 
-            <Grid.Col span={8}>
-              <TextInput
-                withAsterisk
-                size="md"
-                label="Nome de usuário"
-                placeholder="Exemplo: zenenen"
-                {...form.getInputProps("userName")}
-              />
-            </Grid.Col>
-          </Grid>
-          <Center>
-            <Button miw="50%" p={10} mt={15} size="md" type="submit">
-              Salvar
-            </Button>
-          </Center>
-        </form>
-      </>
+          <Grid.Col span={12}>
+            <Divider label="Dados de Acesso" labelPosition="center" my="md" />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <TextInput
+              withAsterisk
+              label="Nome de usuário"
+              placeholder="Ex: joao.silva"
+              {...form.getInputProps("userName")}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <Select
+              withAsterisk
+              label="Papel (Role)"
+              data={[
+                { value: "Admin", label: "Administrador" },
+                { value: "Business", label: "Negócios" },
+                { value: "Financial", label: "Financeiro" },
+                { value: "Logistics", label: "Logística" },
+              ]}
+              {...form.getInputProps("role")}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={12}>
+            <PasswordManager
+              getInputProps={form.getInputProps("password")}
+              props={{
+                label: "Senha",
+                placeholder: "Mínimo 12 caracteres",
+                withAsterisk: true,
+                value: form.values.password,
+              }}
+            />
+          </Grid.Col>
+        </Grid>
+
+        <Center mt="xl">
+          <Button type="submit" size="md" fullWidth>
+            Finalizar Cadastro
+          </Button>
+        </Center>
+      </form>
     </Paper>
   );
 }

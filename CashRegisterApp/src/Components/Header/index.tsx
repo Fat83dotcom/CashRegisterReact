@@ -5,26 +5,56 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./styles/HeaderSearch.module.css";
 import { NavLink } from "react-router-dom";
 import { UserMenu } from "../UserMenu";
+import { useAuth } from "../../contexts/AuthContext";
 
-const links = [
+type NavLinkItem = {
+  link: string;
+  label: string;
+  links?: { link: string; label: string }[];
+  roles?: string[];
+};
+
+const links: NavLinkItem[] = [
   { link: "/", label: "Home" },
   {
-    link: "#1",
-    label: "Cadastro",
-    links: [{ link: "/user", label: "Usuário" }],
+    link: "#2",
+    label: "Estoque",
+    links: [
+      { link: "/inventory", label: "Painel" },
+      { link: "/inventory/products", label: "Produtos" },
+      { link: "/inventory/categories", label: "Categorias" },
+    ],
   },
   {
-    link: "#2",
+    link: "#3",
     label: "Financeiro",
-    links: [{ link: "/cashFlow", label: "Fluxo de Caixa" }],
+    links: [
+      { link: "/financial", label: "Painel" },
+      { link: "/financial/cashFlow", label: "Fluxo de Caixa" },
+      { link: "/financial/reports", label: "Relatórios" },
+    ],
+  },
+  {
+    link: "#4",
+    label: "Vendas",
+    links: [
+      { link: "/sales", label: "Painel" },
+      { link: "/sales/new", label: "Nova Venda" },
+      { link: "/sales/history", label: "Histórico" },
+    ],
   },
   { link: "/about", label: "Sobre" },
 ];
 
 export function HeaderSearch() {
   const [opened, { toggle }] = useDisclosure(false);
+  const { user } = useAuth();
 
-  const items = links.map((link) => {
+  const filteredLinks = links.filter(
+    (link) => !link.roles || (user && link.roles.includes(user.role)),
+  );
+
+  const items = filteredLinks.map((link) => {
     // 1. Cria os itens do submenu (se existirem), usando NavLink para manter o roteamento
     const menuItems = link.links?.map((item) => (
       <Menu.Item key={item.link} component={NavLink} to={item.link}>

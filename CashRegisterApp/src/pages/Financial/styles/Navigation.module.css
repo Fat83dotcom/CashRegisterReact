@@ -1,0 +1,22 @@
+.link {
+  text-decoration: none;
+  color: var(--mantine-color-text);
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-sm);
+}
+
+.link:hover {
+  color: var(--mantine-color-grape-9);
+}
+
+.linkActive {
+  color: var(--mantine-color-blue-filled);
+  font-weight: 600;
+}
+
+.centerMenu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

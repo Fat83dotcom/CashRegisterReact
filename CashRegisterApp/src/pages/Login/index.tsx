@@ -17,7 +17,7 @@ import { useAuth } from "../../contexts/AuthContext";
 export function Login() {
   const form = useForm<ILoginProps>({
     initialValues: {
-      email: "",
+      userName: "",
       password: "",
     },
   });
@@ -39,11 +39,11 @@ export function Login() {
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
-            label="Email"
-            placeholder="seu@email.com"
+            label="Usuário"
+            placeholder="Seu nome de usuário"
             required
-            value={form.values.email}
-            {...form.getInputProps("email")}
+            value={form.values.userName}
+            {...form.getInputProps("userName")}
             mb="md"
           />
 
@@ -81,6 +81,6 @@ export function Login() {
 }
 
 export interface ILoginProps {
-  email: string;
+  userName: string;
   password: string;
 }

@@ -1,9 +1,9 @@
 import { IconCheck } from "@tabler/icons-react";
 import { apiClient } from "../api/api";
 import type { ICreateUserResponse } from "../pages/User/Interfaces/ICreateUserResponse";
-// Importamos a interface que criamos anteriormente
 import type { ICreateUserRequest } from "../pages/User/Interfaces/ICreateUserRequest";
 import type { IGetAllUsersResponse } from "../pages/User/Interfaces/IGetAllUsersResponse";
+import type { IChangePasswordRequest } from "../pages/Settings/Interfaces/IChangePasswordRequest";
 import { notifications } from "@mantine/notifications";
 import React from "react";
 
@@ -33,4 +33,19 @@ export const UserService = {
 
   deactivate: (id: string | number) =>
     apiClient.put<number, {}>(`/user/disable/?userId=${id}`, {}),
+
+  changePassword: (data: IChangePasswordRequest, resetForm: () => void) =>
+    apiClient
+      .put<void, typeof data>("/user/changePassword", data)
+      .then(() => {
+        notifications.show({
+          title: "Sucesso",
+          message: "Senha alterada com sucesso.",
+          color: "green",
+          autoClose: 5000,
+          icon: React.createElement(IconCheck),
+        });
+        resetForm();
+      })
+      .catch((e) => console.log(e)),
 };

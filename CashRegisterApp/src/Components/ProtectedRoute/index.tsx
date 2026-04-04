@@ -3,8 +3,14 @@ import { useAuth } from "../../contexts/AuthContext";
 import { Center, Loader } from "@mantine/core";
 import type { JSX } from "react";
 
-export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+export const ProtectedRoute = ({
+  children,
+  roles,
+}: {
+  children: JSX.Element;
+  roles?: string[];
+}) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -16,6 +22,10 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (roles && user && !roles.includes(user.role)) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

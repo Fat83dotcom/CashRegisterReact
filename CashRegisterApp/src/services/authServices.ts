@@ -6,9 +6,9 @@ import { IconCheck } from "@tabler/icons-react";
 import type { ILoginResponse } from "../contexts/AuthContext";
 
 export const AuthService = {
-  login: async ({ email, password }: ILoginProps) =>
+  login: async ({ userName, password }: ILoginProps) =>
     apiClient
-      .post<ILoginResponse, ILoginProps>("/auth", { email, password })
+      .post<ILoginResponse, ILoginProps>("/auth", { userName, password })
       .then((response) => {
         localStorage.setItem("user_data", JSON.stringify(response));
         notifications.show({

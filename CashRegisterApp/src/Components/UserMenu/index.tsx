@@ -12,15 +12,18 @@ import {
   IconSettings,
   IconLogout,
   IconScreenShare,
+  IconUsers,
 } from "@tabler/icons-react";
 import cx from "clsx";
 import classes from "./styles/UserMenu.module.css";
 import { useAuth } from "../../contexts/AuthContext";
 import { SwitchTheme } from "../SwitchTheme";
+import { useNavigate } from "react-router-dom";
 
 export function UserMenu() {
   const { logout, user } = useAuth();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <Menu
@@ -56,9 +59,21 @@ export function UserMenu() {
       <Menu.Dropdown>
         {/* Seção de Configurações */}
         <Menu.Label>Settings</Menu.Label>
-        <Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
+        <Menu.Item 
+          leftSection={<IconSettings size={16} stroke={1.5} />}
+          onClick={() => navigate("/settings")}
+        >
           Configurações
         </Menu.Item>
+
+        {user?.role === "Admin" && (
+          <Menu.Item
+            leftSection={<IconUsers size={16} stroke={1.5} />}
+            onClick={() => navigate("/user")}
+          >
+            Gerenciar Usuários
+          </Menu.Item>
+        )}
 
         <Menu.Item
           leftSection={<IconLogout size={16} stroke={1.5} />}
