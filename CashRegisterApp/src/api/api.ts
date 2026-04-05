@@ -28,18 +28,33 @@ async function request<T>(
 
     const title = errorData?.Message || "Erro na requisição";
 
-    let formattedMessage = `Ocorreu um erro inesperado (HTTP ${response.statusText}).`;
+    let formattedMessage = `Ocorreu um erro inesperado (HTTP ${response.status}).`;
 
-    if (
-      errorData?.Errors &&
-      Array.isArray(errorData.Errors) &&
-      errorData.Errors.length > 0
-    ) {
-      formattedMessage = errorData.Errors.map(
-        (e: any) => e.text || e.ErrorMessage || e,
-      ).join(" \n ");
-    } else if (errorData?.Message) {
-      formattedMessage = errorData.Message;
+    // Suporte ao novo formato de notificações (Flunt/Custom)
+    if (errorData?.errors && Array.isArray(errorData.errors)) {
+      formattedMessage = errorData.errors
+        .map((e: any) => {
+          // Tenta extrair a propriedade e a mensagem suportando PascalCase e camelCase
+          const property = e.property || e.Property || e.key || e.Key;
+          const message = e.message || e.Message || e.text || e.Text;
+
+          if (message) {
+            return property ? `${property}: ${message}` : message;
+          }
+          
+          // Fallback para strings simples ou objetos desconhecidos
+          return typeof e === 'string' ? e : JSON.stringify(e);
+        })
+        .join(" \n ");
+    } 
+    // Suporte ao formato legado de exceções (FluentValidation/Custom)
+    else if (errorData?.Errors && Array.isArray(errorData.Errors)) {
+      formattedMessage = errorData.Errors.map((e: any) => {
+        const message = e.text || e.ErrorMessage || e.Message || e;
+        return typeof message === 'string' ? message : JSON.stringify(message);
+      }).join(" \n ");
+    } else if (errorData?.Message || errorData?.message) {
+      formattedMessage = errorData.Message || errorData.message;
     }
     if (!options?.silent) {
       notifications.show({
