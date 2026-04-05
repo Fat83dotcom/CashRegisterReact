@@ -20,3 +20,9 @@ A aplicação segue uma arquitetura modular por responsabilidades dentro de `src
 5. **Contexto de Autenticação:** Toda a lógica de proteção de rotas deve ser orquestrada pelo `AuthContext` e pelo componente `ProtectedRoute`.
 6. **Internacionalização:** Use `DateInputPt-BR` para campos de data com suporte a Português.
 7. **Menu de Usuário:** O gerenciamento e configurações de conta ficam centralizados no `UserMenu`. Funcionalidades administrativas (como gerenciar e criar outros usuários) devem estar condicionadas ao perfil de `Admin` dentro deste menu flutuante.
+
+## Status Atual / Próximos Passos
+- **Implementado:** Novas pastas e rotas para `Inventory`, `Sales` e `Financial` em `src/pages`.
+- **Implementado:** Centralização de configurações de perfil em `UserMenu`.
+- **Próximos Passos:** Desenvolver componentes de tabela e formulário reutilizáveis para os novos módulos.
+- **Próximos Passos:** Integrar `DateInputPt-BR` em todos os novos campos de data.
