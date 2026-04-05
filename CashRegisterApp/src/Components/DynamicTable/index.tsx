@@ -2,16 +2,17 @@ import {
   Badge,
   Button,
   Group,
+  LoadingOverlay,
   Modal,
   Pagination,
   Select,
   Stack,
   Table,
   Text,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconCircleMinus, IconX } from "@tabler/icons-react";
-import { useState } from "react";
 
 export interface ColumnConfig<T> {
   key: keyof T | "actions";
@@ -23,11 +24,19 @@ interface DynamicTableProps<T> {
   data: T[];
   columns: ColumnConfig<T>[];
   selectedId?: string | number | null;
-  withPagination: boolean;
+  withPagination?: boolean;
   onRowSelect?: (id: string | number) => void;
   keyExtractor: (item: T) => string | number;
   onDeactivate?: (id: string | number) => void;
   onDelete?: (id: string | number) => void;
+  
+  // Novas props para integração com Search
+  loading?: boolean;
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: string) => void;
 }
 
 export function DynamicTable<T>({
@@ -39,28 +48,26 @@ export function DynamicTable<T>({
   onDeactivate,
   onDelete,
   withPagination = true,
+  loading = false,
+  totalCount = 0,
+  page = 1,
+  pageSize = 10,
+  onPageChange,
+  onPageSizeChange,
 }: DynamicTableProps<T>) {
   const ths = columns.map((col) => (
     <Table.Th key={col.key as string}>{col.label}</Table.Th>
   ));
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState<string>("10");
+  // Se as funções de callback forem passadas, usamos paginação do servidor
+  const isServerSide = !!onPageChange;
+  
+  const totalPages = isServerSide 
+    ? Math.ceil(totalCount / pageSize)
+    : Math.ceil(data.length / pageSize);
 
-  const limit = parseInt(recordsPerPage, 10);
-  const totalRecords = data.length;
-  const totalPages = Math.ceil(totalRecords / limit);
-
-  const currentData = withPagination
-    ? data.slice((currentPage - 1) * limit, currentPage * limit)
-    : data;
-
-  if (withPagination && currentPage > totalPages && totalPages > 0) {
-    setCurrentPage(1);
-  }
-
-  const rows = currentData.map((item) => {
+  const rows = data.map((item) => {
     const id = keyExtractor(item);
     const isSelected = selectedId === id;
 
@@ -103,70 +110,76 @@ export function DynamicTable<T>({
             color="yellow"
             onClick={() => {
               if (onDeactivate && selectedId) {
-                onDeactivate(selectedId); // Chama a função do pai
+                onDeactivate(selectedId);
               }
-              close(); // Fecha o modal após confirmar
+              close();
             }}
           >
             Confirmar Desativação
           </Button>
         </Group>
       </Modal>
-      <Stack gap="md">
-        <Table
-          highlightOnHover
-          withTableBorder
-          withColumnBorders
-          verticalSpacing="sm"
-        >
-          <Table.Thead>
-            <Table.Tr>{ths}</Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {rows.length > 0 ? (
-              rows
-            ) : (
-              <Table.Tr>
-                <Table.Td colSpan={columns.length}>
-                  <Badge ta="center" c="dimmed" py="sm" color="gray">
-                    Nenhum registo encontrado.
-                  </Badge>
-                </Table.Td>
-              </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
+      
+      <Stack gap="md" pos="relative">
+        <LoadingOverlay visible={loading} overlayProps={{ blur: 1 }} />
+        
+        <Box style={{ overflowX: 'auto' }}>
+          <Table
+            highlightOnHover
+            withTableBorder
+            withColumnBorders
+            verticalSpacing="sm"
+          >
+            <Table.Thead>
+              <Table.Tr>{ths}</Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {rows.length > 0 ? (
+                rows
+              ) : (
+                <Table.Tr>
+                  <Table.Td colSpan={columns.length} style={{ textAlign: 'center', padding: '40px' }}>
+                    <Badge size="lg" variant="light" color="gray">
+                      Nenhum registro encontrado.
+                    </Badge>
+                  </Table.Td>
+                </Table.Tr>
+              )}
+            </Table.Tbody>
+          </Table>
+        </Box>
 
-        {/* 4. Rodapé da Tabela: Select de Limite e Componente de Paginação */}
-        {withPagination && totalRecords > 0 && (
+        {withPagination && (totalCount > 0 || data.length > 0) && (
           <Group justify="space-between" align="center">
             <Group gap="xs" align="center">
               <Text size="sm" c="dimmed">
                 Linhas por página:
               </Text>
               <Select
-                value={recordsPerPage}
-                onChange={(val) => {
-                  setRecordsPerPage(val || "10");
-                  setCurrentPage(1); // Volta para a página 1 ao mudar o limite para evitar ecrãs em branco
-                }}
+                value={pageSize.toString()}
+                onChange={(val) => onPageSizeChange && onPageSizeChange(val || "10")}
                 data={["5", "10", "20", "50", "100"]}
-                w={80} // Largura fixa pequena
+                w={80}
               />
+              <Text size="sm" c="dimmed">
+                Total: {totalCount || data.length}
+              </Text>
             </Group>
 
             <Pagination
               total={totalPages}
-              value={currentPage}
-              onChange={setCurrentPage}
+              value={page}
+              onChange={onPageChange}
               color="blue"
               radius="md"
-              withEdges // Adiciona os botões de "Ir para a primeira" e "Ir para a última"
+              withEdges
             />
+            
             <Group gap="xs" align="center">
               <Button
                 disabled={!selectedId}
                 onClick={open}
+                variant="light"
                 color="yellow"
                 leftSection={<IconCircleMinus size={18} />}
               >
@@ -175,6 +188,7 @@ export function DynamicTable<T>({
               <Button
                 disabled={!selectedId}
                 onClick={() => onDelete && selectedId && onDelete(selectedId)}
+                variant="light"
                 color="red"
                 leftSection={<IconX size={18} />}
               >
@@ -187,3 +201,4 @@ export function DynamicTable<T>({
     </>
   );
 }
+
