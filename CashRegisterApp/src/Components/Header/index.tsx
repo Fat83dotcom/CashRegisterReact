@@ -1,5 +1,5 @@
-import { IconSearch, IconChevronDown } from "@tabler/icons-react";
-import { Autocomplete, Burger, Center, Group, Menu } from "@mantine/core";
+import { IconSearch, IconChevronDown, IconBrain } from "@tabler/icons-react";
+import { Autocomplete, Burger, Center, Group, Menu, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 import classes from "./styles/HeaderSearch.module.css";
@@ -55,14 +55,12 @@ export function HeaderSearch() {
   );
 
   const items = filteredLinks.map((link) => {
-    // 1. Cria os itens do submenu (se existirem), usando NavLink para manter o roteamento
     const menuItems = link.links?.map((item) => (
       <Menu.Item key={item.link} component={NavLink} to={item.link}>
         {item.label}
       </Menu.Item>
     ));
 
-    // 2. Se houver submenu, renderiza o componente Menu do Mantine
     if (menuItems) {
       return (
         <Menu
@@ -75,7 +73,7 @@ export function HeaderSearch() {
             <a
               href={link.link}
               className={classes.link}
-              onClick={(event) => event.preventDefault()} // Impede o clique de recarregar a página
+              onClick={(event) => event.preventDefault()}
             >
               <Center>
                 <span className={classes.linkLabel}>{link.label}</span>
@@ -88,7 +86,6 @@ export function HeaderSearch() {
       );
     }
 
-    // 3. Se for um link normal (sem submenu), renderiza o seu NavLink original
     return (
       <NavLink
         key={link.label}
@@ -113,6 +110,18 @@ export function HeaderSearch() {
             hiddenFrom="sm"
             aria-label="Toggle navigation"
           />
+          <Group gap={8} visibleFrom="xs">
+            <IconBrain size={28} color="var(--mantine-color-brainstorm-6)" />
+            <Text
+              size="xl"
+              fw={900}
+              variant="gradient"
+              gradient={{ from: 'brainstorm.6', to: 'cyan', deg: 45 }}
+              style={{ letterSpacing: -1 }}
+            >
+              BrainstormTech
+            </Text>
+          </Group>
         </Group>
 
         <Group>
@@ -121,16 +130,13 @@ export function HeaderSearch() {
           </Group>
           <Autocomplete
             className={classes.search}
-            placeholder="Search"
+            placeholder="Pesquisar..."
             leftSection={<IconSearch size={16} stroke={1.5} />}
             data={[
-              "React",
-              "Angular",
-              "Vue",
-              "Next.js",
-              "Riot.js",
-              "Svelte",
-              "Blitz.js",
+              "Usuários",
+              "Produtos",
+              "Vendas",
+              "Relatórios",
             ]}
             visibleFrom="xs"
           />

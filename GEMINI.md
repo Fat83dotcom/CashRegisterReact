@@ -15,7 +15,8 @@ Este diretório contém o frontend da aplicação Cash Register, desenvolvido co
 - `CashRegisterApp/`: O código fonte principal da aplicação.
 
 ## Mandatos para o Gemini
-1. **Componentes Funcionais:** Use sempre componentes funcionais com hooks.
+1. **Logging:** Registrar todas as alterações técnicas e decisões no arquivo `../FRONTEND_LOG.txt`.
+2. **Componentes Funcionais:** Use sempre componentes funcionais com hooks.
 2. **Tipagem:** Mantenha a tipagem rigorosa com TypeScript. Defina interfaces para todas as respostas de API e propriedades de componentes.
 3. **Mantine UI:** Utilize componentes do Mantine para manter a consistência visual. Prefira os hooks do Mantine (`@mantine/hooks`, `@mantine/form`) para lógica de UI.
 4. **Services:** Toda comunicação com o backend deve ser isolada na pasta `services/`.

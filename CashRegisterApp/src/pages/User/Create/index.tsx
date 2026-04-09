@@ -7,9 +7,9 @@ import {
   TextInput,
   Divider,
   Text,
+  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import classes from "./CreateUser.module.css";
 
 import { UserService } from "../../../services/userService";
 import type { ICreateUserRequest } from "../Interfaces/ICreateUserRequest";
@@ -25,7 +25,7 @@ export function CreateUser() {
       firstName: "",
       lastName: "",
       birthDate: "",
-      document: "",
+      taxId: "",
       email: "",
       cellPhone: "",
       phone: "",
@@ -60,9 +60,9 @@ export function CreateUser() {
       birthDate: (value, values) =>
         !values.personId && !value ? "Data de nascimento é obrigatória." : null,
 
-      document: (value, values) =>
-        !values.personId && (!value || value.length !== 11)
-          ? "Documento deve ter 11 dígitos."
+      taxId: (value, values) =>
+        !values.personId && (!value || value.length < 11)
+          ? "Documento deve ter no mínimo 11 dígitos."
           : null,
 
       email: (value, values) =>
@@ -94,16 +94,10 @@ export function CreateUser() {
   const isExistingPerson = !!form.values.personId;
 
   return (
-    <Paper
-      withBorder
-      shadow="md"
-      p="xl"
-      radius="md"
-      maw="800px"
-      mx="auto"
-      mt="xl"
-    >
-      <h1 className={classes.centerText}>Cadastrar Usuário</h1>
+    <Paper withBorder shadow="md" p="xl" maw="800px" mx="auto" mt="xl">
+      <Title order={2} ta="center" mb="xl" c="brainstorm.6">
+        Cadastrar Usuário
+      </Title>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid gutter="md">
           {/* Seção 1: Seleção de Pessoa */}
@@ -164,7 +158,7 @@ export function CreateUser() {
           <Grid.Col span={6}>
             <Select
               withAsterisk
-              label="Papel (Role)"
+              label="Setor"
               data={[
                 { value: "Admin", label: "Administrador" },
                 { value: "Business", label: "Negócios" },
@@ -189,7 +183,7 @@ export function CreateUser() {
         </Grid>
 
         <Center mt="xl">
-          <Button type="submit" size="md" fullWidth>
+          <Button type="submit" fullWidth>
             Finalizar Cadastro
           </Button>
         </Center>

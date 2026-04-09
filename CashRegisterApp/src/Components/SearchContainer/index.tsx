@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Text } from "@mantine/core";
+import { Button, Grid, Paper, Text, Stack } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 
@@ -16,36 +16,44 @@ export function SearchContainer({
   title,
 }: SearchContainerProps) {
   return (
-    <Paper p={30} shadow="md" radius={"lg"} withBorder>
-      {title && (
-        <Text size="lg" fw={700} mb="md">
-          {title}
-        </Text>
-      )}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSearch();
-        }}
-      >
-        <Grid align="flex-end">
-          <Grid.Col span={{ base: 12, md: 10 }}>
-            <Grid>{children}</Grid>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 2 }}>
-            <Button
-              fullWidth
-              radius="xl"
-              type="submit"
-              variant="light"
-              loading={loading}
-              leftSection={<IconSearch size={16} />}
-            >
-              Buscar
-            </Button>
-          </Grid.Col>
-        </Grid>
-      </form>
+    <Paper 
+      p="xl" 
+      shadow="md" 
+      radius="lg" 
+      withBorder 
+    >
+      <Stack gap="lg">
+        {title && (
+          <Text size="lg" fw={700} c="brainstorm.6">
+            {title}
+          </Text>
+        )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSearch();
+          }}
+        >
+          <Grid align="flex-end" gutter="md">
+            <Grid.Col span={{ base: 12, md: 10 }}>
+              <Grid gutter="md">{children}</Grid>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 2 }}>
+              <Button
+                fullWidth
+                radius="xl"
+                type="submit"
+                variant="gradient"
+                gradient={{ from: 'brainstorm.6', to: 'brainstorm.4', deg: 45 }}
+                loading={loading}
+                leftSection={<IconSearch size={18} />}
+              >
+                Buscar
+              </Button>
+            </Grid.Col>
+          </Grid>
+        </form>
+      </Stack>
     </Paper>
   );
 }

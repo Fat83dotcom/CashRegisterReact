@@ -16,7 +16,6 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
       <Grid.Col span={6}>
         <TextInput
           withAsterisk
-          size="md"
           label="Nome"
           placeholder="Digite o primeiro nome"
           {...form.getInputProps(getFieldPath("firstName"))}
@@ -25,7 +24,6 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
       <Grid.Col span={6}>
         <TextInput
           withAsterisk
-          size="md"
           label="Sobrenome"
           placeholder="Digite o sobrenome"
           {...form.getInputProps(getFieldPath("lastName"))}
@@ -37,7 +35,6 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
             label: "Data de Nascimento",
             placeholder: "Selecione a data",
             value: form.values[getFieldPath("birthDate")],
-            size: "md",
             withAsterisk: true,
           }}
           getInputProps={form.getInputProps(getFieldPath("birthDate"))}
@@ -46,17 +43,15 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
       <Grid.Col span={8}>
         <TextInput
           withAsterisk
-          size="md"
           label="Documento (CPF/CNPJ)"
           placeholder="Digite o documento"
-          {...form.getInputProps(getFieldPath("document"))}
+          {...form.getInputProps(getFieldPath("taxId"))}
         />
       </Grid.Col>
 
       <Grid.Col span={6}>
         <TextInput
           withAsterisk
-          size="md"
           label="Email"
           placeholder="Digite o email"
           {...form.getInputProps(getFieldPath("email"))}
@@ -67,7 +62,6 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
         <Select
           label="Gênero"
           placeholder="Selecione"
-          size="md"
           data={[
             { value: "Male", label: "Masculino" },
             { value: "Female", label: "Feminino" },
@@ -80,7 +74,6 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
       <Grid.Col span={6}>
         <TextInput
           withAsterisk
-          size="md"
           label="Celular"
           placeholder="Digite o celular"
           {...form.getInputProps(getFieldPath("cellPhone"))}
@@ -90,7 +83,6 @@ export function PersonForm({ form, basePath }: PersonFormProps) {
       <Grid.Col span={6}>
         <TextInput
           withAsterisk
-          size="md"
           label="Telefone"
           placeholder="Digite o telefone"
           {...form.getInputProps(getFieldPath("phone"))}

@@ -11,7 +11,7 @@ interface PersonSelectProps {
 interface PersonListItem {
   id: number;
   name: { firstName: string; lastName: string };
-  document: string;
+  taxId: string;
 }
 
 export function PersonSelect({ value, onChange, error }: PersonSelectProps) {
@@ -20,22 +20,24 @@ export function PersonSelect({ value, onChange, error }: PersonSelectProps) {
 
   useEffect(() => {
     setLoading(true);
-    // Assumindo um endpoint que lista pessoas. Se não existir, precisaremos criar.
-    apiClient.get<PersonListItem[]>("/person")
-      .then(data => setPeople(data))
+    apiClient
+      .get<PersonListItem[]>("/person")
+      .then((data) => setPeople(data))
       .catch(() => setPeople([]))
       .finally(() => setLoading(false));
   }, []);
 
-  const data = people.map(p => ({
+  const data = people.map((p) => ({
     value: p.id.ToString(),
-    label: `${p.name.firstName} ${p.name.lastName} (${p.document})`
+    label: `${p.name.firstName} ${p.name.lastName} (${p.taxId})`,
   }));
 
   return (
     <Select
       label="Vincular Pessoa Existente"
-      placeholder={loading ? "Carregando..." : "Selecione uma pessoa (opcional)"}
+      placeholder={
+        loading ? "Carregando..." : "Selecione uma pessoa (opcional)"
+      }
       data={data}
       value={value}
       onChange={onChange}
@@ -44,15 +46,15 @@ export function PersonSelect({ value, onChange, error }: PersonSelectProps) {
       clearable
       nothingFoundMessage="Nenhuma pessoa encontrada"
       rightSection={loading ? <Loader size="xs" /> : null}
-      size="md"
     />
   );
 }
 
-// Extensão rápida para consertar o ToString se necessário no JS
 declare global {
-    interface Number {
-        ToString(): string;
-    }
+  interface Number {
+    ToString(): string;
+  }
 }
-Number.prototype.ToString = function() { return this.toString(); };
+Number.prototype.ToString = function () {
+  return this.toString();
+};

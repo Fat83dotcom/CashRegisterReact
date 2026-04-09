@@ -32,7 +32,7 @@ export function Login() {
 
   return (
     <Center h="100vh" bg="gray">
-      <Paper w={400} radius="md" p="xl" withBorder shadow="md">
+      <Paper w={400} p="xl" withBorder shadow="md">
         <Title order={2} ta="center" mb="lg">
           Login
         </Title>

@@ -2,7 +2,7 @@ export interface IGetAllUsersResponse {
   id: number;
   name: IName;
   birthdate: string;
-  document: string;
+  taxId: string;
 }
 
 export interface IName {

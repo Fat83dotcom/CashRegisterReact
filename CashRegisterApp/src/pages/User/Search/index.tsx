@@ -1,4 +1,5 @@
 import { Grid, TextInput, Stack } from "@mantine/core";
+import { IconUser, IconFingerprint, IconCalendar } from "@tabler/icons-react";
 import { DateInputBr } from "../../../Components/DateInputPt-BR";
 import { useForm } from "@mantine/form";
 import { SearchContainer } from "../../../Components/SearchContainer";
@@ -24,7 +25,7 @@ export function UserSearch() {
   const form = useForm({
     initialValues: {
       name: "",
-      document: "",
+      taxId: "",
       birthDate: "" as string | Date,
     },
   });
@@ -34,7 +35,7 @@ export function UserSearch() {
     try {
       const response = await UserService.search({
         name: form.values.name,
-        document: form.values.document,
+        taxId: form.values.taxId,
         birthDate: form.values.birthDate,
         page,
         pageSize,
@@ -63,8 +64,8 @@ export function UserSearch() {
       render: (item) => `${item.name.firstName} ${item.name.lastName}` 
     },
     { 
-      key: "document", 
-      label: "Documento" 
+      key: "taxId", 
+      label: "CPF/CNPJ" 
     },
     { 
       key: "birthdate", 
@@ -88,22 +89,22 @@ export function UserSearch() {
       <SearchContainer 
         onSearch={() => handleSearch(1)} 
         loading={loading} 
-        title="Filtros de Busca"
+        title="Consulta de Usuários"
       >
         <Grid.Col span={{ base: 12, md: 4 }}>
           <TextInput
-            size="sm"
             label="Nome"
-            placeholder="Digite um nome"
+            placeholder="Nome ou parte do nome"
+            leftSection={<IconUser size={18} stroke={1.5} />}
             {...form.getInputProps("name")}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 4 }}>
           <TextInput
-            size="sm"
-            label="Documento"
-            placeholder="Digite um documento"
-            {...form.getInputProps("document")}
+            label="CPF/CNPJ"
+            placeholder="Digite o documento"
+            leftSection={<IconFingerprint size={18} stroke={1.5} />}
+            {...form.getInputProps("taxId")}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 4 }}>
@@ -112,6 +113,7 @@ export function UserSearch() {
               label: "Data de Nascimento",
               placeholder: "Selecione a data",
               clearable: true,
+              leftSection: <IconCalendar size={18} stroke={1.5} />
             }}
             getInputProps={form.getInputProps("birthDate")}
           />
@@ -135,3 +137,4 @@ export function UserSearch() {
     </Stack>
   );
 }
+

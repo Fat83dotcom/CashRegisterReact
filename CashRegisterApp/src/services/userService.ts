@@ -9,7 +9,7 @@ import React from "react";
 
 export interface ISearchUserRequest {
   name?: string;
-  document?: string;
+  taxId?: string;
   birthDate?: string | Date;
   page?: number;
   pageSize?: number;
@@ -29,7 +29,7 @@ export const UserService = {
   search: (params: ISearchUserRequest) => {
     const queryParams = new URLSearchParams();
     if (params.name) queryParams.append("Name", params.name);
-    if (params.document) queryParams.append("Document", params.document);
+    if (params.taxId) queryParams.append("TaxId", params.taxId);
     if (params.birthDate) {
       const date = params.birthDate instanceof Date 
         ? params.birthDate.toISOString() 
