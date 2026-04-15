@@ -8,7 +8,7 @@ import "./styles/global.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { Notifications } from "@mantine/notifications";
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./features/auth/contexts/AuthContext";
 
 const brainstormBlue: MantineColorsTuple = [
   "#e5f1ff",

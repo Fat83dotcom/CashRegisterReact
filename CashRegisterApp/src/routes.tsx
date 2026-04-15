@@ -1,22 +1,22 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { RootLayout } from "./pages/Main";
-import { CreateUser } from "./pages/User/Create";
-import { CreateUserNavigation } from "./pages/User/navigation";
-import { UserHome } from "./pages/User";
-import { DeleteUser } from "./pages/User/Delete";
-import { Login } from "./pages/Login";
-import { ProtectedRoute } from "./Components/ProtectedRoute";
+import { RootLayout } from "./features/main/pages";
+import { CreateUser } from "./features/users/pages/Create";
+import { CreateUserNavigation } from "./features/users/pages/navigation";
+import { UserHome } from "./features/users/pages";
+import { DeleteUser } from "./features/users/pages/Delete";
+import { Login } from "./features/auth/pages";
+import { ProtectedRoute } from "./components/Layout/ProtectedRoute";
 
-import { InventoryHome } from "./pages/Inventory";
-import { InventoryNavigation } from "./pages/Inventory/navigation";
-import { SalesHome } from "./pages/Sales";
-import { SalesNavigation } from "./pages/Sales/navigation";
-import { FinancialHome } from "./pages/Financial";
-import { FinancialNavigation } from "./pages/Financial/navigation";
+import { InventoryHome } from "./features/inventory/pages";
+import { InventoryNavigation } from "./features/inventory/pages/navigation";
+import { SalesHome } from "./features/sales/pages";
+import { SalesNavigation } from "./features/sales/pages/navigation";
+import { FinancialHome } from "./features/financial/pages";
+import { FinancialNavigation } from "./features/financial/pages/navigation";
 
-import { SettingsHome } from "./pages/Settings";
-import { ChangePassword } from "./pages/Settings/ChangePassword";
-import { SettingsNavigation } from "./pages/Settings/navigation";
+import { SettingsHome } from "./features/settings/pages";
+import { ChangePassword } from "./features/settings/pages/ChangePassword";
+import { SettingsNavigation } from "./features/settings/pages/navigation";
 
 export const router = createBrowserRouter([
   {

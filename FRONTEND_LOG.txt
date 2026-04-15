@@ -1,0 +1,1 @@
+2026-04-14 20:35:26 - Refactored src/ directory structure to Feature-Sliced Design. Created features: auth, users, settings, inventory, sales, financial, main, person. Moved components to components/Layout and updated all imports. Compiled perfectly with 0 TypeScript errors.
