@@ -17,11 +17,12 @@ Este diretório contém o frontend da aplicação Cash Register, desenvolvido co
 ## Mandatos para o Gemini
 1. **Logging:** Registrar todas as alterações técnicas e decisões no arquivo `../FRONTEND_LOG.txt`.
 2. **Componentes Funcionais:** Use sempre componentes funcionais com hooks.
-2. **Tipagem:** Mantenha a tipagem rigorosa com TypeScript. Defina interfaces para todas as respostas de API e propriedades de componentes.
-3. **Mantine UI:** Utilize componentes do Mantine para manter a consistência visual. Prefira os hooks do Mantine (`@mantine/hooks`, `@mantine/form`) para lógica de UI.
-4. **Services:** Toda comunicação com o backend deve ser isolada na pasta `services/`.
-5. **Estilização:** Utilize o sistema de temas do Mantine e CSS Modules ou Vanilla CSS quando necessário.
-6. **Padrões React 19:** Sempre consulte as documentações oficiais recentes e utilize recursos nativos e atuais do React 19+. APIs depreciadas como `forwardRef` devem ser evitadas. Em caso de dúvida, pesquise antes de gerar código. Componentes que expõem funções devem receber `ref` como uma `prop` comum.
+3. **Integridade Tecnológica (Always Up-to-Date):** Utilize rigorosamente as APIs mais recentes do React 19, Mantine v8 e Zod v3.24+. O uso de qualquer recurso marcado como @deprecated (ex: `ZodIssueCode`) é expressamente proibido. Realize buscas na documentação oficial sempre que uma nova sintaxe for introduzida no ecossistema.
+4. **Tipagem:** Mantenha a tipagem rigorosa com TypeScript. Defina interfaces para todas as respostas de API e propriedades de componentes.
+5. **Mantine UI:** Utilize componentes do Mantine para manter a consistência visual. Prefira os hooks do Mantine (`@mantine/hooks`, `@mantine/form`) para lógica de UI.
+6. **Services:** Toda comunicação com o backend deve ser isolada na pasta `services/`.
+7. **Estilização:** Utilize o sistema de temas do Mantine e CSS Modules ou Vanilla CSS quando necessário.
+8. **Padrões React 19:** Sempre consulte as documentações oficiais recentes e utilize recursos nativos e atuais do React 19+. APIs depreciadas como `forwardRef` devem ser evitadas. Em caso de dúvida, pesquise antes de gerar código. Componentes que expõem funções devem receber `ref` como uma `prop` comum.
 
 ## Status Atual / Próximos Passos
 - **Implementado:** Criação dos novos módulos de ERP (Estoque, Vendas, Financeiro) com rotas e componentes base.
@@ -47,20 +48,18 @@ Seu objetivo é gerar formulários estritamente alinhados à "Arquitetura de 4 C
 
 ## CONTEXTO DE INFRAESTRUTURA (ASSUMA QUE ESTES ARQUIVOS JÁ EXISTEM)
 *Não gere estes códigos na sua resposta, use-os apenas como referência para saber como importar e usar.*
-
 **1. O Wrapper Global (`@/components/Form/Form.tsx`):**
 ```tsx
 import { useForm, FormProvider, UseFormReturn, SubmitHandler, DefaultValues, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodSchema } from 'zod';
+import { ZodType } from 'zod';
 
 export interface FormProps<T extends FieldValues> {
-  schema: ZodSchema<T>;
+  schema: ZodType<T>;
   onSubmit: SubmitHandler<T>;
   defaultValues?: DefaultValues<T>;
   children: (methods: UseFormReturn<T>) => React.ReactNode;
 }
-// Exporta o componente <Form>
 ```
 
 **2. Componente Simples (`@/components/Form/TextInput.tsx`):**
@@ -95,3 +94,42 @@ Sempre que solicitado para criar um "Formulário de [Entidade]", você deve me r
 - Retorne o componente `<Form>` tipado e com as `defaultValues` preenchidas.
 - Construa o layout visual limpo e responsivo usando Mantine.
 - Não adicione comentários óbvios, foque em código de produção.
+
+# Algoritmo de Criação de Novas Telas de Cadastro
+
+Para garantir a consistência do ERP, toda nova tela de cadastro (CRUD/Formulário) deve seguir rigorosamente estes passos:
+
+1.  **Camada 1 (Schema):** Criar o schema Zod em `src/features/[modulo]/schemas/[entidade]Schema.ts`.
+2.  **Camada 4 (Componente):** Criar o componente visual em `src/features/[modulo]/components/[Entidade]Form.tsx` utilizando o `<Form>` global e os wrappers de `@/components/Form`.
+3.  **Criação da Página:** Criar o arquivo de página em `src/features/[modulo]/pages/[Entidade]/index.tsx` que renderiza o formulário.
+4.  **Configuração de Rota:** Adicionar a nova rota no arquivo `src/routes.tsx`.
+5.  **Navegação Secundária:** Atualizar o menu lateral/navbar do módulo em `src/features/[modulo]/pages/navigation.tsx`.
+6.  **Navegação Global:** Atualizar o dropdown correspondente no Header em `src/components/Layout/Header/index.tsx`.
+
+# Padrão de Menu Lateral (Sidebar Navigation)
+
+Para manter a consistência visual moderna do ERP, todos os Sidebars (`navigation.tsx`) devem seguir esta estrutura:
+
+1.  **Componentes:** Utilizar `NavLink` do Mantine UI (`@mantine/core`) com o `NavLink` do `react-router-dom` como componente base.
+2.  **Layout:**
+    *   Container: `Box` com padding médio (`p="md"`).
+    *   Título do Módulo: `Text` pequeno, negrito, cor suave (`c="dimmed"`) e em caixa alta (`tt="uppercase"`).
+    *   Lista: `Stack` com gap reduzido (`gap={4}`).
+3.  **Iconografia:** Todo item de menu DEVE ter um ícone do `@tabler/icons-react` na `leftSection`.
+4.  **Estado Ativo:**
+    *   `variant="light"` com a cor tema `brainstorm.6`.
+    *   `rightSection`: Exibir `IconChevronRight` APENAS quando o item estiver ativo (`isActive`).
+    *   `styles`: Aplicar `borderRadius: 'var(--mantine-radius-md)'` e fonte seminegrito para o label ativo.
+
+# Padrão de Telas de Consulta (Search & Grid Orchestration)
+
+Toda entidade de cadastro deve possuir uma tela de consulta padronizada seguindo esta estrutura:
+
+1.  **Schema de Busca:** Um arquivo `[entidade]SearchSchema.ts` definindo os filtros em `src/features/[modulo]/schemas/`.
+2.  **Componente Search:** Localizado em `src/features/[modulo]/pages/[Entidade]/Search/index.tsx`.
+3.  **Estado Paginado:** Gerenciamento obrigatório de `loading`, `selectedId` e `pagedData` (usando a interface `IPagedResponse`).
+4.  **Componentes Reutilizáveis:**
+    *   `<SearchContainer>`: Envolve os filtros e o botão de busca (importado de `@/components/Layout/SearchContainer`).
+    *   `<DynamicTable>`: Renderiza os dados com configuração de colunas `ColumnConfig` (importado de `@/components/Layout/DynamicTable`).
+5.  **Ações:** Implementar `handleSearch` (busca) e `handleDeactivate/handleDelete` (remoção/desativação) quando aplicável.
+6.  **Integração:** O componente principal da página (`pages/[Entidade]/index.tsx`) deve atuar como um container simples que renderiza o título e o componente de busca.
