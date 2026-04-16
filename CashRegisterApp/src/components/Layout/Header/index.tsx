@@ -1,53 +1,72 @@
-import { IconSearch, IconChevronDown, IconBrain } from "@tabler/icons-react";
-import { Autocomplete, Burger, Center, Group, Menu, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { IconSearch, IconChevronDown, IconChevronRight } from "@tabler/icons-react";
+import { Autocomplete, Center, Group, Menu } from "@mantine/core";
 
 import classes from "./styles/HeaderSearch.module.css";
 import { NavLink } from "react-router-dom";
 import { UserMenu } from "../UserMenu";
 import { useAuth } from "../../../features/auth/contexts/AuthContext";
 
+type NavSubItem = { link: string; label: string };
+type NavSection = { label: string; items: NavSubItem[] };
+
 type NavLinkItem = {
   link: string;
   label: string;
-  links?: { link: string; label: string }[];
+  sections?: NavSection[];
   roles?: string[];
 };
 
 const links: NavLinkItem[] = [
   { link: "/", label: "Home" },
   {
-    link: "#2",
+    link: "#inventory",
     label: "Estoque",
-    links: [
-      { link: "/inventory", label: "Painel" },
-      { link: "/inventory/products", label: "Produtos" },
-      { link: "/inventory/categories", label: "Categorias" },
+    sections: [
+      {
+        label: "Cadastros",
+        items: [
+          { link: "/inventory/products", label: "Produtos" },
+          { link: "/inventory/categories", label: "Categorias" },
+          { link: "/inventory/units", label: "Unidades de Medida" },
+          { link: "/inventory/conversions", label: "Regras de Conversão" },
+        ],
+      },
+      { label: "Operações", items: [] },
+      { label: "Relatórios", items: [] },
     ],
   },
   {
-    link: "#3",
+    link: "#financial",
     label: "Financeiro",
-    links: [
-      { link: "/financial", label: "Painel" },
-      { link: "/financial/cashFlow", label: "Fluxo de Caixa" },
-      { link: "/financial/reports", label: "Relatórios" },
+    sections: [
+      {
+        label: "Cadastros",
+        items: [
+          { link: "/financial/accounts", label: "Contas" },
+        ],
+      },
+      { label: "Operações", items: [] },
+      { label: "Relatórios", items: [] },
     ],
   },
   {
-    link: "#4",
+    link: "#sales",
     label: "Vendas",
-    links: [
-      { link: "/sales", label: "Painel" },
-      { link: "/sales/new", label: "Nova Venda" },
-      { link: "/sales/history", label: "Histórico" },
+    sections: [
+      {
+        label: "Cadastros",
+        items: [
+          { link: "/sales/customers", label: "Clientes" },
+        ],
+      },
+      { label: "Operações", items: [] },
+      { label: "Relatórios", items: [] },
     ],
   },
   { link: "/about", label: "Sobre" },
 ];
 
 export function HeaderSearch() {
-  const [opened, { toggle }] = useDisclosure(false);
   const { user } = useAuth();
 
   const filteredLinks = links.filter(
@@ -55,10 +74,38 @@ export function HeaderSearch() {
   );
 
   const items = filteredLinks.map((link) => {
-    const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.link} component={NavLink} to={item.link}>
-        {item.label}
-      </Menu.Item>
+    const menuItems = link.sections?.map((section) => (
+      <Menu
+        key={section.label}
+        trigger="hover"
+        position="right-start"
+        offset={15}
+        withinPortal={false}
+      >
+        <Menu.Target>
+          <Menu.Item
+            rightSection={<IconChevronRight size={14} stroke={1.5} />}
+            closeMenuOnClick={false}
+          >
+            {section.label}
+          </Menu.Item>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {section.items.length > 0 ? (
+            section.items.map((item) => (
+              <Menu.Item 
+                key={item.link} 
+                component={NavLink} 
+                to={item.link}
+              >
+                {item.label}
+              </Menu.Item>
+            ))
+          ) : (
+            <Menu.Item disabled>Em breve...</Menu.Item>
+          )}
+        </Menu.Dropdown>
+      </Menu>
     ));
 
     if (menuItems) {
@@ -100,51 +147,27 @@ export function HeaderSearch() {
   });
 
   return (
-    <div className={classes.header}>
-      <div className={classes.inner}>
-        <Group>
-          <Burger
-            opened={opened}
-            onClick={toggle}
-            size="sm"
-            hiddenFrom="sm"
-            aria-label="Toggle navigation"
-          />
-          <Group gap={8} visibleFrom="xs">
-            <IconBrain size={28} color="var(--mantine-color-brainstorm-6)" />
-            <Text
-              size="xl"
-              fw={900}
-              variant="gradient"
-              gradient={{ from: 'brainstorm.6', to: 'cyan', deg: 45 }}
-              style={{ letterSpacing: -1 }}
-            >
-              BrainstormTech
-            </Text>
-          </Group>
-        </Group>
-
-        <Group>
-          <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-            {items}
-          </Group>
-          <Autocomplete
-            className={classes.search}
-            placeholder="Pesquisar..."
-            leftSection={<IconSearch size={16} stroke={1.5} />}
-            data={[
-              "Usuários",
-              "Produtos",
-              "Vendas",
-              "Relatórios",
-            ]}
-            visibleFrom="xs"
-          />
-          <Group>
-            <UserMenu />
-          </Group>
-        </Group>
-      </div>
-    </div>
+    <Group h="100%" flex={1} justify="flex-end" wrap="nowrap">
+      <Group gap={5} className={classes.links} visibleFrom="sm" wrap="nowrap">
+        {items}
+      </Group>
+      
+      <Autocomplete
+        className={classes.search}
+        placeholder="Pesquisar..."
+        leftSection={<IconSearch size={16} stroke={1.5} />}
+        data={[
+          "Usuários",
+          "Produtos",
+          "Vendas",
+          "Relatórios",
+        ]}
+        visibleFrom="xs"
+      />
+      
+      <Group wrap="nowrap">
+        <UserMenu />
+      </Group>
+    </Group>
   );
 }

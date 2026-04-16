@@ -10,6 +10,7 @@ import {
   Table,
   Text,
   Box,
+  Paper,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconCircleMinus, IconX } from "@tabler/icons-react";
@@ -29,7 +30,7 @@ interface DynamicTableProps<T> {
   keyExtractor: (item: T) => string | number;
   onDeactivate?: (id: string | number) => void;
   onDelete?: (id: string | number) => void;
-  
+
   // Novas props para integração com Search
   loading?: boolean;
   totalCount?: number;
@@ -62,8 +63,8 @@ export function DynamicTable<T>({
 
   // Se as funções de callback forem passadas, usamos paginação do servidor
   const isServerSide = !!onPageChange;
-  
-  const totalPages = isServerSide 
+
+  const totalPages = isServerSide
     ? Math.ceil(totalCount / pageSize)
     : Math.ceil(data.length / pageSize);
 
@@ -119,35 +120,40 @@ export function DynamicTable<T>({
           </Button>
         </Group>
       </Modal>
-      
+
       <Stack gap="md" pos="relative">
         <LoadingOverlay visible={loading} overlayProps={{ blur: 1 }} />
-        
-        <Box style={{ overflowX: 'auto' }}>
-          <Table
-            highlightOnHover
-            withTableBorder
-            withColumnBorders
-            verticalSpacing="sm"
-          >
-            <Table.Thead>
-              <Table.Tr>{ths}</Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {rows.length > 0 ? (
-                rows
-              ) : (
-                <Table.Tr>
-                  <Table.Td colSpan={columns.length} style={{ textAlign: 'center', padding: '40px' }}>
-                    <Badge size="lg" variant="light" color="gray">
-                      Nenhum registro encontrado.
-                    </Badge>
-                  </Table.Td>
-                </Table.Tr>
-              )}
-            </Table.Tbody>
-          </Table>
-        </Box>
+
+        <Paper
+          withBorder
+          shadow="xs"
+          radius="lg"
+          style={{ overflow: "hidden" }}
+        >
+          <Box style={{ overflowX: "auto" }}>
+            <Table highlightOnHover withColumnBorders verticalSpacing="sm">
+              <Table.Thead>
+                <Table.Tr>{ths}</Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {rows.length > 0 ? (
+                  rows
+                ) : (
+                  <Table.Tr>
+                    <Table.Td
+                      colSpan={columns.length}
+                      style={{ textAlign: "center", padding: "40px" }}
+                    >
+                      <Badge size="lg" variant="light" color="gray">
+                        Nenhum registro encontrado.
+                      </Badge>
+                    </Table.Td>
+                  </Table.Tr>
+                )}
+              </Table.Tbody>
+            </Table>
+          </Box>
+        </Paper>
 
         {withPagination && (totalCount > 0 || data.length > 0) && (
           <Group justify="space-between" align="center">
@@ -157,7 +163,9 @@ export function DynamicTable<T>({
               </Text>
               <Select
                 value={pageSize.toString()}
-                onChange={(val) => onPageSizeChange && onPageSizeChange(val || "10")}
+                onChange={(val) =>
+                  onPageSizeChange && onPageSizeChange(val || "10")
+                }
                 data={["5", "10", "20", "50", "100"]}
                 w={80}
               />
@@ -174,7 +182,7 @@ export function DynamicTable<T>({
               radius="md"
               withEdges
             />
-            
+
             <Group gap="xs" align="center">
               <Button
                 disabled={!selectedId}
@@ -201,4 +209,3 @@ export function DynamicTable<T>({
     </>
   );
 }
-

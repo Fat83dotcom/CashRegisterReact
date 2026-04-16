@@ -1,32 +1,56 @@
-import { NavLink } from "react-router-dom";
-import classes from "./styles/Navigation.module.css";
-import { Paper } from "@mantine/core";
+import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
+import { Stack, Text, NavLink as MantineNavLink, Box } from "@mantine/core";
+import { 
+  IconUserShield, 
+  IconSettings, 
+  IconChevronRight 
+} from "@tabler/icons-react";
 
 const links = [
-  { link: "/settings", label: "Perfil" },
-  { link: "/settings/security", label: "Segurança" },
+  { link: "/settings", label: "Geral", icon: IconSettings },
+  { link: "/settings/security", label: "Segurança", icon: IconUserShield },
 ];
 
-const items = links.map((link) => (
-  <NavLink
-    key={link.label}
-    to={link.link}
-    className={({ isActive }) =>
-      isActive ? `${classes.link} ${classes.linkActive}` : classes.link
-    }
-    end={link.link === "/settings"}
-  >
-    {link.label}
-  </NavLink>
-));
-
 export function SettingsNavigation() {
+  const location = useLocation();
+
   return (
-    <>
-      <Paper className={`${classes.centerMenu}`}>
-        <h3>Configurações</h3>
-        {items}
-      </Paper>
-    </>
+    <Box p="md">
+      <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="md" pl="sm" style={{ letterSpacing: 1 }}>
+        Configurações
+      </Text>
+      
+      <Stack gap={4}>
+        {links.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.link;
+          
+          return (
+            <MantineNavLink
+              key={item.label}
+              component={RouterNavLink}
+              to={item.link}
+              label={item.label}
+              leftSection={<Icon size={20} stroke={1.5} />}
+              rightSection={isActive ? <IconChevronRight size={14} stroke={1.5} /> : null}
+              active={isActive}
+              color="brainstorm.6"
+              variant="light"
+              styles={{
+                root: {
+                  borderRadius: 'var(--mantine-radius-md)',
+                  transition: 'all 0.2s ease',
+                  padding: '10px 12px',
+                },
+                label: {
+                  fontWeight: isActive ? 600 : 500,
+                  fontSize: 'var(--mantine-font-size-sm)',
+                }
+              }}
+            />
+          );
+        })}
+      </Stack>
+    </Box>
   );
 }

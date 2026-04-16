@@ -1,25 +1,23 @@
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { Stack, Text, NavLink as MantineNavLink, Box } from "@mantine/core";
 import { 
-  IconShoppingCart, 
-  IconHistory, 
-  IconChartBar,
+  IconHome, 
+  IconInfoCircle,
   IconChevronRight 
 } from "@tabler/icons-react";
 
 const links = [
-  { link: "/sales", label: "Painel de Vendas", icon: IconChartBar },
-  { link: "/sales/new", label: "Nova Venda", icon: IconShoppingCart },
-  { link: "/sales/history", label: "Histórico", icon: IconHistory },
+  { link: "/", label: "Home", icon: IconHome },
+  { link: "/about", label: "Sobre o Sistema", icon: IconInfoCircle },
 ];
 
-export function SalesNavigation() {
+export function MainNavigation() {
   const location = useLocation();
 
   return (
     <Box p="md">
       <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="md" pl="sm" style={{ letterSpacing: 1 }}>
-        Módulo de Vendas
+        Menu Principal
       </Text>
       
       <Stack gap={4}>
