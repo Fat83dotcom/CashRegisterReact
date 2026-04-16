@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Button, Center, Grid, Paper, Divider, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 
@@ -11,21 +10,12 @@ import { userSchema, type UserFormData } from "../../schemas/userSchema";
 // Dependências legadas / lógicas atuais da feature
 import { UserService } from "../../api/userService";
 import { PasswordManager } from "../../../../components/Layout/PasswordManager";
-import { PersonForm, type PersonFormRef } from "../../../person/components/PersonForm";
+import { PersonForm } from "../../../person/components/PersonForm";
 import { PersonSelect } from "../../../person/components/PersonSelect";
 
 export function CreateUser() {
-  const personFormRef = useRef<PersonFormRef>(null);
-
-  const handleSubmit = (userValues: UserFormData) => {
+  const handleSubmit = (userValues: UserFormData, methods: any) => {
     const isNewPerson = !userValues.personId;
-
-    if (isNewPerson) {
-      const personFormValidation = personFormRef.current?.form.validate();
-      if (personFormValidation?.hasErrors) {
-        return; 
-      }
-    }
 
     const userRequest = {
       ...userValues,
@@ -33,19 +23,18 @@ export function CreateUser() {
     };
 
     let personRequest;
-    if (isNewPerson && personFormRef.current) {
-      const personValues = personFormRef.current.form.values;
+    if (isNewPerson && userValues.person) {
       personRequest = {
-        ...personValues,
-        personType: Number(personValues.personType),
-        birthdate: dayjs(personValues.birthdate).format("YYYY-MM-DDT00:00:00Z"),
+        ...userValues.person,
+        personType: Number(userValues.person.personType),
+        birthdate: dayjs(userValues.person.birthdate).format("YYYY-MM-DDT00:00:00Z"),
       };
     }
 
     const payload = { userRequest, personRequest };
 
     UserService.create(payload, () => {
-      personFormRef.current?.form.reset();
+      methods.reset();
     }).then();
   };
 
@@ -63,9 +52,22 @@ export function CreateUser() {
           password: "",
           userName: "",
           personId: undefined,
+          person: {
+            personType: 1,
+            firstName: "",
+            lastName: "",
+            taxId: "",
+            email: "",
+            tradeName: "",
+            stateRegistration: "",
+            municipalRegistration: "",
+            cellPhone: "",
+            phone: "",
+            gender: "",
+          },
         }}
       >
-        {({ watch, setValue, formState: { errors } }) => {
+        {({ watch, setValue, formState: { errors }, clearErrors }) => {
           const personId = watch("personId");
           const isExistingPerson = !!personId;
 
@@ -78,7 +80,7 @@ export function CreateUser() {
                     const id = val ? parseInt(val) : undefined;
                     setValue("personId", id, { shouldValidate: true });
                     if (id) {
-                      personFormRef.current?.form.clearErrors();
+                      clearErrors("person");
                     }
                   }}
                   error={errors.personId?.message?.toString()}
@@ -91,7 +93,7 @@ export function CreateUser() {
                     <Divider label="Dados da Nova Pessoa" labelPosition="center" my="md" />
                   </Grid.Col>
                   <Grid.Col span={12}>
-                    <PersonForm ref={personFormRef} />
+                    <PersonForm />
                   </Grid.Col>
                 </>
               )}

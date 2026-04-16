@@ -1,81 +1,19 @@
-import { Grid, Select, TextInput } from "@mantine/core";
-import { useForm, type UseFormReturnType } from "@mantine/form";
-import { useImperativeHandle, type Ref } from "react";
-import { DateInputBr } from "../../../components/Layout/DateInputPt-BR";
-import type { ICreatePersonRequest } from "./Interfaces/ICreatePersonRequest";
+import { Grid } from "@mantine/core";
+import { useFormContext } from "react-hook-form";
+import { TextInput, Select } from "../../../components/Form";
+import { DateInput } from "../../../components/Form/DateInput";
 
-export interface PersonFormRef {
-  form: UseFormReturnType<ICreatePersonRequest>;
-}
-
-export interface PersonFormProps {
-  ref?: Ref<PersonFormRef>;
-}
-
-export function PersonForm({ ref }: PersonFormProps) {
-  const form = useForm<ICreatePersonRequest>({
-    initialValues: {
-      personType: 1, // 1 = Física por padrão
-      firstName: "",
-      lastName: "",
-      taxId: "",
-      birthdate: "",
-      email: "",
-      tradeName: "",
-      stateRegistration: "",
-      municipalRegistration: "",
-      cellPhone: "",
-      phone: "",
-      gender: "",
-    },
-    validate: {
-      firstName: (value) =>
-        !value || value.trim().length === 0 ? "Nome é obrigatório." : null,
-
-      lastName: (value) =>
-        !value || value.trim().length === 0 ? "Sobrenome é obrigatório." : null,
-
-      birthdate: (value) =>
-        !value ? "Data de nascimento/fundação é obrigatória." : null,
-
-      taxId: (value) =>
-        !value || value.length < 11
-          ? "Documento deve ter no mínimo 11 dígitos."
-          : null,
-
-      email: (value) =>
-        !value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-          ? "E-mail inválido."
-          : null,
-
-      tradeName: (value, values) =>
-        values.personType === 2 && (!value || value.trim().length === 0)
-          ? "Nome Fantasia é obrigatório para Pessoa Jurídica."
-          : null,
-
-      cellPhone: (value) =>
-        value && value.length > 0 && value.length < 10
-          ? "Celular inválido."
-          : null,
-
-      phone: (value) =>
-        value && value.length > 0 && value.length < 10
-          ? "Telefone inválido."
-          : null,
-    },
-  });
-
-  useImperativeHandle(ref, () => ({
-    form,
-  }));
-
-  const personType = form.values.personType;
-  const isLegalPerson = personType === 2;
+export function PersonForm() {
+  const { watch } = useFormContext();
+  const personType = watch("person.personType");
+  // Permite suportar strings caso venha do select antes de ser parseado
+  const isLegalPerson = personType === 2 || personType === "2";
 
   return (
     <Grid grow gutter={{ base: 5, xs: "md", md: "xl" }}>
       <Grid.Col span={12}>
         <Select
+          name="person.personType"
           withAsterisk
           label="Tipo de Pessoa"
           placeholder="Selecione o tipo de pessoa"
@@ -83,43 +21,39 @@ export function PersonForm({ ref }: PersonFormProps) {
             { value: "1", label: "Pessoa Física" },
             { value: "2", label: "Pessoa Jurídica" },
           ]}
-          {...form.getInputProps("personType")}
         />
       </Grid.Col>
 
       <Grid.Col span={6}>
         <TextInput
+          name="person.firstName"
           withAsterisk
           label="Nome"
           placeholder="Digite o nome ou razão social"
-          {...form.getInputProps("firstName")}
         />
       </Grid.Col>
       <Grid.Col span={6}>
         <TextInput
+          name="person.lastName"
           withAsterisk
           label="Sobrenome"
           placeholder="Digite o sobrenome"
-          {...form.getInputProps("lastName")}
         />
       </Grid.Col>
       <Grid.Col span={4}>
-        <DateInputBr
-          props={{
-            label: "Nascimento / Fundação",
-            placeholder: "Selecione a data",
-            value: form.values["birthdate"],
-            withAsterisk: true,
-          }}
-          getInputProps={form.getInputProps("birthdate")}
+        <DateInput
+          name="person.birthdate"
+          withAsterisk
+          label="Nascimento / Fundação"
+          placeholder="Selecione a data"
         />
       </Grid.Col>
       <Grid.Col span={8}>
         <TextInput
+          name="person.taxId"
           withAsterisk
           label="Documento (CPF/CNPJ)"
           placeholder="Digite o documento"
-          {...form.getInputProps("taxId")}
         />
       </Grid.Col>
 
@@ -127,23 +61,23 @@ export function PersonForm({ ref }: PersonFormProps) {
         <>
           <Grid.Col span={12}>
             <TextInput
+              name="person.tradeName"
               label="Nome Fantasia"
               placeholder="Digite o nome fantasia"
-              {...form.getInputProps("tradeName")}
             />
           </Grid.Col>
           <Grid.Col span={6}>
             <TextInput
+              name="person.stateRegistration"
               label="Inscrição Estadual"
               placeholder="Digite a inscrição estadual"
-              {...form.getInputProps("stateRegistration")}
             />
           </Grid.Col>
           <Grid.Col span={6}>
             <TextInput
+              name="person.municipalRegistration"
               label="Inscrição Municipal"
               placeholder="Digite a inscrição municipal"
-              {...form.getInputProps("municipalRegistration")}
             />
           </Grid.Col>
         </>
@@ -151,15 +85,16 @@ export function PersonForm({ ref }: PersonFormProps) {
 
       <Grid.Col span={6}>
         <TextInput
+          name="person.email"
           withAsterisk
           label="Email"
           placeholder="Digite o email"
-          {...form.getInputProps("email")}
         />
       </Grid.Col>
 
       <Grid.Col span={6}>
         <Select
+          name="person.gender"
           label="Gênero"
           placeholder="Selecione"
           data={[
@@ -167,23 +102,22 @@ export function PersonForm({ ref }: PersonFormProps) {
             { value: "Female", label: "Feminino" },
             { value: "Other", label: "Outro" },
           ]}
-          {...form.getInputProps("gender")}
         />
       </Grid.Col>
 
       <Grid.Col span={6}>
         <TextInput
+          name="person.cellPhone"
           label="Celular"
           placeholder="Digite o celular"
-          {...form.getInputProps("cellPhone")}
         />
       </Grid.Col>
 
       <Grid.Col span={6}>
         <TextInput
+          name="person.phone"
           label="Telefone"
           placeholder="Digite o telefone"
-          {...form.getInputProps("phone")}
         />
       </Grid.Col>
     </Grid>

@@ -11,7 +11,7 @@ import React from "react";
 export interface ISearchUserRequest {
   name?: string;
   taxId?: string;
-  birthDate?: string | Date;
+  birthDate?: Date | string | null;
   page?: number;
   pageSize?: number;
 }
@@ -37,15 +37,19 @@ export const UserService = {
     if (params.name) queryParams.append("Name", params.name);
     if (params.taxId) queryParams.append("TaxId", params.taxId);
     if (params.birthDate) {
-      const date = params.birthDate instanceof Date 
-        ? params.birthDate.toISOString() 
-        : params.birthDate;
+      const date =
+        params.birthDate instanceof Date
+          ? params.birthDate.toISOString()
+          : params.birthDate;
       queryParams.append("BirthDate", date);
     }
     if (params.page) queryParams.append("Page", params.page.toString());
-    if (params.pageSize) queryParams.append("PageSize", params.pageSize.toString());
+    if (params.pageSize)
+      queryParams.append("PageSize", params.pageSize.toString());
 
-    return apiClient.get<IPagedResponse<IGetAllUsersResponse>>(`/user/search?${queryParams.toString()}`);
+    return apiClient.get<IPagedResponse<IGetAllUsersResponse>>(
+      `/user/search?${queryParams.toString()}`,
+    );
   },
 
   getById: (id: number) => apiClient.get<IGetAllUsersResponse>(`/user/${id}`),

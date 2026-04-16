@@ -4,28 +4,19 @@ import {
   Center,
   Group,
   Paper,
-  PasswordInput,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
-
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Form, TextInput, PasswordInput } from "../../../components/Form";
+import { loginSchema, type LoginFormData } from "../schemas/loginSchema";
 
 export function Login() {
-  const form = useForm<ILoginProps>({
-    initialValues: {
-      userName: "",
-      password: "",
-    },
-  });
-
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = async (values: typeof form.values) => {
+  const handleSubmit = async (values: LoginFormData) => {
     await login(values);
     navigate("/");
   };
@@ -37,50 +28,51 @@ export function Login() {
           Login
         </Title>
 
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Usuário"
-            placeholder="Seu nome de usuário"
-            required
-            value={form.values.userName}
-            {...form.getInputProps("userName")}
-            mb="md"
-          />
+        <Form
+          schema={loginSchema}
+          onSubmit={handleSubmit}
+          defaultValues={{ userName: "", password: "" }}
+        >
+          {() => (
+            <>
+              <TextInput
+                name="userName"
+                label="Usuário"
+                placeholder="Seu nome de usuário"
+                required
+                mb="md"
+              />
 
-          <Group justify="space-between" mb={5}>
-            <Text component="label" htmlFor="your-password" size="sm" fw={500}>
-              Sua senha
-            </Text>
+              <Group justify="space-between" mb={5}>
+                <Text component="label" htmlFor="your-password" size="sm" fw={500}>
+                  Sua senha
+                </Text>
 
-            <Anchor
-              href="#"
-              onClick={(event) => event.preventDefault()}
-              pt={2}
-              fw={500}
-              fz="xs"
-            >
-              Esqueceu a senha?
-            </Anchor>
-          </Group>
+                <Anchor
+                  href="#"
+                  onClick={(event) => event.preventDefault()}
+                  pt={2}
+                  fw={500}
+                  fz="xs"
+                >
+                  Esqueceu a senha?
+                </Anchor>
+              </Group>
 
-          <PasswordInput
-            id="your-password"
-            placeholder="Sua senha"
-            required
-            value={form.values.password}
-            {...form.getInputProps("password")}
-          />
+              <PasswordInput
+                name="password"
+                id="your-password"
+                placeholder="Sua senha"
+                required
+              />
 
-          <Button fullWidth mt="xl" type="submit">
-            Entrar
-          </Button>
-        </form>
+              <Button fullWidth mt="xl" type="submit">
+                Entrar
+              </Button>
+            </>
+          )}
+        </Form>
       </Paper>
     </Center>
   );
-}
-
-export interface ILoginProps {
-  userName: string;
-  password: string;
 }

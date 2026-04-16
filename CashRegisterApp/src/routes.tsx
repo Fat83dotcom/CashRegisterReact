@@ -1,14 +1,16 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { RootLayout } from "./features/main/pages";
-import { CreateUser } from "./features/users/pages/Create";
+import { RootLayout, MainNavigation } from "./features/main/pages";
+
 import { CreateUserNavigation } from "./features/users/pages/navigation";
 import { UserHome } from "./features/users/pages";
-import { DeleteUser } from "./features/users/pages/Delete";
-import { Login } from "./features/auth/pages";
+
 import { ProtectedRoute } from "./components/Layout/ProtectedRoute";
 
 import { InventoryHome } from "./features/inventory/pages";
 import { InventoryNavigation } from "./features/inventory/pages/navigation";
+import { UnitsPage } from "./features/inventory/pages/Units";
+import { CategoriesPage } from "./features/inventory/pages/Categories";
+import { ConversionsPage } from "./features/inventory/pages/Conversions";
 import { SalesHome } from "./features/sales/pages";
 import { SalesNavigation } from "./features/sales/pages/navigation";
 import { FinancialHome } from "./features/financial/pages";
@@ -17,6 +19,7 @@ import { FinancialNavigation } from "./features/financial/pages/navigation";
 import { SettingsHome } from "./features/settings/pages";
 import { ChangePassword } from "./features/settings/pages/ChangePassword";
 import { SettingsNavigation } from "./features/settings/pages/navigation";
+import { Login } from "./features/auth/pages";
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +34,7 @@ export const router = createBrowserRouter([
         index: true,
         element: <h2>Bem-vindo ao Dashboard do Caixa</h2>,
         handle: {
-          navbar: <div>Menu Principal do Sistema</div>,
+          navbar: <MainNavigation />,
         },
       },
       {
@@ -70,14 +73,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "create",
-            element: <CreateUser />,
-            handle: {
-              navbar: <CreateUserNavigation />,
-            },
-          },
-          {
-            path: "delete",
-            element: <DeleteUser />,
+            element: <UserHome />,
             handle: {
               navbar: <CreateUserNavigation />,
             },
@@ -103,7 +99,21 @@ export const router = createBrowserRouter([
           },
           {
             path: "categories",
-            element: <h2>Em breve: Categorias</h2>,
+            element: <CategoriesPage />,
+            handle: {
+              navbar: <InventoryNavigation />,
+            },
+          },
+          {
+            path: "units",
+            element: <UnitsPage />,
+            handle: {
+              navbar: <InventoryNavigation />,
+            },
+          },
+          {
+            path: "conversions",
+            element: <ConversionsPage />,
             handle: {
               navbar: <InventoryNavigation />,
             },
@@ -169,4 +179,3 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
 ]);
-
