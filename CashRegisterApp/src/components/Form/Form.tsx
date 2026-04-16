@@ -1,10 +1,10 @@
 import { useForm, FormProvider, UseFormReturn, SubmitHandler, DefaultValues, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodSchema } from 'zod';
+import { ZodType } from 'zod';
 import { ReactNode } from 'react';
 
 export interface FormProps<T extends FieldValues> {
-  schema: ZodSchema<T>;
+  schema: ZodType<T>;
   onSubmit: SubmitHandler<T>;
   defaultValues?: DefaultValues<T>;
   children: (methods: UseFormReturn<T>) => ReactNode;

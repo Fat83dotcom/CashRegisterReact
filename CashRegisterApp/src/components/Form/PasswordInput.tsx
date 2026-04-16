@@ -1,11 +1,11 @@
-import { TextInput as MantineTextInput, TextInputProps as MantineTextInputProps } from '@mantine/core';
+import { PasswordInput as MantinePasswordInput, PasswordInputProps as MantinePasswordInputProps } from '@mantine/core';
 import { useFormContext } from 'react-hook-form';
 
-export interface TextInputProps extends Omit<MantineTextInputProps, 'name'> {
+export interface PasswordInputProps extends Omit<MantinePasswordInputProps, 'name'> {
   name: string;
 }
 
-export function TextInput({ name, ...props }: TextInputProps) {
+export function PasswordInput({ name, ...props }: PasswordInputProps) {
   const { register, formState: { errors } } = useFormContext();
 
   const getErrorMsg = (errs: any, path: string) => {
@@ -14,7 +14,7 @@ export function TextInput({ name, ...props }: TextInputProps) {
   };
 
   return (
-    <MantineTextInput
+    <MantinePasswordInput
       {...register(name)}
       error={getErrorMsg(errors, name)}
       {...props}
