@@ -11,7 +11,8 @@ import { InventoryNavigation } from "./features/inventory/pages/navigation";
 import { UnitsPage } from "./features/inventory/pages/Units";
 import { CategoriesPage } from "./features/inventory/pages/Categories";
 import { ConversionsPage } from "./features/inventory/pages/Conversions";
-import { SalesHome } from "./features/sales/pages";
+import { WarehousesPage } from "./features/inventory/pages/Warehouses";
+import { ProductsPage } from "./features/inventory/pages/Products";
 import { SalesNavigation } from "./features/sales/pages/navigation";
 import { FinancialHome } from "./features/financial/pages";
 import { FinancialNavigation } from "./features/financial/pages/navigation";
@@ -20,6 +21,7 @@ import { SettingsHome } from "./features/settings/pages";
 import { ChangePassword } from "./features/settings/pages/ChangePassword";
 import { SettingsNavigation } from "./features/settings/pages/navigation";
 import { Login } from "./features/auth/pages";
+import { SalesHome } from "./features/sales/pages";
 
 export const router = createBrowserRouter([
   {
@@ -38,138 +40,84 @@ export const router = createBrowserRouter([
         },
       },
       {
-        path: "settings/",
+        path: "settings",
+        handle: { navbar: <SettingsNavigation /> },
         children: [
-          {
-            index: true,
-            element: <SettingsHome />,
-            handle: {
-              navbar: <SettingsNavigation />,
-            },
-          },
-          {
-            path: "security",
-            element: <ChangePassword />,
-            handle: {
-              navbar: <SettingsNavigation />,
-            },
-          },
+          { index: true, element: <SettingsHome /> },
+          { path: "security", element: <ChangePassword /> },
         ],
       },
       {
-        path: "user/",
+        path: "user",
         element: (
           <ProtectedRoute roles={["Admin"]}>
             <Outlet />
           </ProtectedRoute>
         ),
+        handle: { navbar: <CreateUserNavigation /> },
         children: [
-          {
-            index: true,
-            element: <UserHome />,
-            handle: {
-              navbar: <CreateUserNavigation />,
-            },
-          },
-          {
-            path: "create",
-            element: <UserHome />,
-            handle: {
-              navbar: <CreateUserNavigation />,
-            },
-          },
+          { index: true, element: <UserHome /> },
+          { path: "create", element: <UserHome /> },
         ],
       },
       {
-        path: "inventory/",
+        path: "inventory",
+        handle: { navbar: <InventoryNavigation /> },
         children: [
-          {
-            index: true,
-            element: <InventoryHome />,
-            handle: {
-              navbar: <InventoryNavigation />,
-            },
-          },
+          { index: true, element: <InventoryHome /> },
           {
             path: "products",
-            element: <h2>Em breve: Produtos</h2>,
-            handle: {
-              navbar: <InventoryNavigation />,
-            },
+            children: [
+              { index: true, element: <ProductsPage /> },
+              { path: "create", element: <ProductsPage /> },
+            ],
+          },
+          {
+            path: "warehouses",
+            children: [
+              { index: true, element: <WarehousesPage /> },
+              { path: "create", element: <WarehousesPage /> },
+            ],
           },
           {
             path: "categories",
-            element: <CategoriesPage />,
-            handle: {
-              navbar: <InventoryNavigation />,
-            },
+            children: [
+              { index: true, element: <CategoriesPage /> },
+              { path: "create", element: <CategoriesPage /> },
+            ],
           },
           {
             path: "units",
-            element: <UnitsPage />,
-            handle: {
-              navbar: <InventoryNavigation />,
-            },
+            children: [
+              { index: true, element: <UnitsPage /> },
+              { path: "create", element: <UnitsPage /> },
+            ],
           },
           {
             path: "conversions",
-            element: <ConversionsPage />,
-            handle: {
-              navbar: <InventoryNavigation />,
-            },
+            children: [
+              { index: true, element: <ConversionsPage /> },
+              { path: "create", element: <ConversionsPage /> },
+            ],
           },
         ],
       },
       {
-        path: "sales/",
+        path: "sales",
+        handle: { navbar: <SalesNavigation /> },
         children: [
-          {
-            index: true,
-            element: <SalesHome />,
-            handle: {
-              navbar: <SalesNavigation />,
-            },
-          },
-          {
-            path: "new",
-            element: <h2>Em breve: Nova Venda</h2>,
-            handle: {
-              navbar: <SalesNavigation />,
-            },
-          },
-          {
-            path: "history",
-            element: <h2>Em breve: Histórico de Vendas</h2>,
-            handle: {
-              navbar: <SalesNavigation />,
-            },
-          },
+          { index: true, element: <SalesHome /> },
+          { path: "new", element: <h2>Em breve: Nova Venda</h2> },
+          { path: "history", element: <h2>Em breve: Histórico de Vendas</h2> },
         ],
       },
       {
-        path: "financial/",
+        path: "financial",
+        handle: { navbar: <FinancialNavigation /> },
         children: [
-          {
-            index: true,
-            element: <FinancialHome />,
-            handle: {
-              navbar: <FinancialNavigation />,
-            },
-          },
-          {
-            path: "cashFlow",
-            element: <h2>Em breve: Fluxo de Caixa</h2>,
-            handle: {
-              navbar: <FinancialNavigation />,
-            },
-          },
-          {
-            path: "reports",
-            element: <h2>Em breve: Relatórios</h2>,
-            handle: {
-              navbar: <FinancialNavigation />,
-            },
-          },
+          { index: true, element: <FinancialHome /> },
+          { path: "cashFlow", element: <h2>Em breve: Fluxo de Caixa</h2> },
+          { path: "reports", element: <h2>Em breve: Relatórios</h2> },
         ],
       },
     ],
