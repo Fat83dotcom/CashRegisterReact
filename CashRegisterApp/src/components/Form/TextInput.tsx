@@ -1,4 +1,4 @@
-import { TextInput as MantineTextInput, TextInputProps as MantineTextInputProps } from '@mantine/core';
+import { TextInput as MantineTextInput, type TextInputProps as MantineTextInputProps } from '@mantine/core';
 import { useFormContext } from 'react-hook-form';
 
 export interface TextInputProps extends Omit<MantineTextInputProps, 'name'> {

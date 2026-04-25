@@ -16,19 +16,13 @@ export function SearchContainer({
   title,
 }: SearchContainerProps) {
   return (
-    <Paper 
-      p="xl" 
-      shadow="md" 
-      radius="lg" 
-      withBorder 
-    >
+    <Paper p="xl" shadow="md" radius="lg" withBorder>
       <Stack gap="lg">
         {title && (
           <Text size="lg" fw={700} c="brainstorm.6">
             {title}
           </Text>
         )}
-        {/* REMOVIDO: Tag <form> aninhada que causava o reload da página */}
         <Grid align="flex-end" gutter="md">
           <Grid.Col span={{ base: 12, md: 10 }}>
             <Grid gutter="md">{children}</Grid>
@@ -38,11 +32,11 @@ export function SearchContainer({
               fullWidth
               radius="xl"
               type="submit" // Mantém como submit para disparar o Form pai
-              variant="gradient"
-              gradient={{ from: 'brainstorm.6', to: 'brainstorm.4', deg: 45 }}
+              variant="light"
+              gradient={{ from: "brainstorm.6", to: "brainstorm.4", deg: 45 }}
               loading={loading}
               onClick={() => {
-                // Se não houver um formulário pai gerenciando, 
+                // Se não houver um formulário pai gerenciando,
                 // ele chama o onSearch manualmente.
                 if (onSearch) onSearch();
               }}

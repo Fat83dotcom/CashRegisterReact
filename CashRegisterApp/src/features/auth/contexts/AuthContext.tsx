@@ -6,12 +6,12 @@ import {
   useEffect,
 } from "react";
 import { AuthService } from "../api/authServices";
-import type { ILoginProps } from "../pages";
+import type { LoginFormData } from "../schemas/loginSchema";
 
 interface IAuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: ILoginProps) => Promise<void>;
+  login: (credentials: LoginFormData) => Promise<void>;
   logout: () => void;
   user: ILoginResponse | null;
 }
@@ -49,7 +49,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, []);
 
-  const login = async (credentials: ILoginProps) => {
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthenticated(false);
+      setUser(null);
+      localStorage.removeItem("user_data");
+    };
+
+    window.addEventListener("unauthorized", handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("unauthorized", handleUnauthorized);
+    };
+  }, []);
+
+  const login = async (credentials: LoginFormData) => {
     await AuthService.login(credentials).then((response) => {
       setUser(response);
     });

@@ -31,7 +31,14 @@ export function ChangePassword() {
               placeholder="Digite a nova senha"
               withAsterisk
             />
-            <Button type="submit" mt="md">
+            <Button 
+              type="submit" 
+              mt="md"
+              fullWidth
+              size="md"
+              color="brainstorm.6"
+              variant="light"
+            >
               Alterar Senha
             </Button>
           </Stack>

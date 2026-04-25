@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const conversionSchema = z.object({
-  fromUnitId: z.coerce.number().min(1, "Unidade de origem é obrigatória"),
-  toUnitId: z.coerce.number().min(1, "Unidade de destino é obrigatória"),
-  factor: z.coerce.number().gt(0, "O fator deve ser maior que zero"),
-  description: z.string().optional(),
+  fromUomId: z.coerce.number().min(1, "Unidade de origem é obrigatória"),
+  toUomId: z.coerce.number().min(1, "Unidade de destino é obrigatória"),
+  multiplier: z.coerce.number().gt(0, "O multiplicador deve ser maior que zero"),
+  productId: z.coerce.number().optional().nullable(),
 });
 
 export type ConversionFormData = z.infer<typeof conversionSchema>;

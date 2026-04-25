@@ -26,6 +26,7 @@ const links: NavLinkItem[] = [
         label: "Cadastros",
         items: [
           { link: "/inventory/products", label: "Produtos" },
+          { link: "/inventory/warehouses", label: "Almoxarifados" },
           { link: "/inventory/categories", label: "Categorias" },
           { link: "/inventory/units", label: "Unidades de Medida" },
           { link: "/inventory/conversions", label: "Regras de Conversão" },
@@ -159,6 +160,7 @@ export function HeaderSearch() {
         data={[
           "Usuários",
           "Produtos",
+          "Almoxarifados",
           "Vendas",
           "Relatórios",
         ]}

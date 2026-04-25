@@ -1,10 +1,10 @@
-import { useForm, FormProvider, UseFormReturn, SubmitHandler, DefaultValues, FieldValues } from 'react-hook-form';
+import { useForm, FormProvider, type UseFormReturn, type SubmitHandler, type DefaultValues, type FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodType } from 'zod';
-import { ReactNode } from 'react';
+import type { ZodType } from 'zod';
+import type { ReactNode } from 'react';
 
 export interface FormProps<T extends FieldValues> {
-  schema: ZodType<T>;
+  schema: ZodType<any, any, any>;
   onSubmit: SubmitHandler<T>;
   defaultValues?: DefaultValues<T>;
   children: (methods: UseFormReturn<T>) => ReactNode;
@@ -12,7 +12,7 @@ export interface FormProps<T extends FieldValues> {
 
 export function Form<T extends FieldValues>({ schema, onSubmit, defaultValues, children }: FormProps<T>) {
   const methods = useForm<T>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as any,
     defaultValues,
     mode: 'onChange',
   });

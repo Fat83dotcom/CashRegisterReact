@@ -1,30 +1,25 @@
 import { Button, Center, Grid, Paper, Title, Stack } from "@mantine/core";
 import { Form, TextInput, Select } from "../../../components/Form";
-import { categorySchema, type CategoryFormData } from "../schemas/categorySchema";
+import { warehouseSchema, type WarehouseFormData } from "../schemas/warehouseSchema";
 
-export function CategoryForm() {
-  const handleSubmit = (values: CategoryFormData) => {
-    console.log("Saving Category:", values);
+export function WarehouseForm() {
+  const handleSubmit = (values: WarehouseFormData) => {
+    // Lógica para salvar o almoxarifado (será implementada na próxima fase)
+    console.log("Saving Warehouse:", values);
   };
-
-  // Mock para categorias pai (em produção viria da API)
-  const mockCategories = [
-    { value: "1", label: "Eletrônicos" },
-    { value: "2", label: "Alimentos" },
-  ];
 
   return (
     <Paper withBorder shadow="md" p="xl" maw={600} mx="auto" mt="xl">
       <Title order={2} ta="center" mb="xl" c="brainstorm.6">
-        Nova Categoria de Produto
+        Novo Almoxarifado
       </Title>
 
       <Form
-        schema={categorySchema}
+        schema={warehouseSchema}
         onSubmit={handleSubmit}
         defaultValues={{
           name: "",
-          parentCategoryId: null,
+          type: "",
         }}
       >
         {() => (
@@ -33,18 +28,23 @@ export function CategoryForm() {
               <Grid.Col span={12}>
                 <TextInput
                   name="name"
-                  label="Nome da Categoria"
-                  placeholder="Ex: Eletrônicos, Alimentos"
+                  label="Nome do Almoxarifado"
+                  placeholder="Ex: Depósito Central, Loja Principal"
                   withAsterisk
                 />
               </Grid.Col>
               <Grid.Col span={12}>
                 <Select
-                  name="parentCategoryId"
-                  label="Categoria Pai (Opcional)"
-                  placeholder="Selecione se for uma subcategoria"
-                  data={mockCategories}
-                  clearable
+                  name="type"
+                  label="Tipo de Almoxarifado"
+                  placeholder="Selecione o tipo"
+                  data={[
+                    { value: "Principal", label: "Principal" },
+                    { value: "Filial", label: "Filial" },
+                    { value: "Virtual", label: "Virtual" },
+                    { value: "Terceiros", label: "Terceiros" }
+                  ]}
+                  withAsterisk
                 />
               </Grid.Col>
             </Grid>
@@ -57,7 +57,7 @@ export function CategoryForm() {
                 color="brainstorm.6"
                 variant="light"
               >
-                Salvar Categoria
+                Salvar Almoxarifado
               </Button>
             </Center>
           </Stack>

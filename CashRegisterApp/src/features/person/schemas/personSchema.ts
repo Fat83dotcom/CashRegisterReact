@@ -6,8 +6,7 @@ export const personSchema = z.object({
   lastName: z.string().trim().min(1, "Sobrenome é obrigatório."),
   taxId: z.string().min(11, "Documento deve ter no mínimo 11 dígitos."),
   birthdate: z.date({
-    required_error: "Data de nascimento/fundação é obrigatória.",
-    invalid_type_error: "Data inválida.",
+    message: "Data inválida ou obrigatória.",
   }),
   email: z.string().email("E-mail inválido."),
   tradeName: z.string().optional(),

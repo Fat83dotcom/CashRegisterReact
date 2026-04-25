@@ -1,4 +1,4 @@
-import { PasswordInput as MantinePasswordInput, PasswordInputProps as MantinePasswordInputProps } from '@mantine/core';
+import { PasswordInput as MantinePasswordInput, type PasswordInputProps as MantinePasswordInputProps } from '@mantine/core';
 import { useFormContext } from 'react-hook-form';
 
 export interface PasswordInputProps extends Omit<MantinePasswordInputProps, 'name'> {

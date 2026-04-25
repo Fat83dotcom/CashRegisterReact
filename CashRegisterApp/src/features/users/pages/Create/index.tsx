@@ -153,7 +153,13 @@ export function CreateUser() {
               </Grid.Col>
 
               <Center mt="xl" style={{ width: "100%" }}>
-                <Button type="submit" fullWidth>
+                <Button 
+                  type="submit" 
+                  fullWidth
+                  size="md"
+                  color="brainstorm.6"
+                  variant="light"
+                >
                   Finalizar Cadastro
                 </Button>
               </Center>

@@ -1,39 +1,38 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
-import { UserSearch } from "./Search";
-import { CreateUser } from "./Create";
+import { WarehouseSearch } from "./Search";
 import { useLocation, useNavigate } from "react-router-dom";
+import { WarehouseForm } from "../../components/WarehouseForm";
 
-export function UserHome() {
+export function WarehousesPage() {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Identifica a visão atual baseada na rota
+  
   const view = location.pathname.includes("/create") ? "create" : "search";
 
   const toggleView = () => {
     if (view === "search") {
-      navigate("/user/create");
+      navigate("/inventory/warehouses/create");
     } else {
-      navigate("/user");
+      navigate("/inventory/warehouses");
     }
   };
 
   return (
     <Stack gap="lg">
       <Group justify="space-between">
-        <Title order={1}>Gestão de Usuários</Title>
-        <Button
+        <Title order={1}>Almoxarifados</Title>
+        <Button 
           leftSection={view === "search" ? <IconPlus size={18} /> : null}
           onClick={toggleView}
-          variant="light"
           color="brainstorm.6"
+          variant="light"
         >
-          {view === "search" ? "Novo Usuário" : "Voltar para Busca"}
+          {view === "search" ? "Novo Almoxarifado" : "Voltar para Busca"}
         </Button>
       </Group>
 
-      {view === "search" ? <UserSearch /> : <CreateUser />}
+      {view === "search" ? <WarehouseSearch /> : <WarehouseForm />}
     </Stack>
   );
 }

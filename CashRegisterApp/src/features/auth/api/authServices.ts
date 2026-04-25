@@ -1,14 +1,15 @@
 import { notifications } from "@mantine/notifications";
 import { apiClient } from "../../../lib/api";
-import type { ILoginProps } from "../pages";
+
 import React from "react";
 import { IconCheck } from "@tabler/icons-react";
 import type { ILoginResponse } from "../contexts/AuthContext";
+import type { LoginFormData } from "../schemas/loginSchema";
 
 export const AuthService = {
-  login: async ({ userName, password }: ILoginProps) =>
+  login: async ({ userName, password }: LoginFormData) =>
     apiClient
-      .post<ILoginResponse, ILoginProps>("/auth", { userName, password })
+      .post<ILoginResponse, LoginFormData>("/auth", { userName, password })
       .then((response) => {
         localStorage.setItem("user_data", JSON.stringify(response));
         notifications.show({

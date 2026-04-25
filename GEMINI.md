@@ -43,6 +43,7 @@ Seu objetivo é gerar formulários estritamente alinhados à "Arquitetura de 4 C
 3. **Componentes Base:** NUNCA utilize componentes puros do `@mantine/core` para inputs dentro da feature. SEMPRE utilize os nossos wrappers inteligentes importados de `@/components/Form` (ex: `<TextInput name="...">`, `<Select name="...">`).
 4. **Sem Prop Drilling:** NUNCA passe a propriedade `register` ou `control` para os componentes base. Eles extraem isso via `useFormContext`.
 5. **Layout:** Utilize os componentes do Mantine (`Stack`, `Grid`, `Group`) para estruturar a tela.
+6. **Identidade de Referência em Callbacks (Performance):** NUNCA passe funções inline (anônimas no JSX) para propriedades que disparam requisições assíncronas (como o `fetcher` do `<AsyncSelect>`). Para evitar *Infinite Loops* e re-renders desnecessários, **sempre extraia a função para fora do componente** (escopo do módulo) ou a envolva em um `useCallback`.
 
 ---
 

@@ -1,81 +1,49 @@
-import { Stack, Grid } from "@mantine/core";
+import { Grid } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-
-import { categorySearchSchema } from "../../../schemas/categorySearchSchema";
-import { useState, useEffect, useCallback } from "react";
-import {
-  DynamicTable,
-  type ColumnConfig,
-} from "../../../../../components/Layout/DynamicTable";
-import { Form } from "../../../../../components/Form/Form";
-import { SearchContainer } from "../../../../../components/Layout/SearchContainer";
-import { TextInput } from "../../../../../components/Form/TextInput";
+import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
+import { useSearch } from "../../../../../hooks/useSearch";
+import { TextInput } from "../../../../../components/Form";
+import { categorySearchSchema, type CategorySearchFormData } from "../../../schemas/categorySearchSchema";
+import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
+import { InventoryService } from "../../../api/inventoryService";
+import type { ICategoryResponse } from "../../../interfaces";
 
 export function CategorySearch() {
-  const [loading, setLoading] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | number | null>(null);
-  const [pagedData, setPagedData] = useState({
-    items: [],
-    totalCount: 0,
-    page: 1,
-    pageSize: 10,
-    totalPages: 0,
-  });
+  const initialFilters: CategorySearchFormData = {
+    name: "",
+  };
 
-  const handleSearch = useCallback(async (page = 1) => {
-    setLoading(true);
-    // Simulação por enquanto (Mock)
-    console.log("Searching Categories...");
-    setPagedData((prev) => ({ ...prev, page }));
-    setLoading(false);
-  }, []);
+  const { loading, pagedData, selectedId, setSelectedId, handleSearch } = useSearch<
+    ICategoryResponse,
+    CategorySearchFormData
+  >(InventoryService.searchCategories, initialFilters);
 
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
-
-  const columns: ColumnConfig<any>[] = [
+  const columns: ColumnConfig<ICategoryResponse>[] = [
     { key: "name", label: "Nome" },
-    { key: "description", label: "Descrição" },
+    { key: "parentCategoryName", label: "Categoria Pai", render: (item) => item.parentCategoryName || "-" },
+    { key: "isActive", label: "Status", render: (item) => (item.isActive ? "Ativo" : "Inativo") },
   ];
 
   return (
-    <Stack gap="xl">
-      <Form
-        schema={categorySearchSchema}
-        onSubmit={() => handleSearch(1)}
-        defaultValues={{ name: "" }}
-      >
-        {() => (
-          <SearchContainer
-            onSearch={() => handleSearch(1)}
-            loading={loading}
-            title="Consulta de Categorias"
-          >
-            <Grid.Col span={12}>
-              <TextInput
-                name="name"
-                label="Nome"
-                placeholder="Nome da categoria"
-                leftSection={<IconSearch size={18} stroke={1.5} />}
-              />
-            </Grid.Col>
-          </SearchContainer>
-        )}
-      </Form>
-
-      <DynamicTable
-        data={pagedData.items}
-        columns={columns}
-        keyExtractor={(item: any) => item.id}
-        loading={loading}
-        totalCount={pagedData.totalCount}
-        page={pagedData.page}
-        pageSize={pagedData.pageSize}
-        onPageChange={handleSearch}
-        selectedId={selectedId}
-        onRowSelect={setSelectedId}
-      />
-    </Stack>
+    <SearchPageTemplate
+      title="Consulta de Categorias"
+      schema={categorySearchSchema}
+      defaultValues={initialFilters}
+      columns={columns}
+      pagedData={pagedData}
+      loading={loading}
+      onSearch={handleSearch}
+      selectedId={selectedId}
+      onRowSelect={setSelectedId}
+    >
+      <Grid.Col span={12}>
+        <TextInput
+          name="name"
+          label="Nome"
+          placeholder="Nome da categoria"
+          leftSection={<IconSearch size={18} stroke={1.5} />}
+        />
+      </Grid.Col>
+    </SearchPageTemplate>
   );
 }

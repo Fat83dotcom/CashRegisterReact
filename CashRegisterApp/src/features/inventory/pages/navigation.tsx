@@ -6,12 +6,14 @@ import {
   IconCategory, 
   IconRulerMeasure,
   IconArrowsExchange,
+  IconBuildingWarehouse,
   IconChevronRight 
 } from "@tabler/icons-react";
 
 const links = [
   { link: "/inventory", label: "Painel de Estoque", icon: IconLayoutDashboard },
   { link: "/inventory/products", label: "Produtos", icon: IconBox },
+  { link: "/inventory/warehouses", label: "Almoxarifados", icon: IconBuildingWarehouse },
   { link: "/inventory/categories", label: "Categorias", icon: IconCategory },
   { link: "/inventory/units", label: "Unidades de Medida", icon: IconRulerMeasure },
   { link: "/inventory/conversions", label: "Regras de Conversão", icon: IconArrowsExchange },
@@ -30,7 +32,7 @@ export function InventoryNavigation() {
         {links.map((item) => {
           const Icon = item.icon;
           // Verifica se o link está ativo
-          const isActive = location.pathname === item.link;
+          const isActive = location.pathname.startsWith(item.link);
           
           return (
             <MantineNavLink

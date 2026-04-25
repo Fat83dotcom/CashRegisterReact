@@ -1,4 +1,4 @@
-import { Select as MantineSelect, SelectProps as MantineSelectProps } from '@mantine/core';
+import { Select as MantineSelect, type SelectProps as MantineSelectProps } from '@mantine/core';
 import { useFormContext, Controller } from 'react-hook-form';
 
 export interface SelectProps extends Omit<MantineSelectProps, 'name'> {

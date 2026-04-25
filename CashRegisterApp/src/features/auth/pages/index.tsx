@@ -66,7 +66,14 @@ export function Login() {
                 required
               />
 
-              <Button fullWidth mt="xl" type="submit">
+              <Button 
+                fullWidth 
+                mt="xl" 
+                type="submit"
+                size="md"
+                color="brainstorm.6"
+                variant="light"
+              >
                 Entrar
               </Button>
             </>

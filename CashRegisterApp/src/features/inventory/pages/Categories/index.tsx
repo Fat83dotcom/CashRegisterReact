@@ -1,11 +1,22 @@
-import { Stack, Title, Group, Button } from "@mantine/core";
+import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { CategorySearch } from "./Search";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryForm } from "../../components/CategoryForm";
 
 export function CategoriesPage() {
-  const [view, setView] = useState<"search" | "create">("search");
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const view = location.pathname.includes("/create") ? "create" : "search";
+
+  const toggleView = () => {
+    if (view === "search") {
+      navigate("/inventory/categories/create");
+    } else {
+      navigate("/inventory/categories");
+    }
+  };
 
   return (
     <Stack gap="lg">
@@ -13,7 +24,9 @@ export function CategoriesPage() {
         <Title order={1}>Categorias de Produto</Title>
         <Button 
           leftSection={view === "search" ? <IconPlus size={18} /> : null}
-          onClick={() => setView(view === "search" ? "create" : "search")}
+          onClick={toggleView}
+          color="brainstorm.6"
+          variant="light"
         >
           {view === "search" ? "Nova Categoria" : "Voltar para Busca"}
         </Button>

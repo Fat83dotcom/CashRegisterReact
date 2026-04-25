@@ -24,6 +24,10 @@ async function request<T>(
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      window.dispatchEvent(new CustomEvent("unauthorized"));
+    }
+
     const errorData = await response.json().catch(() => null);
 
     const title = errorData?.Message || "Erro na requisição";

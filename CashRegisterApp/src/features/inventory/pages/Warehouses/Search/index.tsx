@@ -6,43 +6,47 @@ import { TextInput } from "../../../../../components/Form";
 
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
 import {
-  unitSearchSchema,
-  type UnitSearchFormData,
-} from "../../../schemas/unitSearchSchema";
-import type { IUnitResponse } from "../../../interfaces";
+  warehouseSearchSchema,
+  type WarehouseSearchFormData,
+} from "../../../schemas/warehouseSearchSchema";
+import type { IWarehouseResponse } from "../../../interfaces/IWarehouseResponse";
 import { InventoryService } from "../../../api/inventoryService";
 
-export function UnitSearch() {
-  const initialFilters: UnitSearchFormData = {
+export function WarehouseSearch() {
+  const initialFilters: WarehouseSearchFormData = {
     searchTerm: "",
   };
 
   const { loading, pagedData, selectedId, setSelectedId, handleSearch } =
-    useSearch<IUnitResponse, UnitSearchFormData>(
-      InventoryService.searchUnits,
+    useSearch<IWarehouseResponse, WarehouseSearchFormData>(
+      InventoryService.searchWarehouses,
       initialFilters,
     );
 
-  const columns: ColumnConfig<IUnitResponse>[] = [
-    { key: "code", label: "Sigla/Código" },
+  const columns: ColumnConfig<IWarehouseResponse>[] = [
     { key: "name", label: "Nome" },
+    { key: "type", label: "Tipo" },
     {
-      key: "allowDecimals",
-      label: "Permite Decimais?",
-      render: (item) => (item.allowDecimals ? "Sim" : "Não"),
+      key: "isActive",
+      label: "Status",
+      render: (item) => (item.isActive ? "Ativo" : "Inativo"),
     },
   ];
 
   const handleDeactivate = async (id: string | number) => {
-    // Unidades de medida não tem endpoint de desativação pronto ainda no backend, 
-    // mas deixamos o handler configurado seguindo o padrão
-    console.log("Deactivate not implemented for UnitOfMeasure", id);
+    try {
+      await InventoryService.deactivateWarehouse(id);
+      handleSearch(initialFilters, pagedData.page);
+      setSelectedId(null);
+    } catch (error) {
+      console.error("Erro ao desativar almoxarifado:", error);
+    }
   };
 
   return (
     <SearchPageTemplate
-      title="Consulta de Unidades de Medida"
-      schema={unitSearchSchema}
+      title="Consulta de Almoxarifados"
+      schema={warehouseSearchSchema}
       defaultValues={initialFilters}
       columns={columns}
       pagedData={pagedData}
@@ -56,7 +60,7 @@ export function UnitSearch() {
         <TextInput
           name="searchTerm"
           label="Pesquisar"
-          placeholder="Código ou Nome da unidade"
+          placeholder="Nome ou tipo do almoxarifado"
           leftSection={<IconSearch size={18} stroke={1.5} />}
         />
       </Grid.Col>
