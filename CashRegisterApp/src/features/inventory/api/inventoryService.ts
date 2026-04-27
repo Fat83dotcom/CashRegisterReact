@@ -122,13 +122,14 @@ export const InventoryService = {
   searchConversions: async (
     params: SearchParams & { unitId?: string },
   ): Promise<IPagedResponse<IConversionResponse>> => {
-    console.log("Searching Conversions API:", params);
-    return {
-      items: [],
-      totalCount: 0,
-      page: params.page,
-      pageSize: params.pageSize,
-      totalPages: 0,
-    };
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.unitId) {
+      queryParams.append("UnitId", params.unitId);
+    }
+
+    return apiClient.get<IPagedResponse<IConversionResponse>>(`/UomConversion/search?${queryParams.toString()}`);
   },
 };

@@ -48,13 +48,13 @@ export function SearchPageTemplate<T, TFilters extends FieldValues>({
       </Form>
 
       <DynamicTable<T>
-        data={pagedData.items}
+        data={pagedData?.items || []}
         columns={columns}
         keyExtractor={(item: any) => item.id}
         loading={loading}
-        totalCount={pagedData.totalCount}
-        page={pagedData.page}
-        pageSize={pagedData.pageSize}
+        totalCount={pagedData?.totalCount || 0}
+        page={pagedData?.page || 1}
+        pageSize={pagedData?.pageSize || 10}
         onPageChange={(page) => onSearch(defaultValues as TFilters, page)}
         onPageSizeChange={(size) =>
           onSearch(defaultValues as TFilters, 1, parseInt(size))

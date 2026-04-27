@@ -64,11 +64,13 @@ export function DynamicTable<T>({
   // Se as funções de callback forem passadas, usamos paginação do servidor
   const isServerSide = !!onPageChange;
 
+  const safeData = data || [];
+
   const totalPages = isServerSide
     ? Math.ceil(totalCount / pageSize)
-    : Math.ceil(data.length / pageSize);
+    : Math.ceil(safeData.length / pageSize);
 
-  const rows = data.map((item) => {
+  const rows = safeData.map((item) => {
     const id = keyExtractor(item);
     const isSelected = selectedId === id;
 

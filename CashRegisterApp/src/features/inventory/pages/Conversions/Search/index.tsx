@@ -1,8 +1,7 @@
-import { Grid } from "@mantine/core";
+import { Grid, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
-import { Select } from "../../../../../components/Form";
 import {
   conversionSearchSchema,
   type ConversionSearchFormData,
@@ -23,9 +22,19 @@ export function ConversionSearch() {
     );
 
   const columns: ColumnConfig<IConversionResponse>[] = [
-    { key: "fromUnitSymbol", label: "Origem" },
+    {
+      key: "fromUnitName",
+      label: "Origem",
+      render: (item) =>
+        `${item.fromUnitName || ""} (${item.fromUnitSymbol || ""})`.trim(),
+    },
     { key: "multiplier", label: "Multiplicador" },
-    { key: "toUnitSymbol", label: "Destino" },
+    {
+      key: "toUnitName",
+      label: "Destino",
+      render: (item) =>
+        `${item.toUnitName || ""} (${item.toUnitSymbol || ""})`.trim(),
+    },
     {
       key: "productName",
       label: "Produto",
@@ -51,16 +60,11 @@ export function ConversionSearch() {
       onRowSelect={setSelectedId}
     >
       <Grid.Col span={12}>
-        <Select
-          name="unitId"
-          label="Filtrar por Unidade"
-          placeholder="Selecione uma unidade para ver suas regras"
+        <TextInput
+          name="searchTerm"
+          label="Pesquisar"
+          placeholder="Qualquer coisa"
           leftSection={<IconSearch size={18} stroke={1.5} />}
-          data={[
-            { value: "1", label: "Caixa (CX)" },
-            { value: "2", label: "Fardo (FD)" },
-          ]}
-          clearable
         />
       </Grid.Col>
     </SearchPageTemplate>

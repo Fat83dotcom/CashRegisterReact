@@ -77,12 +77,17 @@ export interface IUnitResponse {
   allowDecimals: boolean;
 }
 export interface IConversionResponse {
-  id?: number;
-  fromUnitSymbol?: string;
-  multiplier?: number;
-  toUnitSymbol?: string;
-  productName?: string;
-  isActive?: boolean;
+  id: number;
+  fromUnitSymbolId: number;
+  fromUnitSymbol?: string | null;
+  fromUnitName?: string | null;
+  toUnitSymbolId: number;
+  toUnitSymbol?: string | null;
+  toUnitName?: string | null;
+  multiplier: number;
+  productId?: number | null;
+  productName?: string | null;
+  isActive: boolean;
 }
 
 export interface IGetAllUnitsResponse {
