@@ -42,6 +42,11 @@ export function UnitSearch() {
       label: "Permite Decimais?",
       render: (item) => (item.allowDecimals ? "Sim" : "Não"),
     },
+    {
+      key: "isActive",
+      label: "Status",
+      render: (item) => (item.isActive ? "Ativo" : "Inativo"),
+    },
   ];
 
   return (

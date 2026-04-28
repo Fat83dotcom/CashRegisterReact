@@ -3,6 +3,7 @@ export interface IGetAllUsersResponse {
   name: IName;
   birthdate: string;
   taxId: string;
+  isActive: boolean;
 }
 
 export interface IName {

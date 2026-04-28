@@ -36,6 +36,7 @@ export function UserSearch() {
     { key: "name", label: "Nome", render: (item) => `${item.name.firstName} ${item.name.lastName}` },
     { key: "taxId", label: "CPF/CNPJ" },
     { key: "birthdate", label: "Data de Nascimento", render: (item) => dayjs(item.birthdate).format("DD/MM/YYYY") },
+    { key: "isActive", label: "Status", render: (item) => (item.isActive ? "Ativo" : "Inativo") },
   ];
 
   return (

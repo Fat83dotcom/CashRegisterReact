@@ -75,6 +75,7 @@ export interface IUnitResponse {
   code: string;
   name: string;
   allowDecimals: boolean;
+  isActive: boolean;
 }
 export interface IConversionResponse {
   id: number;
