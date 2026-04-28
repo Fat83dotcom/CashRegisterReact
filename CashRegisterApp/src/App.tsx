@@ -4,10 +4,10 @@ import { createTheme, MantineProvider, type MantineColorsTuple } from "@mantine/
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
-import "./styles/global.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { Notifications } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 import { AuthProvider } from "./features/auth/contexts/AuthContext";
 
 const brainstormBlue: MantineColorsTuple = [
@@ -120,9 +120,11 @@ export function App() {
   return (
     <MantineProvider theme={theme} defaultColorScheme="dark">
       <Notifications position="bottom-right" />
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <ModalsProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </ModalsProvider>
     </MantineProvider>
   );
 }

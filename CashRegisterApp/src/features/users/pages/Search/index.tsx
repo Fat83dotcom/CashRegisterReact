@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { TextInput, DateInput } from "../../../../components/Form";
 import { searchUserSchema, type SearchUserFormData } from "../../schemas/searchUserSchema";
 import { SearchPageTemplate } from "../../../../components/Layout/SearchPageTemplate";
+import { ActionConfirmContent } from "../../../../components/Layout/ActionConfirmContent";
 
 export function UserSearch() {
   const initialFilters: SearchUserFormData = {
@@ -16,10 +17,19 @@ export function UserSearch() {
     birthDate: null,
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch } = useSearch<
+  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } = useSearch<
     IGetAllUsersResponse,
     SearchUserFormData
-  >(UserService.search, initialFilters);
+  >(UserService.search, initialFilters, {
+    action: UserService.deactivate,
+    renderContent: (user) => (
+      <ActionConfirmContent
+        description="O usuário perderá o acesso ao sistema instantaneamente. Poderá ser reativado no futuro."
+        itemDetails={`${user.name.firstName} ${user.name.lastName} (Doc: ${user.taxId})`}
+        warningMessage="Certifique-se de que não está desativando o seu próprio usuário ativo."
+      />
+    )
+  });
 
   const columns: ColumnConfig<IGetAllUsersResponse>[] = [
     { key: "id", label: "ID" },
@@ -27,16 +37,6 @@ export function UserSearch() {
     { key: "taxId", label: "CPF/CNPJ" },
     { key: "birthdate", label: "Data de Nascimento", render: (item) => dayjs(item.birthdate).format("DD/MM/YYYY") },
   ];
-
-  const handleDeactivate = async (id: string | number) => {
-    try {
-      await UserService.deactivate(id);
-      handleSearch(initialFilters, pagedData.page);
-      setSelectedId(null);
-    } catch (error) {
-      console.error("Erro ao desativar usuário:", error);
-    }
-  };
 
   return (
     <SearchPageTemplate

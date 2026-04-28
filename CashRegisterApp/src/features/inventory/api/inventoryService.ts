@@ -101,6 +101,10 @@ export const InventoryService = {
     return apiClient.get<IPagedResponse<IUnitResponse>>(`/UnitOfMeasure/search?${queryParams.toString()}`);
   },
 
+  deactivateUnit: async (id: string | number): Promise<void> => {
+    return apiClient.put<void, {}>(`/UnitOfMeasure/${id}/deactivate`, {});
+  },
+
   // Conversions
   createConversion: async (request: ICreateConversionRequest, resetForms: () => void) => {
     apiClient
@@ -131,5 +135,9 @@ export const InventoryService = {
     }
 
     return apiClient.get<IPagedResponse<IConversionResponse>>(`/UomConversion/search?${queryParams.toString()}`);
+  },
+
+  deactivateConversion: async (id: string | number): Promise<void> => {
+    return apiClient.put<void, {}>(`/UomConversion/${id}/deactivate`, {});
   },
 };

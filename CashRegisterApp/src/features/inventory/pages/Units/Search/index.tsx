@@ -3,6 +3,7 @@ import { IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
 import { TextInput } from "../../../../../components/Form";
+import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
 import {
@@ -17,10 +18,20 @@ export function UnitSearch() {
     searchTerm: "",
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch } =
+  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } =
     useSearch<IUnitResponse, UnitSearchFormData>(
       InventoryService.searchUnits,
       initialFilters,
+      {
+        action: InventoryService.deactivateUnit,
+        renderContent: (unit) => (
+          <ActionConfirmContent
+            description="Esta unidade de medida será desativada do sistema e não aparecerá para novas seleções."
+            itemDetails={`${unit.name} (${unit.code})`}
+            warningMessage="Produtos e conversões que já utilizam esta unidade manterão o histórico, mas você não poderá criar novas associações."
+          />
+        ),
+      }
     );
 
   const columns: ColumnConfig<IUnitResponse>[] = [
@@ -32,12 +43,6 @@ export function UnitSearch() {
       render: (item) => (item.allowDecimals ? "Sim" : "Não"),
     },
   ];
-
-  const handleDeactivate = async (id: string | number) => {
-    // Unidades de medida não tem endpoint de desativação pronto ainda no backend, 
-    // mas deixamos o handler configurado seguindo o padrão
-    console.log("Deactivate not implemented for UnitOfMeasure", id);
-  };
 
   return (
     <SearchPageTemplate

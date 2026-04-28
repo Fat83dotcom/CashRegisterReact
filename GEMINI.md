@@ -128,9 +128,34 @@ Toda entidade de cadastro deve possuir uma tela de consulta padronizada seguindo
 
 1.  **Schema de Busca:** Um arquivo `[entidade]SearchSchema.ts` definindo os filtros em `src/features/[modulo]/schemas/`.
 2.  **Componente Search:** Localizado em `src/features/[modulo]/pages/[Entidade]/Search/index.tsx`.
-3.  **Estado Paginado:** Gerenciamento obrigatório de `loading`, `selectedId` e `pagedData` (usando a interface `IPagedResponse`).
-4.  **Componentes Reutilizáveis:**
+3.  **Componentes Reutilizáveis:**
     *   `<SearchContainer>`: Envolve os filtros e o botão de busca (importado de `@/components/Layout/SearchContainer`).
-    *   `<DynamicTable>`: Renderiza os dados com configuração de colunas `ColumnConfig` (importado de `@/components/Layout/DynamicTable`).
-5.  **Ações:** Implementar `handleSearch` (busca) e `handleDeactivate/handleDelete` (remoção/desativação) quando aplicável.
-6.  **Integração:** O componente principal da página (`pages/[Entidade]/index.tsx`) deve atuar como um container simples que renderiza o título e o componente de busca.
+    *   `<DynamicTable>`: Renderiza os dados com configuração de colunas `ColumnConfig`.
+4.  **Estado Paginado & Ações (O Hook `useSearch`):** O gerenciamento de estado (`loading`, `pagedData`, `selectedId`) e orquestração de recarregamento DEVE ser feito inteiramente pelo hook genérico `useSearch`.
+    *   Nunca escreva funções de `handleSearch` ou `handleDeactivate` manualmente na tela visual.
+    *   Sempre exporte os métodos do hook e passe-os diretamente para o `SearchPageTemplate`.
+5.  **Padrão de Desativação Visual:** Para funcionalidades de exclusão/desativação, passe o terceiro parâmetro para o `useSearch` contendo um objeto `DeactivateOptions`. O `renderContent` deve retornar obrigatoriamente o componente padronizado `<ActionConfirmContent>` para renderizar as informações no modal do Mantine.
+
+**Exemplo Base de Implementação na Tela de Search:**
+```tsx
+  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } = useSearch<
+    IEntidadeResponse,
+    SearchEntidadeFormData
+  >(EntidadeService.search, initialFilters, {
+    action: EntidadeService.deactivate,
+    renderContent: (item) => (
+      <ActionConfirmContent
+        description="O registro perderá o acesso ao sistema instantaneamente."
+        itemDetails={`${item.nome} (Código: ${item.codigo})`}
+        warningMessage="Verifique dependências ativas."
+      />
+    )
+  });
+
+  // ... no return:
+  <SearchPageTemplate
+      // ... outras props
+      onSearch={handleSearch}
+      onDeactivate={handleDeactivate}
+  >
+```

@@ -3,7 +3,6 @@ import {
   Button,
   Group,
   LoadingOverlay,
-  Modal,
   Pagination,
   Select,
   Stack,
@@ -12,7 +11,6 @@ import {
   Box,
   Paper,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { IconCircleMinus, IconX } from "@tabler/icons-react";
 
 export interface ColumnConfig<T> {
@@ -59,7 +57,6 @@ export function DynamicTable<T>({
   const ths = columns.map((col) => (
     <Table.Th key={col.key as string}>{col.label}</Table.Th>
   ));
-  const [opened, { open, close }] = useDisclosure(false);
 
   // Se as funções de callback forem passadas, usamos paginação do servidor
   const isServerSide = !!onPageChange;
@@ -94,35 +91,6 @@ export function DynamicTable<T>({
 
   return (
     <>
-      <Modal
-        opened={opened}
-        onClose={close}
-        title="Confirmar Ação"
-        centered
-        size={"md"}
-      >
-        <Text size="sm">
-          Tem a certeza que deseja desativar este registo? Poderá reativá-lo
-          futuramente.
-        </Text>
-        <Group justify="flex-end" mt="xl">
-          <Button variant="default" onClick={close}>
-            Cancelar
-          </Button>
-          <Button
-            color="yellow"
-            onClick={() => {
-              if (onDeactivate && selectedId) {
-                onDeactivate(selectedId);
-              }
-              close();
-            }}
-          >
-            Confirmar Desativação
-          </Button>
-        </Group>
-      </Modal>
-
       <Stack gap="md" pos="relative">
         <LoadingOverlay visible={loading} overlayProps={{ blur: 1 }} />
 
@@ -157,7 +125,7 @@ export function DynamicTable<T>({
           </Box>
         </Paper>
 
-        {withPagination && (totalCount > 0 || data.length > 0) && (
+        {withPagination && (totalCount > 0 || safeData.length > 0) && (
           <Group justify="space-between" align="center">
             <Group gap="xs" align="center">
               <Text size="sm" c="dimmed">
@@ -172,7 +140,7 @@ export function DynamicTable<T>({
                 w={80}
               />
               <Text size="sm" c="dimmed">
-                Total: {totalCount || data.length}
+                Total: {totalCount || safeData.length}
               </Text>
             </Group>
 
@@ -188,7 +156,7 @@ export function DynamicTable<T>({
             <Group gap="xs" align="center">
               <Button
                 disabled={!selectedId}
-                onClick={open}
+                onClick={() => onDeactivate && selectedId && onDeactivate(selectedId)}
                 variant="light"
                 color="yellow"
                 leftSection={<IconCircleMinus size={18} />}
