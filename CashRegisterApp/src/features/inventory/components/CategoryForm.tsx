@@ -1,24 +1,46 @@
 import { Button, Center, Grid, Paper, Title, Stack } from "@mantine/core";
-import { Form, TextInput, Select } from "../../../components/Form";
-import { categorySchema, type CategoryFormData } from "../schemas/categorySchema";
+import { Form, TextInput, AsyncSelect } from "../../../components/Form";
+import {
+  categorySchema,
+  type CategoryFormData,
+} from "../schemas/categorySchema";
+import { InventoryService } from "../api/inventoryService";
+import type { ICategoryRequest, ICategoryResponse } from "../interfaces";
+import { useState } from "react";
+
+const fetchCategories = async (query: string) => {
+  const response = await InventoryService.searchCategories({
+    name: query,
+    page: 1,
+    pageSize: 20,
+  });
+  return response.items || [];
+};
 
 export function CategoryForm() {
-  const handleSubmit = (values: CategoryFormData) => {
-    console.log("Saving Category:", values);
-  };
+  const [loading, setLoading] = useState(false);
+  let resetForm: (() => void) | undefined;
 
-  // Mock para categorias pai (em produção viria da API)
-  const mockCategories = [
-    { value: "1", label: "Eletrônicos" },
-    { value: "2", label: "Alimentos" },
-  ];
+  const handleSubmit = async (values: CategoryFormData) => {
+    setLoading(true);
+    const request = values as ICategoryRequest;
+
+    try {
+      await InventoryService.createCategory(request, () => {
+        if (resetForm) {
+          resetForm();
+        }
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Paper withBorder shadow="md" p="xl" maw={600} mx="auto" mt="xl">
       <Title order={2} ta="center" mb="xl" c="brainstorm.6">
         Nova Categoria de Produto
       </Title>
-
       <Form
         schema={categorySchema}
         onSubmit={handleSubmit}
@@ -39,23 +61,27 @@ export function CategoryForm() {
                 />
               </Grid.Col>
               <Grid.Col span={12}>
-                <Select
+                <AsyncSelect<ICategoryResponse>
                   name="parentCategoryId"
-                  label="Categoria Pai (Opcional)"
-                  placeholder="Selecione se for uma subcategoria"
-                  data={mockCategories}
-                  clearable
+                  label="Categoria pai"
+                  placeholder="Selecione uma categoria pai (opcional)"
+                  fetcher={fetchCategories}
+                  getLabel={(item) =>
+                    `${item.parentCategoryName} - ${item.name}`
+                  }
+                  getValue={(item) => item.id?.toString() || ""}
                 />
               </Grid.Col>
             </Grid>
 
             <Center mt="xl">
-              <Button 
-                type="submit" 
-                fullWidth 
-                size="md" 
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
                 color="brainstorm.6"
                 variant="light"
+                loading={loading}
               >
                 Salvar Categoria
               </Button>

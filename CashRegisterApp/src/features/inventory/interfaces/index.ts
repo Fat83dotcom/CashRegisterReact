@@ -7,7 +7,6 @@ export interface IWarehouseRequest {
 }
 
 export interface ICategoryRequest {
-  id: number;
   name: string;
   parentCategoryId?: number | null;
   parentCategoryName?: string | null;
@@ -68,6 +67,7 @@ export interface ICategoryResponse {
   id?: number;
   name?: string;
   parentCategoryName?: string;
+  parentCategoryId: number;
   isActive?: boolean;
 }
 export interface IUnitResponse {

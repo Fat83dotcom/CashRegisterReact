@@ -3,6 +3,7 @@ import type { IPagedResponse, SearchParams } from "../../../hooks/useSearch";
 import { apiClient } from "../../../lib/api";
 import type { ICreateResponse } from "../../../shared/ICreateResponse";
 import type {
+  ICategoryRequest,
   ICategoryResponse,
   IConversionResponse,
   ICreateConversionRequest,
@@ -48,6 +49,23 @@ export const InventoryService = {
   },
 
   // Categories
+  createCategory: async (request: ICategoryRequest, resetForms: () => void) => {
+    apiClient
+      .post<ICreateResponse, ICategoryRequest>("/Category", request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Categoria criada com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+          resetForms();
+        }
+      });
+  },
+
   searchCategories: async (
     params: SearchParams & { name?: string },
   ): Promise<IPagedResponse<ICategoryResponse>> => {
@@ -93,12 +111,14 @@ export const InventoryService = {
     const queryParams = new URLSearchParams();
     queryParams.append("Page", params.page.toString());
     queryParams.append("PageSize", params.pageSize.toString());
-    
+
     if (params.searchTerm) {
       queryParams.append("Term", params.searchTerm);
     }
-    
-    return apiClient.get<IPagedResponse<IUnitResponse>>(`/UnitOfMeasure/search?${queryParams.toString()}`);
+
+    return apiClient.get<IPagedResponse<IUnitResponse>>(
+      `/UnitOfMeasure/search?${queryParams.toString()}`,
+    );
   },
 
   deactivateUnit: async (id: string | number): Promise<void> => {
@@ -106,9 +126,15 @@ export const InventoryService = {
   },
 
   // Conversions
-  createConversion: async (request: ICreateConversionRequest, resetForms: () => void) => {
+  createConversion: async (
+    request: ICreateConversionRequest,
+    resetForms: () => void,
+  ) => {
     apiClient
-      .post<ICreateResponse, ICreateConversionRequest>("/UomConversion", request)
+      .post<
+        ICreateResponse,
+        ICreateConversionRequest
+      >("/UomConversion", request)
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -134,7 +160,9 @@ export const InventoryService = {
       queryParams.append("UnitId", params.unitId);
     }
 
-    return apiClient.get<IPagedResponse<IConversionResponse>>(`/UomConversion/search?${queryParams.toString()}`);
+    return apiClient.get<IPagedResponse<IConversionResponse>>(
+      `/UomConversion/search?${queryParams.toString()}`,
+    );
   },
 
   deactivateConversion: async (id: string | number): Promise<void> => {
