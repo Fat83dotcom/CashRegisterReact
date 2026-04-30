@@ -9,8 +9,6 @@ export interface IWarehouseRequest {
 export interface ICategoryRequest {
   name: string;
   parentCategoryId?: number | null;
-  parentCategoryName?: string | null;
-  isActive: boolean;
 }
 
 export interface IUnitRequest {
