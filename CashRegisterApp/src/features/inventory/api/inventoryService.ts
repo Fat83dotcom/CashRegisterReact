@@ -51,7 +51,7 @@ export const InventoryService = {
   // Categories
   createCategory: async (request: ICategoryRequest, resetForms: () => void) => {
     apiClient
-      .post<ICreateResponse, ICategoryRequest>("/Category", request)
+      .post<ICreateResponse, ICategoryRequest>("/category", request)
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
