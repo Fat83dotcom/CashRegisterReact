@@ -1,4 +1,4 @@
-import { Grid, TextInput } from "@mantine/core";
+import { Grid } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
@@ -10,36 +10,45 @@ import {
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
 import { InventoryService } from "../../../api/inventoryService";
 import type { IConversionResponse } from "../../../interfaces";
+import { TextInput } from "../../../../../components/Form/TextInput";
 
 export function ConversionSearch() {
   const initialFilters: ConversionSearchFormData = {
-    unitId: "",
+    searchTerm: "",
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } =
-    useSearch<IConversionResponse, ConversionSearchFormData>(
-      InventoryService.searchConversions,
-      initialFilters,
-      {
-        action: InventoryService.deactivateConversion,
-        renderContent: (conversion) => {
-          const from = `${conversion.fromUnitName || ""} (${conversion.fromUnitSymbol || ""})`.trim();
-          const to = `${conversion.toUnitName || ""} (${conversion.toUnitSymbol || ""})`.trim();
-          
-          return (
-            <ActionConfirmContent
-              description="Esta regra de conversão será desativada e o sistema não a utilizará mais nos cálculos de movimentação de estoque."
-              itemDetails={`Regra: 1 ${from} = ${conversion.multiplier} ${to}`}
-              warningMessage={
-                conversion.productName 
-                  ? `Esta regra é específica para o produto: ${conversion.productName}.` 
-                  : "Atenção: Esta é uma regra GERAL. Desativá-la pode impactar todos os produtos que utilizam estas unidades."
-              }
-            />
-          );
-        },
-      }
-    );
+  const {
+    loading,
+    pagedData,
+    selectedId,
+    setSelectedId,
+    handleSearch,
+    handleDeactivate,
+  } = useSearch<IConversionResponse, ConversionSearchFormData>(
+    InventoryService.searchConversions,
+    initialFilters,
+    {
+      action: InventoryService.deactivateConversion,
+      renderContent: (conversion) => {
+        const from =
+          `${conversion.fromUnitName || ""} (${conversion.fromUnitSymbol || ""})`.trim();
+        const to =
+          `${conversion.toUnitName || ""} (${conversion.toUnitSymbol || ""})`.trim();
+
+        return (
+          <ActionConfirmContent
+            description="Esta regra de conversão será desativada e o sistema não a utilizará mais nos cálculos de movimentação de estoque."
+            itemDetails={`Regra: 1 ${from} = ${conversion.multiplier} ${to}`}
+            warningMessage={
+              conversion.productName
+                ? `Esta regra é específica para o produto: ${conversion.productName}.`
+                : "Atenção: Esta é uma regra GERAL. Desativá-la pode impactar todos os produtos que utilizam estas unidades."
+            }
+          />
+        );
+      },
+    },
+  );
 
   const columns: ColumnConfig<IConversionResponse>[] = [
     {

@@ -28,7 +28,7 @@ export function CategorySearch() {
     InventoryService.searchCategories,
     initialFilters,
     {
-      action: InventoryService.deactivateConversion,
+      action: InventoryService.deactivateCategory,
       renderContent: (category) => {
         return (
           <ActionConfirmContent
@@ -47,7 +47,7 @@ export function CategorySearch() {
     { key: "name", label: "Nome" },
     {
       key: "parentCategoryName",
-      label: "Categoria Pai",
+      label: "Sub Categoria de",
       render: (item) => item.parentCategoryName || "-",
     },
     {

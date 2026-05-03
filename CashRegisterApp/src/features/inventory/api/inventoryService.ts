@@ -7,6 +7,7 @@ import type {
   ICategoryResponse,
   IConversionResponse,
   ICreateConversionRequest,
+  ICreateProductRequest,
   IGetAllUnitsResponse,
   IProductResponse,
   IUnitRequest,
@@ -35,6 +36,23 @@ export const InventoryService = {
   },
 
   // Products
+  createProduct: async (request: ICreateProductRequest, resetForms: () => void) => {
+    apiClient
+      .post<ICreateResponse, ICreateProductRequest>("/product", request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Produto criado com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+          resetForms();
+        }
+      });
+  },
+
   searchProducts: async (
     params: SearchParams & { searchTerm?: string; categoryId?: string },
   ): Promise<IPagedResponse<IProductResponse>> => {
@@ -69,14 +87,21 @@ export const InventoryService = {
   searchCategories: async (
     params: SearchParams & { name?: string },
   ): Promise<IPagedResponse<ICategoryResponse>> => {
-    console.log("Searching Categories API:", params);
-    return {
-      items: [],
-      totalCount: 0,
-      page: params.page,
-      pageSize: params.pageSize,
-      totalPages: 0,
-    };
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.name) {
+      queryParams.append("Term", params.name);
+    }
+
+    return apiClient.get<IPagedResponse<ICategoryResponse>>(
+      `/category/search?${queryParams.toString()}`,
+    );
+  },
+
+  deactivateCategory: async (id: string | number): Promise<void> => {
+    return apiClient.put<void, {}>(`/Category/${id}/deactivate`, {});
   },
 
   // Units
@@ -150,14 +175,14 @@ export const InventoryService = {
   },
 
   searchConversions: async (
-    params: SearchParams & { unitId?: string },
+    params: SearchParams & { searchTerm?: string },
   ): Promise<IPagedResponse<IConversionResponse>> => {
     const queryParams = new URLSearchParams();
     queryParams.append("Page", params.page.toString());
     queryParams.append("PageSize", params.pageSize.toString());
 
-    if (params.unitId) {
-      queryParams.append("UnitId", params.unitId);
+    if (params.searchTerm) {
+      queryParams.append("Term", params.searchTerm);
     }
 
     return apiClient.get<IPagedResponse<IConversionResponse>>(

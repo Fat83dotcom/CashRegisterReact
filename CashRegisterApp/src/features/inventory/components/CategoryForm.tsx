@@ -49,45 +49,48 @@ export function CategoryForm() {
           parentCategoryId: null,
         }}
       >
-        {() => (
-          <Stack gap="md">
-            <Grid gutter="md">
-              <Grid.Col span={12}>
-                <TextInput
-                  name="name"
-                  label="Nome da Categoria"
-                  placeholder="Ex: Eletrônicos, Alimentos"
-                  withAsterisk
-                />
-              </Grid.Col>
-              <Grid.Col span={12}>
-                <AsyncSelect<ICategoryResponse>
-                  name="parentCategoryId"
-                  label="Categoria pai"
-                  placeholder="Selecione uma categoria pai (opcional)"
-                  fetcher={fetchCategories}
-                  getLabel={(item) =>
-                    `${item.parentCategoryName} - ${item.name}`
-                  }
-                  getValue={(item) => item.id?.toString() || ""}
-                />
-              </Grid.Col>
-            </Grid>
+        {(methods) => {
+          resetForm = methods.reset;
+          return (
+            <Stack gap="md">
+              <Grid gutter="md">
+                <Grid.Col span={12}>
+                  <TextInput
+                    name="name"
+                    label="Nome da Categoria"
+                    placeholder="Ex: Eletrônicos, Alimentos"
+                    withAsterisk
+                  />
+                </Grid.Col>
+                <Grid.Col span={12}>
+                  <AsyncSelect<ICategoryResponse>
+                    name="parentCategoryId"
+                    label="Sub Categoria de"
+                    placeholder="Selecione uma categoria pai (opcional)"
+                    fetcher={fetchCategories}
+                    getLabel={(item) =>
+                      `${item.parentCategoryName ?? ""} - ${item.name}`
+                    }
+                    getValue={(item) => item.id?.toString() || ""}
+                  />
+                </Grid.Col>
+              </Grid>
 
-            <Center mt="xl">
-              <Button
-                type="submit"
-                fullWidth
-                size="md"
-                color="brainstorm.6"
-                variant="light"
-                loading={loading}
-              >
-                Salvar Categoria
-              </Button>
-            </Center>
-          </Stack>
-        )}
+              <Center mt="xl">
+                <Button
+                  type="submit"
+                  fullWidth
+                  size="md"
+                  color="brainstorm.6"
+                  variant="light"
+                  loading={loading}
+                >
+                  Salvar Categoria
+                </Button>
+              </Center>
+            </Stack>
+          );
+        }}
       </Form>
     </Paper>
   );
