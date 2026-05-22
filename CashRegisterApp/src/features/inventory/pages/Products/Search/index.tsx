@@ -2,15 +2,24 @@ import { Grid } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
-import { TextInput, Select } from "../../../../../components/Form";
-
+import { TextInput, AsyncSelect } from "../../../../../components/Form";
+import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
 import {
   productSearchSchema,
   type ProductSearchFormData,
 } from "../../../schemas/productSearchSchema";
-import type { IProductResponse } from "../../../interfaces";
+import type { IProductResponse, ICategoryResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
+
+const fetchCategories = async (query: string) => {
+  const response = await InventoryService.searchCategories({
+    name: query,
+    page: 1,
+    pageSize: 20,
+  });
+  return response.items || [];
+};
 
 export function ProductSearch() {
   const initialFilters: ProductSearchFormData = {
@@ -18,10 +27,22 @@ export function ProductSearch() {
     categoryId: "",
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch } =
+  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } =
     useSearch<IProductResponse, ProductSearchFormData>(
       InventoryService.searchProducts,
       initialFilters,
+      {
+        action: InventoryService.deactivateProduct,
+        renderContent: (product) => {
+          return (
+            <ActionConfirmContent
+              description="Este produto será desativado do sistema e não aparecerá para novas vendas."
+              itemDetails={`${product.name} (SKU: ${product.sku})`}
+              warningMessage="Certifique-se de que não há estoque ativo que precise ser ajustado."
+            />
+          );
+        },
+      },
     );
 
   const columns: ColumnConfig<IProductResponse>[] = [
@@ -52,6 +73,7 @@ export function ProductSearch() {
       onSearch={handleSearch}
       selectedId={selectedId}
       onRowSelect={setSelectedId}
+      onDeactivate={handleDeactivate}
     >
       <Grid.Col span={{ base: 12, md: 8 }}>
         <TextInput
@@ -62,14 +84,17 @@ export function ProductSearch() {
         />
       </Grid.Col>
       <Grid.Col span={{ base: 12, md: 4 }}>
-        <Select
+        <AsyncSelect<ICategoryResponse>
           name="categoryId"
           label="Categoria"
           placeholder="Todas"
-          data={[
-            { value: "1", label: "Eletrônicos" },
-            { value: "2", label: "Alimentos" },
-          ]}
+          fetcher={fetchCategories}
+          getLabel={(item) =>
+            item.parentCategoryName
+              ? `${item.parentCategoryName} - ${item.name}`
+              : item.name || ""
+          }
+          getValue={(item) => item.id?.toString() || ""}
           clearable
         />
       </Grid.Col>

@@ -23,12 +23,13 @@ async function request<T>(
     credentials: "include",
   });
 
+  const text = await response.text();
+  const errorData = text ? JSON.parse(text) : {};
+
   if (!response.ok) {
     if (response.status === 401) {
       window.dispatchEvent(new CustomEvent("unauthorized"));
     }
-
-    const errorData = await response.json().catch(() => null);
 
     const title = errorData?.Message || "Erro na requisição";
 
@@ -38,24 +39,22 @@ async function request<T>(
     if (errorData?.errors && Array.isArray(errorData.errors)) {
       formattedMessage = errorData.errors
         .map((e: any) => {
-          // Tenta extrair a propriedade e a mensagem suportando PascalCase e camelCase
           const property = e.property || e.Property || e.key || e.Key;
           const message = e.message || e.Message || e.text || e.Text;
 
           if (message) {
             return property ? `${property}: ${message}` : message;
           }
-          
-          // Fallback para strings simples ou objetos desconhecidos
-          return typeof e === 'string' ? e : JSON.stringify(e);
+
+          return typeof e === "string" ? e : JSON.stringify(e);
         })
         .join(" \n ");
-    } 
+    }
     // Suporte ao formato legado de exceções (FluentValidation/Custom)
     else if (errorData?.Errors && Array.isArray(errorData.Errors)) {
       formattedMessage = errorData.Errors.map((e: any) => {
         const message = e.text || e.ErrorMessage || e.Message || e;
-        return typeof message === 'string' ? message : JSON.stringify(message);
+        return typeof message === "string" ? message : JSON.stringify(message);
       }).join(" \n ");
     } else if (errorData?.Message || errorData?.message) {
       formattedMessage = errorData.Message || errorData.message;
@@ -70,11 +69,8 @@ async function request<T>(
       });
     }
   }
-  const text = await response.text();
 
-  const data = text ? JSON.parse(text) : {};
-
-  return data as T;
+  return errorData as T;
 }
 
 // 2. Os Métodos Expostos (O Mecanismo Genérico)

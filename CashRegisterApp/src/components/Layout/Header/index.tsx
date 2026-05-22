@@ -28,6 +28,7 @@ const links: NavLinkItem[] = [
           { link: "/inventory/products", label: "Produtos" },
           { link: "/inventory/warehouses", label: "Almoxarifados" },
           { link: "/inventory/categories", label: "Categorias" },
+          { link: "/inventory/tags", label: "Tags" },
           { link: "/inventory/units", label: "Unidades de Medida" },
           { link: "/inventory/conversions", label: "Regras de Conversão" },
         ],

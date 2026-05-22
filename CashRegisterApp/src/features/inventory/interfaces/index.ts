@@ -17,6 +17,27 @@ export interface IUnitRequest {
   allowDecimals: boolean;
 }
 
+export interface ICreateProductRequest {
+  name: string;
+  sku: string;
+  description?: string | null;
+  ncmCode?: string | null;
+  categoryId: number;
+  baseUomId: number;
+  tagIds?: number[];
+}
+
+export interface ICreateTagRequest {
+  name: string;
+  colorHex?: string | null;
+}
+
+export interface ITagRequest {
+  id: number;
+  name: string;
+  colorHex?: string | null;
+}
+
 export interface IProductRequest {
   id: number;
   sku: string;
@@ -51,6 +72,13 @@ export interface ICreateConversionRequest {
 }
 
 //Responses
+
+export interface ITagResponse {
+  id: number;
+  name: string;
+  colorHex?: string | null;
+  isActive: boolean;
+}
 
 export interface IProductResponse {
   id?: number;

@@ -22,6 +22,7 @@ import { ChangePassword } from "./features/settings/pages/ChangePassword";
 import { SettingsNavigation } from "./features/settings/pages/navigation";
 import { Login } from "./features/auth/pages";
 import { SalesHome } from "./features/sales/pages";
+import { TagsPage } from "./features/inventory/pages/Tags";
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +85,13 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <CategoriesPage /> },
               { path: "create", element: <CategoriesPage /> },
+            ],
+          },
+          {
+            path: "tags",
+            children: [
+              { index: true, element: <TagsPage /> },
+              { path: "create", element: <TagsPage /> },
             ],
           },
           {

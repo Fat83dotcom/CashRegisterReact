@@ -17,7 +17,11 @@ const fetchCategories = async (query: string) => {
   return response.items || [];
 };
 
-export function CategoryForm() {
+export interface CategoryFormProps {
+  onSuccess?: () => void;
+}
+
+export function CategoryForm({ onSuccess }: CategoryFormProps) {
   const [loading, setLoading] = useState(false);
   let resetForm: (() => void) | undefined;
 
@@ -29,6 +33,9 @@ export function CategoryForm() {
       await InventoryService.createCategory(request, () => {
         if (resetForm) {
           resetForm();
+        }
+        if (onSuccess) {
+          onSuccess();
         }
       });
     } finally {

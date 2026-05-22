@@ -33,7 +33,11 @@ function CheckboxInput({ name, label }: { name: string; label: string }) {
   );
 }
 
-export function UnitForm() {
+export interface UnitFormProps {
+  onSuccess?: () => void;
+}
+
+export function UnitForm({ onSuccess }: UnitFormProps) {
   const [loading, setLoading] = useState(false);
   let resetForm: (() => void) | undefined;
 
@@ -45,6 +49,9 @@ export function UnitForm() {
       await InventoryService.createUnit(request, () => {
         if (resetForm) {
           resetForm();
+        }
+        if (onSuccess) {
+          onSuccess();
         }
       });
     } finally {

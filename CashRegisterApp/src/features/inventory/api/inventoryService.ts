@@ -8,8 +8,10 @@ import type {
   IConversionResponse,
   ICreateConversionRequest,
   ICreateProductRequest,
+  ICreateTagRequest,
   IGetAllUnitsResponse,
   IProductResponse,
+  ITagResponse,
   IUnitRequest,
   IUnitResponse,
 } from "../interfaces";
@@ -36,7 +38,10 @@ export const InventoryService = {
   },
 
   // Products
-  createProduct: async (request: ICreateProductRequest, resetForms: () => void) => {
+  createProduct: async (
+    request: ICreateProductRequest,
+    resetForms: () => void,
+  ) => {
     apiClient
       .post<ICreateResponse, ICreateProductRequest>("/product", request)
       .then((response) => {
@@ -56,14 +61,62 @@ export const InventoryService = {
   searchProducts: async (
     params: SearchParams & { searchTerm?: string; categoryId?: string },
   ): Promise<IPagedResponse<IProductResponse>> => {
-    console.log("Searching Products API:", params);
-    return {
-      items: [],
-      totalCount: 0,
-      page: params.page,
-      pageSize: params.pageSize,
-      totalPages: 0,
-    };
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.searchTerm) {
+      queryParams.append("Term", params.searchTerm);
+    }
+    if (params.categoryId) {
+      queryParams.append("CategoryId", params.categoryId);
+    }
+
+    return apiClient.get<IPagedResponse<IProductResponse>>(
+      `/product/search?${queryParams.toString()}`,
+    );
+  },
+
+  deactivateProduct: async (id: string | number): Promise<void> => {
+    return apiClient.put<void, {}>(`/product/${id}/deactivate`, {});
+  },
+
+  // Tags
+  createTag: async (request: ICreateTagRequest, resetForms: () => void) => {
+    apiClient
+      .post<ICreateResponse, ICreateTagRequest>("/tag", request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Tag criada com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+          resetForms();
+        }
+      });
+  },
+
+  searchTags: async (
+    params: SearchParams & { searchTerm?: string },
+  ): Promise<IPagedResponse<ITagResponse>> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.searchTerm) {
+      queryParams.append("Term", params.searchTerm);
+    }
+
+    return apiClient.get<IPagedResponse<ITagResponse>>(
+      `/tag/search?${queryParams.toString()}`,
+    );
+  },
+
+  deactivateTag: async (id: string | number): Promise<void> => {
+    return apiClient.put<void, {}>(`/tag/${id}/deactivate`, {});
   },
 
   // Categories
@@ -101,7 +154,7 @@ export const InventoryService = {
   },
 
   deactivateCategory: async (id: string | number): Promise<void> => {
-    return apiClient.put<void, {}>(`/Category/${id}/deactivate`, {});
+    return apiClient.put<void, {}>(`/category/${id}/deactivate`, {});
   },
 
   // Units

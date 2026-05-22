@@ -1,5 +1,5 @@
 import { Container, Title, Text, SimpleGrid, Paper, Group, Stack } from "@mantine/core";
-import { IconBox, IconCategory, IconBuildingWarehouse, IconRulerMeasure } from "@tabler/icons-react";
+import { IconBox, IconCategory, IconBuildingWarehouse, IconRulerMeasure, IconTags } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 
 export function InventoryHome() {
@@ -7,6 +7,7 @@ export function InventoryHome() {
     { title: "Produtos", icon: IconBox, link: "/inventory/products", color: "blue" },
     { title: "Almoxarifados", icon: IconBuildingWarehouse, link: "/inventory/warehouses", color: "cyan" },
     { title: "Categorias", icon: IconCategory, link: "/inventory/categories", color: "grape" },
+    { title: "Tags", icon: IconTags, link: "/inventory/tags", color: "orange" },
     { title: "Unidades", icon: IconRulerMeasure, link: "/inventory/units", color: "teal" },
   ];
 

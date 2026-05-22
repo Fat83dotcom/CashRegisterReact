@@ -8,6 +8,7 @@ import {
   Alert,
   Divider,
 } from "@mantine/core";
+import { useModals } from "@mantine/modals";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { Form, TextInput, AsyncSelect } from "../../../components/Form";
 import {
@@ -21,6 +22,8 @@ import type {
   ICreateConversionRequest,
 } from "../interfaces";
 import { useState } from "react";
+import { UnitForm } from "./UnitForm";
+import { ProductForm } from "./ProductForm";
 
 // Extração dos fetchers para fora do componente para evitar recriação (Problema de Identidade de Referência)
 const fetchUnits = async (query: string) => {
@@ -43,7 +46,22 @@ const fetchProducts = async (query: string) => {
 
 export function ConversionForm() {
   const [loading, setLoading] = useState(false);
+  const modals = useModals();
   let resetForm: (() => void) | undefined;
+
+  const handleOpenUnitModal = () => {
+    modals.openModal({
+      title: "Nova Unidade",
+      children: <UnitForm onSuccess={() => modals.closeAll()} />,
+    });
+  };
+
+  const handleOpenProductModal = () => {
+    modals.openModal({
+      title: "Novo Produto",
+      children: <ProductForm onSuccess={() => modals.closeAll()} />,
+    });
+  };
 
   const handleSubmit = async (values: ConversionFormData) => {
     setLoading(true);
@@ -86,7 +104,6 @@ export function ConversionForm() {
           resetForm = methods.reset;
           return (
             <Stack gap="md">
-              {/* Bloco 1: A Regra Matemática */}
               <Grid gutter="md" align="flex-end">
                 <Grid.Col span={{ base: 12, md: 5 }}>
                   <AsyncSelect<IUnitResponse>
@@ -94,8 +111,9 @@ export function ConversionForm() {
                     label="1 (Uma) Unidade Origem"
                     placeholder="Ex: Caixa (CX)"
                     withAsterisk
+                    onAdd={handleOpenUnitModal}
                     fetcher={fetchUnits}
-                    getLabel={(item) => `${item.code} - ${item.name}`}
+                    getLabel={(item) => `${item.name} (${item.code})`}
                     getValue={(item) => item.id?.toString() || ""}
                   />
                 </Grid.Col>
@@ -116,8 +134,9 @@ export function ConversionForm() {
                     label="Unidade de Destino"
                     placeholder="Ex: Unidade (UN)"
                     withAsterisk
+                    onAdd={handleOpenUnitModal}
                     fetcher={fetchUnits}
-                    getLabel={(item) => `${item.code} - ${item.name}`}
+                    getLabel={(item) => `${item.name} (${item.code})`}
                     getValue={(item) => item.id?.toString() || ""}
                   />
                 </Grid.Col>
@@ -125,7 +144,6 @@ export function ConversionForm() {
 
               <Divider my="sm" variant="dashed" />
 
-              {/* Bloco 2: Especificidade da Regra */}
               <Grid gutter="md">
                 <Grid.Col span={12}>
                   <AsyncSelect<IProductResponse>
@@ -133,6 +151,7 @@ export function ConversionForm() {
                     label="Vincular a um Produto Específico (Opcional)"
                     placeholder="Se vazio, a regra será geral para todas as movimentações destas unidades"
                     clearable
+                    onAdd={handleOpenProductModal}
                     fetcher={fetchProducts}
                     getLabel={(item) =>
                       `${item.sku || ""} - ${item.name || ""}`

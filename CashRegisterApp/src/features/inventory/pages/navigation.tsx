@@ -4,6 +4,7 @@ import {
   IconLayoutDashboard, 
   IconBox, 
   IconCategory, 
+  IconTags,
   IconRulerMeasure,
   IconArrowsExchange,
   IconBuildingWarehouse,
@@ -15,6 +16,7 @@ const links = [
   { link: "/inventory/products", label: "Produtos", icon: IconBox },
   { link: "/inventory/warehouses", label: "Almoxarifados", icon: IconBuildingWarehouse },
   { link: "/inventory/categories", label: "Categorias", icon: IconCategory },
+  { link: "/inventory/tags", label: "Tags", icon: IconTags },
   { link: "/inventory/units", label: "Unidades de Medida", icon: IconRulerMeasure },
   { link: "/inventory/conversions", label: "Regras de Conversão", icon: IconArrowsExchange },
 ];

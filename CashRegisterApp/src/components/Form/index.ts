@@ -4,5 +4,6 @@ import { Select } from './Select';
 import { PasswordInput } from './PasswordInput';
 import { DateInput } from './DateInput';
 import { AsyncSelect } from './AsyncSelect';
+import { MultiSelectAsync } from './MultiSelectAsync';
 
-export { Form, TextInput, Select, PasswordInput, DateInput, AsyncSelect };
+export { Form, TextInput, Select, PasswordInput, DateInput, AsyncSelect, MultiSelectAsync };
