@@ -1,21 +1,17 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { WarehouseSearch } from "./Search";
-import { useLocation, useNavigate } from "react-router-dom";
 import { WarehouseForm } from "../../components/WarehouseForm";
+import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function WarehousesPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  const view = location.pathname.includes("/create") ? "create" : "search";
+  const openModal = useGenericModal();
 
-  const toggleView = () => {
-    if (view === "search") {
-      navigate("/inventory/warehouses/create");
-    } else {
-      navigate("/inventory/warehouses");
-    }
+  const handleOpenCreateModal = () => {
+    openModal({
+      title: "Cadastrar Novo Almoxarifado",
+      Form: WarehouseForm,
+    });
   };
 
   return (
@@ -23,16 +19,16 @@ export function WarehousesPage() {
       <Group justify="space-between">
         <Title order={1}>Almoxarifados</Title>
         <Button 
-          leftSection={view === "search" ? <IconPlus size={18} /> : null}
-          onClick={toggleView}
+          leftSection={<IconPlus size={18} />}
+          onClick={handleOpenCreateModal}
           color="brainstorm.6"
           variant="light"
         >
-          {view === "search" ? "Novo Almoxarifado" : "Voltar para Busca"}
+          Novo Almoxarifado
         </Button>
       </Group>
 
-      {view === "search" ? <WarehouseSearch /> : <WarehouseForm />}
+      <WarehouseSearch />
     </Stack>
   );
 }

@@ -27,34 +27,35 @@ export function ProductSearch() {
     categoryId: "",
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } =
-    useSearch<IProductResponse, ProductSearchFormData>(
-      InventoryService.searchProducts,
-      initialFilters,
-      {
-        action: InventoryService.deactivateProduct,
-        renderContent: (product) => {
-          return (
-            <ActionConfirmContent
-              description="Este produto será desativado do sistema e não aparecerá para novas vendas."
-              itemDetails={`${product.name} (SKU: ${product.sku})`}
-              warningMessage="Certifique-se de que não há estoque ativo que precise ser ajustado."
-            />
-          );
-        },
+  const {
+    loading,
+    pagedData,
+    selectedId,
+    setSelectedId,
+    handleSearch,
+    handleDeactivate,
+  } = useSearch<IProductResponse, ProductSearchFormData>(
+    InventoryService.searchProducts,
+    initialFilters,
+    {
+      action: InventoryService.deactivateProduct,
+      renderContent: (product) => {
+        return (
+          <ActionConfirmContent
+            description="Este produto será desativado do sistema e não aparecerá para novas vendas."
+            itemDetails={`${product.name} (SKU: ${product.sku})`}
+            warningMessage="Certifique-se de que não há estoque ativo que precise ser ajustado."
+          />
+        );
       },
-    );
+    },
+  );
 
   const columns: ColumnConfig<IProductResponse>[] = [
     { key: "sku", label: "SKU" },
     { key: "name", label: "Nome" },
-    { key: "categoryName", label: "Categoria" },
+    { key: "category", label: "Categoria" },
     { key: "uomSymbol", label: "UM" },
-    {
-      key: "averageCost",
-      label: "Custo Médio",
-      render: (item) => `R$ ${item.averageCost?.toFixed(2) || "0,00"}`,
-    },
     {
       key: "isActive",
       label: "Status",
@@ -87,7 +88,6 @@ export function ProductSearch() {
         <AsyncSelect<ICategoryResponse>
           name="categoryId"
           label="Categoria"
-          placeholder="Todas"
           fetcher={fetchCategories}
           getLabel={(item) =>
             item.parentCategoryName

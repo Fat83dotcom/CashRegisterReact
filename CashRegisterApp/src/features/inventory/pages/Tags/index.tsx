@@ -1,21 +1,17 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { TagSearch } from "./Search";
-import { useLocation, useNavigate } from "react-router-dom";
 import { TagForm } from "../../components/TagForm";
+import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function TagsPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const openModal = useGenericModal();
 
-  const view = location.pathname.includes("/create") ? "create" : "search";
-
-  const toggleView = () => {
-    if (view === "search") {
-      navigate("/inventory/tags/create");
-    } else {
-      navigate("/inventory/tags");
-    }
+  const handleOpenCreateModal = () => {
+    openModal({
+      title: "Cadastrar Nova Tag",
+      Form: TagForm,
+    });
   };
 
   return (
@@ -23,16 +19,16 @@ export function TagsPage() {
       <Group justify="space-between">
         <Title order={1}>Gestão de Tags</Title>
         <Button
-          leftSection={view === "search" ? <IconPlus size={18} /> : null}
-          onClick={toggleView}
+          leftSection={<IconPlus size={18} />}
+          onClick={handleOpenCreateModal}
           variant="light"
           color="brainstorm.6"
         >
-          {view === "search" ? "Nova Tag" : "Voltar para Busca"}
+          Nova Tag
         </Button>
       </Group>
 
-      {view === "search" ? <TagSearch /> : <TagForm />}
+      <TagSearch />
     </Stack>
   );
 }

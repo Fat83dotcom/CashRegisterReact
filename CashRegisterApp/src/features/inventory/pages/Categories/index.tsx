@@ -1,21 +1,17 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { CategorySearch } from "./Search";
-import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryForm } from "../../components/CategoryForm";
+import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function CategoriesPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  const view = location.pathname.includes("/create") ? "create" : "search";
+  const openModal = useGenericModal();
 
-  const toggleView = () => {
-    if (view === "search") {
-      navigate("/inventory/categories/create");
-    } else {
-      navigate("/inventory/categories");
-    }
+  const handleOpenCreateModal = () => {
+    openModal({
+      title: "Cadastrar Nova Categoria",
+      Form: CategoryForm,
+    });
   };
 
   return (
@@ -23,16 +19,16 @@ export function CategoriesPage() {
       <Group justify="space-between">
         <Title order={1}>Categorias de Produto</Title>
         <Button 
-          leftSection={view === "search" ? <IconPlus size={18} /> : null}
-          onClick={toggleView}
+          leftSection={<IconPlus size={18} />}
+          onClick={handleOpenCreateModal}
           color="brainstorm.6"
           variant="light"
         >
-          {view === "search" ? "Nova Categoria" : "Voltar para Busca"}
+          Nova Categoria
         </Button>
       </Group>
 
-      {view === "search" ? <CategorySearch /> : <CategoryForm />}
+      <CategorySearch />
     </Stack>
   );
 }
