@@ -1,5 +1,4 @@
 import { Button, Center, Grid, Paper, Title, Stack } from "@mantine/core";
-import { useModals } from "@mantine/modals";
 import {
   Form,
   TextInput,
@@ -18,6 +17,7 @@ import { useState } from "react";
 import { CategoryForm } from "./CategoryForm";
 import { TagForm } from "./TagForm";
 import { UnitForm } from "./UnitForm";
+import { useGenericModal } from "../../../hooks/useGenericModal";
 
 const fetchCategories = async (query: string) => {
   const response = await InventoryService.searchCategories({
@@ -52,46 +52,20 @@ export interface ProductFormProps {
 
 export function ProductForm({ onSuccess }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
-  const modals = useModals();
   let resetForm: (() => void) | undefined;
 
+  const openModal = useGenericModal();
+
   const handleOpenCategoryModal = () => {
-    modals.openModal({
-      title: "Nova Categoria",
-      children: (
-        <CategoryForm
-          onSuccess={() => {
-            modals.closeAll();
-          }}
-        />
-      ),
-    });
+    openModal({ title: "Nova Categoria", Form: CategoryForm });
   };
 
   const handleOpenUnitModal = () => {
-    modals.openModal({
-      title: "Nova Unidade de Medida",
-      children: (
-        <UnitForm
-          onSuccess={() => {
-            modals.closeAll();
-          }}
-        />
-      ),
-    });
+    openModal({ title: "Unidade de Medida", Form: UnitForm });
   };
 
   const handleOpenTagModal = () => {
-    modals.openModal({
-      title: "Nova Tag",
-      children: (
-        <TagForm
-          onSuccess={() => {
-            modals.closeAll();
-          }}
-        />
-      ),
-    });
+    openModal({ title: "Nova Tag", Form: TagForm });
   };
 
   const handleSubmit = async (values: ProductFormData) => {

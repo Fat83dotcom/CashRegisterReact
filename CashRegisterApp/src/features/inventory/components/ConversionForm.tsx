@@ -8,7 +8,6 @@ import {
   Alert,
   Divider,
 } from "@mantine/core";
-import { useModals } from "@mantine/modals";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { Form, TextInput, AsyncSelect } from "../../../components/Form";
 import {
@@ -24,6 +23,7 @@ import type {
 import { useState } from "react";
 import { UnitForm } from "./UnitForm";
 import { ProductForm } from "./ProductForm";
+import { useGenericModal } from "../../../hooks/useGenericModal";
 
 // Extração dos fetchers para fora do componente para evitar recriação (Problema de Identidade de Referência)
 const fetchUnits = async (query: string) => {
@@ -44,23 +44,21 @@ const fetchProducts = async (query: string) => {
   return res.items || [];
 };
 
-export function ConversionForm() {
+export interface ConversionFormProps {
+  onSuccess?: () => void;
+}
+
+export function ConversionForm({ onSuccess }: ConversionFormProps) {
   const [loading, setLoading] = useState(false);
-  const modals = useModals();
+  const openModal = useGenericModal();
   let resetForm: (() => void) | undefined;
 
   const handleOpenUnitModal = () => {
-    modals.openModal({
-      title: "Nova Unidade",
-      children: <UnitForm onSuccess={() => modals.closeAll()} />,
-    });
+    openModal({ title: "Nova Unidade", Form: UnitForm });
   };
 
   const handleOpenProductModal = () => {
-    modals.openModal({
-      title: "Novo Produto",
-      children: <ProductForm onSuccess={() => modals.closeAll()} />,
-    });
+    openModal({ title: "Novo Produto", Form: ProductForm });
   };
 
   const handleSubmit = async (values: ConversionFormData) => {
@@ -72,6 +70,7 @@ export function ConversionForm() {
         if (resetForm) {
           resetForm();
         }
+        if (onSuccess) onSuccess();
       });
     } finally {
       setLoading(false);
