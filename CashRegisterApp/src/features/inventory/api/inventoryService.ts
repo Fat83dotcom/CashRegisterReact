@@ -14,6 +14,7 @@ import type {
   ITagResponse,
   IUnitRequest,
   IUnitResponse,
+  IUpdateProductRequest,
 } from "../interfaces";
 import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
@@ -55,6 +56,23 @@ export const InventoryService = {
           });
           resetForms();
         }
+      });
+  },
+
+  updateProduct: async (
+    id: number,
+    request: IUpdateProductRequest,
+  ): Promise<void> => {
+    return apiClient
+      .put<void, IUpdateProductRequest>(`/${id}/product`, request)
+      .then(() => {
+        notifications.show({
+          title: "Sucesso",
+          message: "Produto atualizado com sucesso.",
+          color: "blue",
+          autoClose: 5000,
+          icon: React.createElement(IconCheck),
+        });
       });
   },
 
