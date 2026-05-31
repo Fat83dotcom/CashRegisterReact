@@ -27,6 +27,16 @@ export interface ICreateProductRequest {
   tagIds?: number[];
 }
 
+export interface IUpdateProductRequest {
+  name: string;
+  sku: string;
+  description?: string | null;
+  ncmCode?: string | null;
+  categoryId: number;
+  baseUomId: number;
+  tagIds?: number[];
+}
+
 export interface ICreateTagRequest {
   name: string;
   colorHex?: string | null;
@@ -81,14 +91,14 @@ export interface ITagResponse {
 }
 
 export interface IProductResponse {
-  id?: number;
-  name?: string;
-  sku?: string;
-  categoryName?: string;
-  uomSymbol?: string;
-  averageCost?: number;
-  isActive?: boolean;
+  id: number;
+  name: string;
+  sku: string;
+  category: string;
+  uomSymbol: string;
+  isActive: boolean;
 }
+
 export interface ICategoryResponse {
   id?: number;
   name?: string;
