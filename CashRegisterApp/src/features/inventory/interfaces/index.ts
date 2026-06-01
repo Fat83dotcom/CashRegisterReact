@@ -25,6 +25,7 @@ export interface ICreateProductRequest {
   categoryId: number;
   baseUomId: number;
   tagIds?: number[];
+  isActive: boolean;
 }
 
 export interface IUpdateProductRequest {
@@ -35,6 +36,7 @@ export interface IUpdateProductRequest {
   categoryId: number;
   baseUomId: number;
   tagIds?: number[];
+  isActive: boolean;
 }
 
 export interface ICreateTagRequest {
@@ -96,6 +98,16 @@ export interface IProductResponse {
   sku: string;
   category: string;
   uomSymbol: string;
+  isActive: boolean;
+}
+
+export interface IUpdateProductResponse {
+  id: number;
+  name: string;
+  sku: string;
+  category: string;
+  uomSymbol: string;
+  tagIds?: number[];
   isActive: boolean;
 }
 

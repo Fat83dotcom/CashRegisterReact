@@ -35,6 +35,10 @@ export const productSchema = z.object({
     z.coerce.number().min(1, "A unidade de medida é obrigatória"),
   ),
   tagIds: z.array(z.string()).optional(),
+  isActive: z.preprocess(
+    (value) => (value === "true" || value === true),
+    z.boolean()
+  ).default(true),
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;

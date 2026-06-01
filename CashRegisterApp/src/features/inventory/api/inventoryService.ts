@@ -15,10 +15,12 @@ import type {
   IUnitRequest,
   IUnitResponse,
   IUpdateProductRequest,
+  IUpdateProductResponse,
 } from "../interfaces";
 import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
 import { IconCheck } from "@tabler/icons-react";
+import type { IUpdateResponse } from "../../../shared/IUpdateResponse";
 
 export const InventoryService = {
   // Warehouses
@@ -62,18 +64,27 @@ export const InventoryService = {
   updateProduct: async (
     id: number,
     request: IUpdateProductRequest,
-  ): Promise<void> => {
+  ): Promise<IUpdateResponse> => {
     return apiClient
-      .put<void, IUpdateProductRequest>(`/${id}/product`, request)
-      .then(() => {
-        notifications.show({
-          title: "Sucesso",
-          message: "Produto atualizado com sucesso.",
-          color: "blue",
-          autoClose: 5000,
-          icon: React.createElement(IconCheck),
-        });
+      .put<IUpdateResponse, IUpdateProductRequest>(`/${id}/product`, request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Produto atualizado com sucesso.",
+            color: "blue",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
       });
+  },
+
+  getProductById: async (id: number): Promise<IUpdateProductResponse> => {
+    return apiClient.get<IUpdateProductResponse>(
+      `/product/${id}/getProductById`,
+    );
   },
 
   searchProducts: async (

@@ -22,7 +22,7 @@ import type {
 } from "../interfaces";
 import { useState } from "react";
 import { UnitForm } from "./UnitForm";
-import { ProductForm } from "./ProductForm";
+import { CreateProductForm } from "./CreateProductForm";
 import { useGenericModal } from "../../../hooks/useGenericModal";
 
 // Extração dos fetchers para fora do componente para evitar recriação (Problema de Identidade de Referência)
@@ -58,7 +58,7 @@ export function ConversionForm({ onSuccess }: ConversionFormProps) {
   };
 
   const handleOpenProductModal = () => {
-    openModal({ title: "Novo Produto", Form: ProductForm });
+    openModal({ title: "Novo Produto", Form: CreateProductForm });
   };
 
   const handleSubmit = async (values: ConversionFormData) => {
