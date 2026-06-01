@@ -11,6 +11,8 @@ import {
 } from "../../../schemas/productSearchSchema";
 import type { IProductResponse, ICategoryResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
+import { UpdateProductForm } from "../../../components/UpdateProductForm";
 
 const fetchCategories = async (query: string) => {
   const response = await InventoryService.searchCategories({
@@ -25,6 +27,15 @@ export function ProductSearch() {
   const initialFilters: ProductSearchFormData = {
     searchTerm: "",
     categoryId: "",
+  };
+
+  const modal = useGenericModal();
+
+  const handleEditTrigger = (id: string | number) => {
+    modal({
+      title: "Editar Produto",
+      Form: (props) => <UpdateProductForm productId={Number(id)} {...props} />,
+    });
   };
 
   const {
@@ -73,7 +84,8 @@ export function ProductSearch() {
       loading={loading}
       onSearch={handleSearch}
       selectedId={selectedId}
-      onRowSelect={setSelectedId}
+      onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+      onRowDoubleClick={handleEditTrigger}
       onDeactivate={handleDeactivate}
     >
       <Grid.Col span={{ base: 12, md: 8 }}>

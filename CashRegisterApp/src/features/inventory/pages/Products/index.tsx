@@ -1,7 +1,7 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { ProductSearch } from "./Search";
-import { ProductForm } from "../../components/ProductForm";
+import { CreateProductForm } from "../../components/CreateProductForm";
 import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function ProductsPage() {
@@ -12,7 +12,7 @@ export function ProductsPage() {
   const handleOpenCreateModal = () => {
     openModal({
       title: "Cadastrar Novo Produto",
-      Form: ProductForm,
+      Form: CreateProductForm,
     });
   };
 

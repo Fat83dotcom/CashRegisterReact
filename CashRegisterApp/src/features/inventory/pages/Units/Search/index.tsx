@@ -59,7 +59,7 @@ export function UnitSearch() {
       loading={loading}
       onSearch={handleSearch}
       selectedId={selectedId}
-      onRowSelect={setSelectedId}
+      onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
       onDeactivate={handleDeactivate}
     >
       <Grid.Col span={12}>

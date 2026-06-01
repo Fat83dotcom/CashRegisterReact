@@ -25,6 +25,7 @@ interface DynamicTableProps<T> {
   selectedId?: string | number | null;
   withPagination?: boolean;
   onRowSelect?: (id: string | number) => void;
+  onRowDoubleClick?: (id: string | number) => void;
   keyExtractor: (item: T) => string | number;
   onDeactivate?: (id: string | number) => void;
   onDelete?: (id: string | number) => void;
@@ -44,6 +45,7 @@ export function DynamicTable<T>({
   keyExtractor,
   selectedId,
   onRowSelect,
+  onRowDoubleClick,
   onDeactivate,
   onDelete,
   withPagination = true,
@@ -75,6 +77,7 @@ export function DynamicTable<T>({
       <Table.Tr
         key={id}
         onClick={() => onRowSelect && onRowSelect(id)}
+        onDoubleClick={() => onRowDoubleClick && onRowDoubleClick(id)}
         style={{ cursor: onRowSelect ? "pointer" : "default" }}
         bg={isSelected ? "var(--mantine-color-blue-light)" : undefined}
       >
