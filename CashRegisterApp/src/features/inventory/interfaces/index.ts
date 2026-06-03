@@ -11,10 +11,17 @@ export interface ICategoryRequest {
   parentCategoryId?: number | null;
 }
 
-export interface IUnitRequest {
+export interface ICreateUnitRequest {
   code: string;
   name: string;
   allowDecimals: boolean;
+}
+
+export interface IUpdateUnitRequest {
+  code: string;
+  name: string;
+  allowDecimals: boolean;
+  isActive: boolean;
 }
 
 export interface ICreateProductRequest {
@@ -83,6 +90,10 @@ export interface ICreateConversionRequest {
   productId?: number | null;
 }
 
+export interface IUpdateConversionRequest extends ICreateConversionRequest {
+  isActive: boolean;
+}
+
 //Responses
 
 export interface ITagResponse {
@@ -101,13 +112,32 @@ export interface IProductResponse {
   isActive: boolean;
 }
 
-export interface IUpdateProductResponse {
+export interface IGetProductByIdResponse {
   id: number;
   name: string;
   sku: string;
-  category: string;
-  uomSymbol: string;
-  tagIds?: number[];
+  description: string | null;
+  ncmCode: string | null;
+  categoryId: number;
+  baseUomId: number;
+  isActive: boolean;
+  tagIds: number[];
+}
+
+export interface IGetUnitByIdResponse {
+  id: number;
+  code: string;
+  name: string;
+  allowDecimals: boolean;
+  isActive: boolean;
+}
+
+export interface IUpdateConversionResponse {
+  id: number;
+  fromUomId: number;
+  toUomId: number;
+  multiplier: number;
+  productId: number | null;
   isActive: boolean;
 }
 
