@@ -10,15 +10,16 @@ import { Form } from "../../../components/Form";
 import { productSchema, type ProductFormData } from "../schemas/productSchema";
 import { InventoryService } from "../api/inventoryService";
 import type {
-  ICreateProductRequest,
-  IUpdateProductResponse,
+  IUpdateProductRequest,
+  IGetProductByIdResponse,
 } from "../interfaces";
 import { useState, useEffect } from "react";
 import { CategoryForm } from "./CategoryForm";
 import { TagForm } from "./TagForm";
-import { UnitForm } from "./UnitForm";
+
 import { useGenericModal } from "../../../hooks/useGenericModal";
 import { ProductFormFields } from "./base/ProductFormFields";
+import { CreateUnitForm } from "./CreateUnitForm";
 
 export interface UpdateProductFormProps {
   productId: number;
@@ -30,9 +31,8 @@ export function UpdateProductForm({
   onSuccess,
 }: UpdateProductFormProps) {
   const [loading, setLoading] = useState(true);
-  const [initialData, setInitialData] = useState<IUpdateProductResponse | null>(
-    null,
-  );
+  const [initialData, setInitialData] =
+    useState<IGetProductByIdResponse | null>(null);
   const modal = useGenericModal();
 
   useEffect(() => {
@@ -48,9 +48,15 @@ export function UpdateProductForm({
 
   const handleSubmit = async (values: ProductFormData) => {
     setLoading(true);
-    const request: ICreateProductRequest = {
-      ...values,
-      tagIds: values.tagIds?.map(Number),
+    const request: IUpdateProductRequest = {
+      name: values.name,
+      sku: values.sku,
+      description: values.description,
+      ncmCode: values.ncmCode,
+      categoryId: Number(values.categoryId),
+      baseUomId: Number(values.baseUomId),
+      tagIds: values.tagIds.map(Number),
+      isActive: values.isActive === "true",
     };
 
     try {
@@ -72,12 +78,12 @@ export function UpdateProductForm({
   const defaultValues: ProductFormData = {
     name: initialData?.name || "",
     sku: initialData?.sku || "",
-    description: (initialData as any)?.description || "",
-    ncmCode: (initialData as any)?.ncmCode || "",
-    categoryId: (initialData as any)?.categoryId,
-    baseUomId: (initialData as any)?.baseUomId,
-    tagIds: (initialData as any)?.tagIds?.map((t: any) => t.toString()) || [],
-    isActive: String(initialData?.isActive ?? true) as any,
+    description: initialData?.description || null,
+    ncmCode: initialData?.ncmCode || null,
+    categoryId: initialData?.categoryId.toString() || "",
+    baseUomId: initialData?.baseUomId.toString() || "",
+    tagIds: initialData?.tagIds.map(String) || [],
+    isActive: String(initialData?.isActive ?? true),
   };
 
   return (
@@ -98,7 +104,7 @@ export function UpdateProductForm({
                   modal({ title: "Nova Categoria", Form: CategoryForm })
                 }
                 onAddUnit={() =>
-                  modal({ title: "Unidade de Medida", Form: UnitForm })
+                  modal({ title: "Unidade de Medida", Form: CreateUnitForm })
                 }
                 onAddTag={() => modal({ title: "Nova Tag", Form: TagForm })}
               />
