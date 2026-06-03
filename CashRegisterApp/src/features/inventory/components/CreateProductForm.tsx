@@ -6,9 +6,10 @@ import type { ICreateProductRequest } from "../interfaces";
 import { useState } from "react";
 import { CategoryForm } from "./CategoryForm";
 import { TagForm } from "./TagForm";
-import { UnitForm } from "./UnitForm";
+
 import { useGenericModal } from "../../../hooks/useGenericModal";
 import { ProductFormFields } from "./base/ProductFormFields";
+import { CreateUnitForm } from "./CreateUnitForm";
 
 export interface ProductFormProps {
   onSuccess?: () => void;
@@ -18,16 +19,21 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
   const openModal = useGenericModal();
 
-  const handleSubmit = async (values: ProductFormData, methods: any) => {
+  const handleSubmit = async (values: ProductFormData) => {
     setLoading(true);
     const request: ICreateProductRequest = {
-      ...values,
-      tagIds: values.tagIds?.map(Number),
+      name: values.name,
+      sku: values.sku,
+      description: values.description,
+      ncmCode: values.ncmCode,
+      categoryId: Number(values.categoryId),
+      baseUomId: Number(values.baseUomId),
+      tagIds: values.tagIds.map(Number),
+      isActive: values.isActive === "true",
     };
 
     try {
       await InventoryService.createProduct(request, () => {
-        methods.reset();
         if (onSuccess) onSuccess();
       });
     } finally {
@@ -42,16 +48,16 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
       </Title>
       <Form
         schema={productSchema}
-        onSubmit={(values, methods) => handleSubmit(values, methods)}
+        onSubmit={handleSubmit}
         defaultValues={{
           name: "",
           sku: "",
-          description: "",
-          ncmCode: "",
-          categoryId: undefined as any,
-          baseUomId: undefined as any,
+          description: null,
+          ncmCode: null,
+          categoryId: "",
+          baseUomId: "",
           tagIds: [],
-          isActive: "true" as any,
+          isActive: "true",
         }}
       >
         {() => {
@@ -62,7 +68,10 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
                   openModal({ title: "Nova Categoria", Form: CategoryForm })
                 }
                 onAddUnit={() =>
-                  openModal({ title: "Unidade de Medida", Form: UnitForm })
+                  openModal({
+                    title: "Unidade de Medida",
+                    Form: CreateUnitForm,
+                  })
                 }
                 onAddTag={() => openModal({ title: "Nova Tag", Form: TagForm })}
               />

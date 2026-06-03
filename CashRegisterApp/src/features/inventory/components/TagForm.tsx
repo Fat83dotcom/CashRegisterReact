@@ -36,7 +36,6 @@ export interface TagFormProps {
 
 export function TagForm({ onSuccess }: TagFormProps) {
   const [loading, setLoading] = useState(false);
-  let resetForm: (() => void) | undefined;
 
   const handleSubmit = async (values: TagFormData) => {
     setLoading(true);
@@ -44,9 +43,6 @@ export function TagForm({ onSuccess }: TagFormProps) {
 
     try {
       await InventoryService.createTag(request, () => {
-        if (resetForm) {
-          resetForm();
-        }
         if (onSuccess) {
           onSuccess();
         }
@@ -69,43 +65,40 @@ export function TagForm({ onSuccess }: TagFormProps) {
           colorHex: "#228be6", // Default Mantine blue
         }}
       >
-        {(methods) => {
-          resetForm = methods.reset;
-          return (
-            <Stack gap="md">
-              <Grid gutter="md">
-                <Grid.Col span={12}>
-                  <TextInput
-                    name="name"
-                    label="Nome da Tag"
-                    placeholder="Ex: Lançamento, Promoção"
-                    withAsterisk
-                  />
-                </Grid.Col>
-                <Grid.Col span={12}>
-                  <ColorInputForm
-                    name="colorHex"
-                    label="Cor de Destaque"
-                    placeholder="Escolha a cor da tag"
-                  />
-                </Grid.Col>
-              </Grid>
+        {() => (
+          <Stack gap="md">
+            <Grid gutter="md">
+              <Grid.Col span={12}>
+                <TextInput
+                  name="name"
+                  label="Nome da Tag"
+                  placeholder="Ex: Lançamento, Promoção"
+                  withAsterisk
+                />
+              </Grid.Col>
+              <Grid.Col span={12}>
+                <ColorInputForm
+                  name="colorHex"
+                  label="Cor de Destaque"
+                  placeholder="Escolha a cor da tag"
+                />
+              </Grid.Col>
+            </Grid>
 
-              <Center mt="xl">
-                <Button
-                  type="submit"
-                  fullWidth
-                  size="md"
-                  color="brainstorm.6"
-                  variant="light"
-                  loading={loading}
-                >
-                  Salvar Tag
-                </Button>
-              </Center>
-            </Stack>
-          );
-        }}
+            <Center mt="xl">
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                color="brainstorm.6"
+                variant="light"
+                loading={loading}
+              >
+                Salvar Tag
+              </Button>
+            </Center>
+          </Stack>
+        )}
       </Form>
     </Paper>
   );

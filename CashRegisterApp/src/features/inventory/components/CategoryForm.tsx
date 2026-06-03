@@ -23,7 +23,6 @@ export interface CategoryFormProps {
 
 export function CategoryForm({ onSuccess }: CategoryFormProps) {
   const [loading, setLoading] = useState(false);
-  let resetForm: (() => void) | undefined;
 
   const handleSubmit = async (values: CategoryFormData) => {
     setLoading(true);
@@ -31,9 +30,6 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
 
     try {
       await InventoryService.createCategory(request, () => {
-        if (resetForm) {
-          resetForm();
-        }
         if (onSuccess) {
           onSuccess();
         }
@@ -56,9 +52,7 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
           parentCategoryId: null,
         }}
       >
-        {(methods) => {
-          resetForm = methods.reset;
-          return (
+        {() => (
             <Stack gap="md">
               <Grid gutter="md">
                 <Grid.Col span={12}>
@@ -96,8 +90,7 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
                 </Button>
               </Center>
             </Stack>
-          );
-        }}
+        )}
       </Form>
     </Paper>
   );
