@@ -12,27 +12,44 @@ import {
 } from "../../../schemas/unitSearchSchema";
 import type { IUnitResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
+import { UpdateUnitForm } from "../../../components/UpdateUnitForm";
 
 export function UnitSearch() {
   const initialFilters: UnitSearchFormData = {
     searchTerm: "",
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } =
-    useSearch<IUnitResponse, UnitSearchFormData>(
-      InventoryService.searchUnits,
-      initialFilters,
-      {
-        action: InventoryService.deactivateUnit,
-        renderContent: (unit) => (
-          <ActionConfirmContent
-            description="Esta unidade de medida será desativada do sistema e não aparecerá para novas seleções."
-            itemDetails={`${unit.name} (${unit.code})`}
-            warningMessage="Produtos e conversões que já utilizam esta unidade manterão o histórico, mas você não poderá criar novas associações."
-          />
-        ),
-      }
-    );
+  const modal = useGenericModal();
+
+  const handleEditTrigger = (id: string | number) => {
+    modal({
+      title: "Editar Unidade de Medida",
+      Form: (props) => <UpdateUnitForm unitId={Number(id)} {...props} />,
+    });
+  };
+
+  const {
+    loading,
+    pagedData,
+    selectedId,
+    setSelectedId,
+    handleSearch,
+    handleDeactivate,
+  } = useSearch<IUnitResponse, UnitSearchFormData>(
+    InventoryService.searchUnits,
+    initialFilters,
+    {
+      action: InventoryService.deactivateUnit,
+      renderContent: (unit) => (
+        <ActionConfirmContent
+          description="Esta unidade de medida será desativada do sistema e não aparecerá para novas seleções."
+          itemDetails={`${unit.name} (${unit.code})`}
+          warningMessage="Produtos e conversões que já utilizam esta unidade manterão o histórico, mas você não poderá criar novas associações."
+        />
+      ),
+    },
+  );
 
   const columns: ColumnConfig<IUnitResponse>[] = [
     { key: "code", label: "Sigla/Código" },
@@ -60,6 +77,7 @@ export function UnitSearch() {
       onSearch={handleSearch}
       selectedId={selectedId}
       onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+      onRowDoubleClick={handleEditTrigger}
       onDeactivate={handleDeactivate}
     >
       <Grid.Col span={12}>

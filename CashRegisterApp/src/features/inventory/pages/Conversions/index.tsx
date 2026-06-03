@@ -1,7 +1,7 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { ConversionSearch } from "./Search";
-import { ConversionForm } from "../../components/ConversionForm";
+import { CreateConversionForm } from "../../components/CreateConversionForm";
 import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function ConversionsPage() {
@@ -10,7 +10,7 @@ export function ConversionsPage() {
   const handleOpenCreateModal = () => {
     openModal({
       title: "Cadastrar Nova Regra",
-      Form: ConversionForm,
+      Form: CreateConversionForm,
     });
   };
 
@@ -18,7 +18,7 @@ export function ConversionsPage() {
     <Stack gap="lg">
       <Group justify="space-between">
         <Title order={1}>Regras de Conversão</Title>
-        <Button 
+        <Button
           leftSection={<IconPlus size={18} />}
           onClick={handleOpenCreateModal}
           color="brainstorm.6"

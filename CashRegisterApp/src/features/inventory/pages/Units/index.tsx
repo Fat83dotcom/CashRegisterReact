@@ -1,7 +1,7 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { UnitSearch } from "./Search";
-import { UnitForm } from "../../components/UnitForm";
+import { CreateUnitForm } from "../../components/CreateUnitForm";
 import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function UnitsPage() {
@@ -10,7 +10,7 @@ export function UnitsPage() {
   const handleOpenCreateModal = () => {
     openModal({
       title: "Cadastrar Nova Unidade",
-      Form: UnitForm,
+      Form: CreateUnitForm,
     });
   };
 

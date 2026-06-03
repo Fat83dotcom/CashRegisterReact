@@ -11,11 +11,15 @@ import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageT
 import { InventoryService } from "../../../api/inventoryService";
 import type { IConversionResponse } from "../../../interfaces";
 import { TextInput } from "../../../../../components/Form/TextInput";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
+import { UpdateConversionForm } from "../../../components/UpdateConversionForm";
 
 export function ConversionSearch() {
   const initialFilters: ConversionSearchFormData = {
     searchTerm: "",
   };
+
+  const modal = useGenericModal();
 
   const {
     loading,
@@ -76,6 +80,15 @@ export function ConversionSearch() {
     },
   ];
 
+  const handleEditTrigger = (id: string | number) => {
+    modal({
+      title: "Editar Regra de Conversão",
+      Form: (props) => (
+        <UpdateConversionForm conversionId={Number(id)} {...props} />
+      ),
+    });
+  };
+
   return (
     <SearchPageTemplate
       title="Consulta de Regras de Conversão"
@@ -87,6 +100,7 @@ export function ConversionSearch() {
       onSearch={handleSearch}
       selectedId={selectedId}
       onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+      onRowDoubleClick={handleEditTrigger}
       onDeactivate={handleDeactivate}
     >
       <Grid.Col span={12}>
