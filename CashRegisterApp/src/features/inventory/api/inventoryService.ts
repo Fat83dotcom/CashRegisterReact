@@ -10,12 +10,16 @@ import type {
   ICreateProductRequest,
   ICreateTagRequest,
   IGetAllUnitsResponse,
+  IGetProductByIdResponse,
+  IGetUnitByIdResponse,
   IProductResponse,
   ITagResponse,
-  IUnitRequest,
+  ICreateUnitRequest,
   IUnitResponse,
+  IUpdateConversionRequest,
+  IUpdateConversionResponse,
   IUpdateProductRequest,
-  IUpdateProductResponse,
+  IUpdateUnitRequest,
 } from "../interfaces";
 import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
@@ -66,7 +70,10 @@ export const InventoryService = {
     request: IUpdateProductRequest,
   ): Promise<IUpdateResponse> => {
     return apiClient
-      .put<IUpdateResponse, IUpdateProductRequest>(`/${id}/product`, request)
+      .put<
+        IUpdateResponse,
+        IUpdateProductRequest
+      >(`/product/${id}/update`, request)
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -81,9 +88,9 @@ export const InventoryService = {
       });
   },
 
-  getProductById: async (id: number): Promise<IUpdateProductResponse> => {
-    return apiClient.get<IUpdateProductResponse>(
-      `/product/${id}/getProductById`,
+  getProductById: async (id: number): Promise<IGetProductByIdResponse> => {
+    return apiClient.get<IGetProductByIdResponse>(
+      `/product/${id}/GetProductById`,
     );
   },
 
@@ -187,9 +194,9 @@ export const InventoryService = {
   },
 
   // Units
-  createUnit: async (request: IUnitRequest, resetForms: () => void) => {
+  createUnit: async (request: ICreateUnitRequest, resetForms: () => void) => {
     apiClient
-      .post<ICreateResponse, IUnitRequest>("/UnitOfMeasure", request)
+      .post<ICreateResponse, ICreateUnitRequest>("/UnitOfMeasure", request)
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -202,6 +209,35 @@ export const InventoryService = {
           resetForms();
         }
       });
+  },
+
+  updateUnit: async (
+    id: number,
+    request: IUpdateUnitRequest,
+  ): Promise<IUpdateResponse> => {
+    return apiClient
+      .put<
+        IUpdateResponse,
+        IUpdateUnitRequest
+      >(`/UnitOfMeasure/${id}/update`, request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Unidade de medida atualizada com sucesso.",
+            color: "blue",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
+  getUnitById: async (id: number): Promise<IGetUnitByIdResponse> => {
+    return apiClient.get<IGetUnitByIdResponse>(
+      `/UnitOfMeasure/${id}/GetUnitById`,
+    );
   },
 
   GetAllUnits: async () => {
@@ -269,6 +305,35 @@ export const InventoryService = {
 
     return apiClient.get<IPagedResponse<IConversionResponse>>(
       `/UomConversion/search?${queryParams.toString()}`,
+    );
+  },
+
+  updateConversion: async (
+    id: number,
+    request: IUpdateConversionRequest,
+  ): Promise<IUpdateResponse> => {
+    return apiClient
+      .put<
+        IUpdateResponse,
+        IUpdateConversionRequest
+      >(`/UomConversion/${id}/update`, request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Regra de conversão atualizada com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
+  getConversionById: async (id: number): Promise<IUpdateConversionResponse> => {
+    return apiClient.get<IUpdateConversionResponse>(
+      `/UomConversion/${id}/GetConversionById`,
     );
   },
 
