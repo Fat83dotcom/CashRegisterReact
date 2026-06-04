@@ -25,7 +25,19 @@ export function UnitSearch() {
   const handleEditTrigger = (id: string | number) => {
     modal({
       title: "Editar Unidade de Medida",
-      Form: (props) => <UpdateUnitForm unitId={Number(id)} {...props} />,
+      Form: (props) => (
+        <UpdateUnitForm
+          unitId={Number(id)}
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(
+              { searchTerm: "" },
+              pagedData.page,
+              pagedData.pageSize,
+            );
+          }}
+        />
+      ),
     });
   };
 

@@ -25,7 +25,7 @@ import { CreateUnitForm } from "./CreateUnitForm";
 
 export interface UpdateConversionFormProps {
   conversionId: number;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 export function UpdateConversionForm({
@@ -59,8 +59,11 @@ export function UpdateConversionForm({
     };
 
     try {
-      await InventoryService.updateConversion(conversionId, request);
-      if (onSuccess) onSuccess();
+      await InventoryService.updateConversion(conversionId, request).then(
+        (response) => {
+          if (response && response.id > 0) onSuccess();
+        },
+      );
     } finally {
       setLoading(false);
     }

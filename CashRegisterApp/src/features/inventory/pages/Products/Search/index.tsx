@@ -34,7 +34,19 @@ export function ProductSearch() {
   const handleEditTrigger = (id: string | number) => {
     modal({
       title: "Editar Produto",
-      Form: (props) => <UpdateProductForm productId={Number(id)} {...props} />,
+      Form: (props) => (
+        <UpdateProductForm
+          productId={Number(id)}
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(
+              { searchTerm: "" },
+              pagedData.page,
+              pagedData.pageSize,
+            );
+          }}
+        />
+      ),
     });
   };
 

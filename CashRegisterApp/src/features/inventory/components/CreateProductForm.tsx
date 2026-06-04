@@ -5,7 +5,7 @@ import { InventoryService } from "../api/inventoryService";
 import type { ICreateProductRequest } from "../interfaces";
 import { useState } from "react";
 import { CategoryForm } from "./CategoryForm";
-import { TagForm } from "./TagForm";
+import { CreateTagForm } from "./CreateTagForm";
 
 import { useGenericModal } from "../../../hooks/useGenericModal";
 import { ProductFormFields } from "./base/ProductFormFields";
@@ -73,7 +73,7 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
                     Form: CreateUnitForm,
                   })
                 }
-                onAddTag={() => openModal({ title: "Nova Tag", Form: TagForm })}
+                onAddTag={() => openModal({ title: "Nova Tag", Form: CreateTagForm })}
               />
 
               <Center mt="xl">

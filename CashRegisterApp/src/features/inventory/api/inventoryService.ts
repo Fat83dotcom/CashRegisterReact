@@ -20,6 +20,10 @@ import type {
   IUpdateConversionResponse,
   IUpdateProductRequest,
   IUpdateUnitRequest,
+  IUpdateTagRequest,
+  IGetTagByIdResponse,
+  ICreateWarehouseRequest,
+  IUpdateWarehouseRequest,
 } from "../interfaces";
 import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
@@ -31,17 +35,71 @@ export const InventoryService = {
   searchWarehouses: async (
     params: SearchParams & { searchTerm?: string },
   ): Promise<IPagedResponse<IWarehouseResponse>> => {
-    console.log("Searching Warehouses API:", params);
-    return {
-      items: [],
-      totalCount: 0,
-      page: params.page,
-      pageSize: params.pageSize,
-      totalPages: 0,
-    };
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.searchTerm) {
+      queryParams.append("Term", params.searchTerm);
+    }
+
+    return apiClient.get<IPagedResponse<IWarehouseResponse>>(
+      `/warehouses/search?${queryParams.toString()}`,
+    );
   },
+
+  createWarehouse: async (
+    request: ICreateWarehouseRequest,
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/warehouses", {
+        Name: request.name,
+        Type: request.type,
+      })
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Almoxarifado criado com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
+  updateWarehouse: async (
+    id: number,
+    request: IUpdateWarehouseRequest,
+  ): Promise<IUpdateResponse> => {
+    return apiClient
+      .put<IUpdateResponse, any>(`/warehouses/${id}/UpdateWarehouse`, {
+        Name: request.name,
+        Type: request.type,
+        IsActive: request.isActive,
+      })
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Almoxarifado atualizado com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
+  getWarehouseById: async (id: number): Promise<IWarehouseResponse> => {
+    return apiClient.get<IWarehouseResponse>(`/warehouses/${id}/GetWarehouseById`);
+  },
+
   deactivateWarehouse: async (id: string | number): Promise<void> => {
-    console.log("Deactivating Warehouse API:", id);
+    return apiClient.put<void, {}>(`/warehouses/${id}/DeactivateWarehouse`, {});
   },
 
   // Products
@@ -135,6 +193,30 @@ export const InventoryService = {
       });
   },
 
+  updateTag: async (
+    id: number,
+    request: IUpdateTagRequest,
+  ): Promise<IUpdateResponse> => {
+    return apiClient
+      .put<IUpdateResponse, IUpdateTagRequest>(`/tag/${id}/update`, request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Tag atualizada com sucesso.",
+            color: "blue",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
+  getTagById: async (id: number): Promise<IGetTagByIdResponse> => {
+    return apiClient.get<IGetTagByIdResponse>(`/tag/${id}/GetTagById`);
+  },
+
   searchTags: async (
     params: SearchParams & { searchTerm?: string },
   ): Promise<IPagedResponse<ITagResponse>> => {
@@ -225,7 +307,7 @@ export const InventoryService = {
           notifications.show({
             title: "Sucesso",
             message: "Unidade de medida atualizada com sucesso.",
-            color: "blue",
+            color: "green",
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });

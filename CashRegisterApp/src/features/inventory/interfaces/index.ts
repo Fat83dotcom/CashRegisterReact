@@ -6,6 +6,17 @@ export interface IWarehouseRequest {
   createdAt: string;
 }
 
+export interface ICreateWarehouseRequest {
+  name: string;
+  type: string;
+}
+
+export interface IUpdateWarehouseRequest {
+  name: string;
+  type: string;
+  isActive: boolean;
+}
+
 export interface ICategoryRequest {
   name: string;
   parentCategoryId?: number | null;
@@ -51,10 +62,21 @@ export interface ICreateTagRequest {
   colorHex?: string | null;
 }
 
+export interface IUpdateTagRequest extends ICreateTagRequest {
+  isActive: boolean;
+}
+
 export interface ITagRequest {
   id: number;
   name: string;
   colorHex?: string | null;
+}
+
+export interface IGetTagByIdResponse {
+  id: number;
+  name: string;
+  colorHex?: string | null;
+  isActive: boolean;
 }
 
 export interface IProductRequest {

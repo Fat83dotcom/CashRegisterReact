@@ -9,22 +9,16 @@ import {
 import { Form } from "../../../components/Form";
 import { unitSchema, type UnitFormData } from "../schemas/unitSchema";
 import { InventoryService } from "../api/inventoryService";
-import type {
-  IUpdateUnitRequest,
-  IGetUnitByIdResponse,
-} from "../interfaces";
+import type { IUpdateUnitRequest, IGetUnitByIdResponse } from "../interfaces";
 import { useState, useEffect } from "react";
 import { UnitFormFields } from "./UnitFormFields";
 
 export interface UpdateUnitFormProps {
   unitId: number;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
-export function UpdateUnitForm({
-  unitId,
-  onSuccess,
-}: UpdateUnitFormProps) {
+export function UpdateUnitForm({ unitId, onSuccess }: UpdateUnitFormProps) {
   const [loading, setLoading] = useState(true);
   const [initialData, setInitialData] = useState<IGetUnitByIdResponse | null>(
     null,
@@ -51,8 +45,9 @@ export function UpdateUnitForm({
     };
 
     try {
-      await InventoryService.updateUnit(unitId, request);
-      if (onSuccess) onSuccess();
+      await InventoryService.updateUnit(unitId, request).then((response) => {
+        if (response && response.id > 0) onSuccess();
+      });
     } finally {
       setLoading(false);
     }

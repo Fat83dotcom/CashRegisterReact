@@ -1,7 +1,7 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { TagSearch } from "./Search";
-import { TagForm } from "../../components/TagForm";
+import { CreateTagForm } from "../../components/CreateTagForm";
 import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function TagsPage() {
@@ -10,7 +10,7 @@ export function TagsPage() {
   const handleOpenCreateModal = () => {
     openModal({
       title: "Cadastrar Nova Tag",
-      Form: TagForm,
+      Form: CreateTagForm,
     });
   };
 

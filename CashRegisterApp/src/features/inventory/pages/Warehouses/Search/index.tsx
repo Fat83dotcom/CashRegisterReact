@@ -3,7 +3,7 @@ import { IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
 import { TextInput } from "../../../../../components/Form";
-
+import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
 import {
   warehouseSearchSchema,
@@ -11,17 +11,56 @@ import {
 } from "../../../schemas/warehouseSearchSchema";
 import type { IWarehouseResponse } from "../../../interfaces/IWarehouseResponse";
 import { InventoryService } from "../../../api/inventoryService";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
+import { UpdateWarehouseForm } from "../../../components/UpdateWarehouseForm";
 
 export function WarehouseSearch() {
   const initialFilters: WarehouseSearchFormData = {
     searchTerm: "",
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch } =
-    useSearch<IWarehouseResponse, WarehouseSearchFormData>(
-      InventoryService.searchWarehouses,
-      initialFilters,
-    );
+  const modal = useGenericModal();
+
+  const {
+    loading,
+    pagedData,
+    selectedId,
+    setSelectedId,
+    handleSearch,
+    handleDeactivate,
+  } = useSearch<IWarehouseResponse, WarehouseSearchFormData>(
+    InventoryService.searchWarehouses,
+    initialFilters,
+    {
+      action: InventoryService.deactivateWarehouse,
+      renderContent: (warehouse) => (
+        <ActionConfirmContent
+          description="Este almoxarifado será desativado e não poderá ser usado para novas movimentações."
+          itemDetails={`${warehouse.name} (Tipo: ${warehouse.type})`}
+          warningMessage="Verifique se há estoques pendentes neste local."
+        />
+      ),
+    }
+  );
+
+  const handleEditTrigger = (id: string | number) => {
+    modal({
+      title: "Editar Almoxarifado",
+      Form: (props) => (
+        <UpdateWarehouseForm
+          id={Number(id)}
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(
+              initialFilters,
+              pagedData.page,
+              pagedData.pageSize,
+            );
+          }}
+        />
+      ),
+    });
+  };
 
   const columns: ColumnConfig<IWarehouseResponse>[] = [
     { key: "name", label: "Nome" },
@@ -32,16 +71,6 @@ export function WarehouseSearch() {
       render: (item) => (item.isActive ? "Ativo" : "Inativo"),
     },
   ];
-
-  const handleDeactivate = async (id: string | number) => {
-    try {
-      await InventoryService.deactivateWarehouse(id);
-      handleSearch(initialFilters, pagedData.page);
-      setSelectedId(null);
-    } catch (error) {
-      console.error("Erro ao desativar almoxarifado:", error);
-    }
-  };
 
   return (
     <SearchPageTemplate
@@ -54,6 +83,7 @@ export function WarehouseSearch() {
       onSearch={handleSearch}
       selectedId={selectedId}
       onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+      onRowDoubleClick={handleEditTrigger}
       onDeactivate={handleDeactivate}
     >
       <Grid.Col span={12}>

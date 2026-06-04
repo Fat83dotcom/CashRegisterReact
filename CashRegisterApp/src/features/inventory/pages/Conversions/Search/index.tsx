@@ -84,7 +84,17 @@ export function ConversionSearch() {
     modal({
       title: "Editar Regra de Conversão",
       Form: (props) => (
-        <UpdateConversionForm conversionId={Number(id)} {...props} />
+        <UpdateConversionForm
+          conversionId={Number(id)}
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(
+              { searchTerm: "" },
+              pagedData.page,
+              pagedData.pageSize,
+            );
+          }}
+        />
       ),
     });
   };

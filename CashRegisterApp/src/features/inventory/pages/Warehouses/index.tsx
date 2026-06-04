@@ -1,7 +1,7 @@
 import { Title, Stack, Group, Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { WarehouseSearch } from "./Search";
-import { WarehouseForm } from "../../components/WarehouseForm";
+import { CreateWarehouseForm } from "../../components/CreateWarehouseForm";
 import { useGenericModal } from "../../../../hooks/useGenericModal";
 
 export function WarehousesPage() {
@@ -10,7 +10,13 @@ export function WarehousesPage() {
   const handleOpenCreateModal = () => {
     openModal({
       title: "Cadastrar Novo Almoxarifado",
-      Form: WarehouseForm,
+      Form: (props) => (
+        <CreateWarehouseForm
+          onSuccess={() => {
+            props.onSuccess();
+          }}
+        />
+      ),
     });
   };
 
@@ -18,7 +24,7 @@ export function WarehousesPage() {
     <Stack gap="lg">
       <Group justify="space-between">
         <Title order={1}>Almoxarifados</Title>
-        <Button 
+        <Button
           leftSection={<IconPlus size={18} />}
           onClick={handleOpenCreateModal}
           color="brainstorm.6"

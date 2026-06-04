@@ -7,6 +7,7 @@ export const tagSchema = z.object({
     .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Cor inválida. Use o formato hexadecimal (ex: #FF0000)")
     .optional()
     .nullable(),
+  isActive: z.string().default("true"),
 });
 
 export type TagFormData = z.infer<typeof tagSchema>;

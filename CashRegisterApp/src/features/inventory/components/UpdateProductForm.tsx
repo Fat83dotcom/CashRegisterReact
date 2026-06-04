@@ -15,15 +15,15 @@ import type {
 } from "../interfaces";
 import { useState, useEffect } from "react";
 import { CategoryForm } from "./CategoryForm";
-import { TagForm } from "./TagForm";
 
 import { useGenericModal } from "../../../hooks/useGenericModal";
 import { ProductFormFields } from "./base/ProductFormFields";
 import { CreateUnitForm } from "./CreateUnitForm";
+import { CreateTagForm } from "./CreateTagForm";
 
 export interface UpdateProductFormProps {
   productId: number;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 export function UpdateProductForm({
@@ -60,8 +60,11 @@ export function UpdateProductForm({
     };
 
     try {
-      await InventoryService.updateProduct(productId, request);
-      if (onSuccess) onSuccess();
+      await InventoryService.updateProduct(productId, request).then(
+        (response) => {
+          if (response && response.id > 0) onSuccess();
+        },
+      );
     } finally {
       setLoading(false);
     }
@@ -106,7 +109,9 @@ export function UpdateProductForm({
                 onAddUnit={() =>
                   modal({ title: "Unidade de Medida", Form: CreateUnitForm })
                 }
-                onAddTag={() => modal({ title: "Nova Tag", Form: TagForm })}
+                onAddTag={() =>
+                  modal({ title: "Nova Tag", Form: CreateTagForm })
+                }
               />
 
               <Center mt="xl">

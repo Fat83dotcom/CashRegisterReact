@@ -11,10 +11,29 @@ import {
 } from "../../../schemas/tagSearchSchema";
 import type { ITagResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
+import { UpdateTagForm } from "../../../components/UpdateTagForm";
 
 export function TagSearch() {
   const initialFilters: TagSearchFormData = {
     searchTerm: "",
+  };
+
+  const modal = useGenericModal();
+
+  const handleEditTrigger = (id: string | number) => {
+    modal({
+      title: "Editar Tag",
+      Form: (props) => (
+        <UpdateTagForm
+          tagId={Number(id)}
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch();
+          }}
+        />
+      ),
+    });
   };
 
   const {
@@ -70,6 +89,7 @@ export function TagSearch() {
       onSearch={handleSearch}
       selectedId={selectedId}
       onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+      onRowDoubleClick={handleEditTrigger}
       onDeactivate={handleDeactivate}
     >
       <Grid.Col span={12}>
