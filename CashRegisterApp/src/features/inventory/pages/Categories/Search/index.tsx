@@ -1,5 +1,5 @@
-import { Grid } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Button, Grid } from "@mantine/core";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
 import { TextInput } from "../../../../../components/Form";
@@ -11,10 +11,21 @@ import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageT
 import { InventoryService } from "../../../api/inventoryService";
 import type { ICategoryResponse } from "../../../interfaces";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
+import { CategoryForm } from "../../components/CategoryForm";
 
 export function CategorySearch() {
   const initialFilters: CategorySearchFormData = {
     name: "",
+  };
+
+  const modal = useGenericModal();
+
+  const handleOpenCreateModal = () => {
+    modal({
+      title: "Cadastrar Nova Categoria",
+      Form: CategoryForm,
+    });
   };
 
   const {
@@ -58,26 +69,42 @@ export function CategorySearch() {
   ];
 
   return (
-    <SearchPageTemplate
-      title="Consulta de Categorias"
-      schema={categorySearchSchema}
-      defaultValues={initialFilters}
-      columns={columns}
-      pagedData={pagedData}
-      loading={loading}
-      onSearch={handleSearch}
-      selectedId={selectedId}
-      onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
-      onDeactivate={handleDeactivate}
-    >
-      <Grid.Col span={12}>
-        <TextInput
-          name="name"
-          label="Nome"
-          placeholder="Nome da categoria"
-          leftSection={<IconSearch size={18} stroke={1.5} />}
-        />
-      </Grid.Col>
-    </SearchPageTemplate>
+    <>
+      <Grid>
+        <Grid.Col span={12} ta="right">
+          <Button
+            leftSection={<IconPlus size={18} />}
+            onClick={handleOpenCreateModal}
+            color="brainstorm.6"
+            variant="light"
+          >
+            Nova Categoria
+          </Button>
+        </Grid.Col>
+        <Grid.Col>
+          <SearchPageTemplate
+            title="Consulta de Categorias"
+            schema={categorySearchSchema}
+            defaultValues={initialFilters}
+            columns={columns}
+            pagedData={pagedData}
+            loading={loading}
+            onSearch={handleSearch}
+            selectedId={selectedId}
+            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onDeactivate={handleDeactivate}
+          >
+            <Grid.Col span={12}>
+              <TextInput
+                name="name"
+                label="Nome"
+                placeholder="Nome da categoria"
+                leftSection={<IconSearch size={18} stroke={1.5} />}
+              />
+            </Grid.Col>
+          </SearchPageTemplate>
+        </Grid.Col>
+      </Grid>
+    </>
   );
 }

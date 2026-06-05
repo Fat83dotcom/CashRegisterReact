@@ -1,5 +1,5 @@
-import { Grid } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Button, Grid } from "@mantine/core";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
@@ -13,6 +13,7 @@ import type { IConversionResponse } from "../../../interfaces";
 import { TextInput } from "../../../../../components/Form/TextInput";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateConversionForm } from "../../../components/UpdateConversionForm";
+import { CreateConversionForm } from "../../components/CreateConversionForm";
 
 export function ConversionSearch() {
   const initialFilters: ConversionSearchFormData = {
@@ -20,6 +21,13 @@ export function ConversionSearch() {
   };
 
   const modal = useGenericModal();
+
+  const handleOpenCreateModal = () => {
+    modal({
+      title: "Cadastrar Nova Regra",
+      Form: CreateConversionForm,
+    });
+  };
 
   const {
     loading,
@@ -88,11 +96,7 @@ export function ConversionSearch() {
           conversionId={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(
-              { searchTerm: "" },
-              pagedData.page,
-              pagedData.pageSize,
-            );
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
           }}
         />
       ),
@@ -100,27 +104,43 @@ export function ConversionSearch() {
   };
 
   return (
-    <SearchPageTemplate
-      title="Consulta de Regras de Conversão"
-      schema={conversionSearchSchema}
-      defaultValues={initialFilters}
-      columns={columns}
-      pagedData={pagedData}
-      loading={loading}
-      onSearch={handleSearch}
-      selectedId={selectedId}
-      onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
-      onRowDoubleClick={handleEditTrigger}
-      onDeactivate={handleDeactivate}
-    >
-      <Grid.Col span={12}>
-        <TextInput
-          name="searchTerm"
-          label="Pesquisar"
-          placeholder="Qualquer coisa"
-          leftSection={<IconSearch size={18} stroke={1.5} />}
-        />
-      </Grid.Col>
-    </SearchPageTemplate>
+    <>
+      <Grid>
+        <Grid.Col span={12} ta="right">
+          <Button
+            leftSection={<IconPlus size={18} />}
+            onClick={handleOpenCreateModal}
+            color="brainstorm.6"
+            variant="light"
+          >
+            Nova Regra
+          </Button>
+        </Grid.Col>
+        <Grid.Col>
+          <SearchPageTemplate
+            title="Consulta de Regras de Conversão"
+            schema={conversionSearchSchema}
+            defaultValues={initialFilters}
+            columns={columns}
+            pagedData={pagedData}
+            loading={loading}
+            onSearch={handleSearch}
+            selectedId={selectedId}
+            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onRowDoubleClick={handleEditTrigger}
+            onDeactivate={handleDeactivate}
+          >
+            <Grid.Col span={12}>
+              <TextInput
+                name="searchTerm"
+                label="Pesquisar"
+                placeholder="Qualquer coisa"
+                leftSection={<IconSearch size={18} stroke={1.5} />}
+              />
+            </Grid.Col>
+          </SearchPageTemplate>
+        </Grid.Col>
+      </Grid>
+    </>
   );
 }

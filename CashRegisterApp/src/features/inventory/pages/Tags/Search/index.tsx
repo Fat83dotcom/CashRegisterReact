@@ -1,5 +1,5 @@
-import { Grid, ColorSwatch, Group, Text } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Button, Grid, ColorSwatch, Group, Text } from "@mantine/core";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
 import { TextInput } from "../../../../../components/Form";
@@ -13,6 +13,7 @@ import type { ITagResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateTagForm } from "../../../components/UpdateTagForm";
+import { CreateTagForm } from "../../components/CreateTagForm";
 
 export function TagSearch() {
   const initialFilters: TagSearchFormData = {
@@ -20,6 +21,13 @@ export function TagSearch() {
   };
 
   const modal = useGenericModal();
+
+  const handleOpenCreateModal = () => {
+    modal({
+      title: "Cadastrar Nova Tag",
+      Form: CreateTagForm,
+    });
+  };
 
   const handleEditTrigger = (id: string | number) => {
     modal({
@@ -29,7 +37,7 @@ export function TagSearch() {
           tagId={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
           }}
         />
       ),
@@ -79,27 +87,43 @@ export function TagSearch() {
   ];
 
   return (
-    <SearchPageTemplate
-      title="Consulta de Tags"
-      schema={tagSearchSchema}
-      defaultValues={initialFilters}
-      columns={columns}
-      pagedData={pagedData}
-      loading={loading}
-      onSearch={handleSearch}
-      selectedId={selectedId}
-      onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
-      onRowDoubleClick={handleEditTrigger}
-      onDeactivate={handleDeactivate}
-    >
-      <Grid.Col span={12}>
-        <TextInput
-          name="searchTerm"
-          label="Nome da Tag"
-          placeholder="Pesquisar..."
-          leftSection={<IconSearch size={18} stroke={1.5} />}
-        />
-      </Grid.Col>
-    </SearchPageTemplate>
+    <>
+      <Grid>
+        <Grid.Col span={12} ta="right">
+          <Button
+            leftSection={<IconPlus size={18} />}
+            onClick={handleOpenCreateModal}
+            color="brainstorm.6"
+            variant="light"
+          >
+            Nova Tag
+          </Button>
+        </Grid.Col>
+        <Grid.Col>
+          <SearchPageTemplate
+            title="Consulta de Tags"
+            schema={tagSearchSchema}
+            defaultValues={initialFilters}
+            columns={columns}
+            pagedData={pagedData}
+            loading={loading}
+            onSearch={handleSearch}
+            selectedId={selectedId}
+            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onRowDoubleClick={handleEditTrigger}
+            onDeactivate={handleDeactivate}
+          >
+            <Grid.Col span={12}>
+              <TextInput
+                name="searchTerm"
+                label="Nome da Tag"
+                placeholder="Pesquisar..."
+                leftSection={<IconSearch size={18} stroke={1.5} />}
+              />
+            </Grid.Col>
+          </SearchPageTemplate>
+        </Grid.Col>
+      </Grid>
+    </>
   );
 }

@@ -36,8 +36,6 @@ export function SearchContainer({
               gradient={{ from: "brainstorm.6", to: "brainstorm.4", deg: 45 }}
               loading={loading}
               onClick={() => {
-                // Se não houver um formulário pai gerenciando,
-                // ele chama o onSearch manualmente.
                 if (onSearch) onSearch();
               }}
               leftSection={<IconSearch size={18} />}
