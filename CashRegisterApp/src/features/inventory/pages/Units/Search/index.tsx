@@ -14,7 +14,7 @@ import type { IUnitResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateUnitForm } from "../../../components/UpdateUnitForm";
-import { CreateUnitForm } from "../../components/CreateUnitForm";
+import { CreateUnitForm } from "../../../components/CreateUnitForm";
 
 export function UnitSearch() {
   const initialFilters: UnitSearchFormData = {
@@ -109,7 +109,9 @@ export function UnitSearch() {
             loading={loading}
             onSearch={handleSearch}
             selectedId={selectedId}
-            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onRowSelect={(id) =>
+              setSelectedId((prev) => (prev === id ? null : id))
+            }
             onRowDoubleClick={handleEditTrigger}
             onDeactivate={handleDeactivate}
           >

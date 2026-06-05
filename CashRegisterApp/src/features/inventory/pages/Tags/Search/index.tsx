@@ -13,7 +13,7 @@ import type { ITagResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateTagForm } from "../../../components/UpdateTagForm";
-import { CreateTagForm } from "../../components/CreateTagForm";
+import { CreateTagForm } from "../../../components/CreateTagForm";
 
 export function TagSearch() {
   const initialFilters: TagSearchFormData = {
@@ -109,7 +109,9 @@ export function TagSearch() {
             loading={loading}
             onSearch={handleSearch}
             selectedId={selectedId}
-            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onRowSelect={(id) =>
+              setSelectedId((prev) => (prev === id ? null : id))
+            }
             onRowDoubleClick={handleEditTrigger}
             onDeactivate={handleDeactivate}
           >

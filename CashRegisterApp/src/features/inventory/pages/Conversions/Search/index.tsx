@@ -13,7 +13,7 @@ import type { IConversionResponse } from "../../../interfaces";
 import { TextInput } from "../../../../../components/Form/TextInput";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateConversionForm } from "../../../components/UpdateConversionForm";
-import { CreateConversionForm } from "../../components/CreateConversionForm";
+import { CreateConversionForm } from "../../../components/CreateConversionForm";
 
 export function ConversionSearch() {
   const initialFilters: ConversionSearchFormData = {
@@ -126,7 +126,9 @@ export function ConversionSearch() {
             loading={loading}
             onSearch={handleSearch}
             selectedId={selectedId}
-            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onRowSelect={(id) =>
+              setSelectedId((prev) => (prev === id ? null : id))
+            }
             onRowDoubleClick={handleEditTrigger}
             onDeactivate={handleDeactivate}
           >

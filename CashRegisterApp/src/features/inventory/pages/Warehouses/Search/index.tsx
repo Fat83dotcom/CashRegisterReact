@@ -51,6 +51,7 @@ export function WarehouseSearch() {
         <CreateWarehouseForm
           onSuccess={() => {
             props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
           }}
         />
       ),

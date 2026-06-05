@@ -12,7 +12,7 @@ import { InventoryService } from "../../../api/inventoryService";
 import type { ICategoryResponse } from "../../../interfaces";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
-import { CategoryForm } from "../../components/CategoryForm";
+import { CategoryForm } from "../../../components/CategoryForm";
 
 export function CategorySearch() {
   const initialFilters: CategorySearchFormData = {
@@ -91,7 +91,9 @@ export function CategorySearch() {
             loading={loading}
             onSearch={handleSearch}
             selectedId={selectedId}
-            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
+            onRowSelect={(id) =>
+              setSelectedId((prev) => (prev === id ? null : id))
+            }
             onDeactivate={handleDeactivate}
           >
             <Grid.Col span={12}>
