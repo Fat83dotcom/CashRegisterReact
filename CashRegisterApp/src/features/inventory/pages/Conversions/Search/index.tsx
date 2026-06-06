@@ -25,7 +25,14 @@ export function ConversionSearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Cadastrar Nova Regra",
-      Form: CreateConversionForm,
+      Form: (props) => (
+        <CreateConversionForm
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+          }}
+        />
+      ),
     });
   };
 

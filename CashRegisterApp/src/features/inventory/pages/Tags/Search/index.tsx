@@ -25,7 +25,14 @@ export function TagSearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Cadastrar Nova Tag",
-      Form: CreateTagForm,
+      Form: (props) => (
+        <CreateTagForm
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+          }}
+        />
+      ),
     });
   };
 

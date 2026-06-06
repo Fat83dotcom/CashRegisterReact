@@ -35,7 +35,14 @@ export function ProductSearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Cadastrar Novo Produto",
-      Form: CreateProductForm,
+      Form: (props) => (
+        <CreateProductForm
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+          }}
+        />
+      ),
     });
   };
 
@@ -48,7 +55,7 @@ export function ProductSearch() {
           onSuccess={() => {
             props.onSuccess();
             handleSearch(
-              { searchTerm: "" },
+              initialFilters,
               pagedData.page,
               pagedData.pageSize,
             );

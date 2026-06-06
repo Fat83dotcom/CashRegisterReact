@@ -25,7 +25,14 @@ export function CategorySearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Cadastrar Nova Categoria",
-      Form: CreateCategoryForm,
+      Form: (props) => (
+        <CreateCategoryForm
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+          }}
+        />
+      ),
     });
   };
 

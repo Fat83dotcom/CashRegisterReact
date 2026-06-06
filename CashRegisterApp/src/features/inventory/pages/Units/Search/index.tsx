@@ -26,7 +26,14 @@ export function UnitSearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Cadastrar Nova Unidade",
-      Form: CreateUnitForm,
+      Form: (props) => (
+        <CreateUnitForm
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+          }}
+        />
+      ),
     });
   };
 
@@ -38,11 +45,7 @@ export function UnitSearch() {
           unitId={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(
-              { searchTerm: "" },
-              pagedData.page,
-              pagedData.pageSize,
-            );
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
           }}
         />
       ),
