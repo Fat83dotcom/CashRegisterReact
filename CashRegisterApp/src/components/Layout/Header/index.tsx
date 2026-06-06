@@ -23,6 +23,10 @@ const links: NavLinkItem[] = [
     label: "Estoque",
     sections: [
       {
+        label: "Home",
+        items: [{ link: "/inventory/home", label: "Dashboard" }],
+      },
+      {
         label: "Cadastros",
         items: [
           { link: "/inventory/products", label: "Produtos" },

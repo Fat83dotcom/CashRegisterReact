@@ -66,6 +66,7 @@ export const router = createBrowserRouter([
         handle: { navbar: <InventoryNavigation /> },
         children: [
           { index: true, element: <InventoryHome /> },
+          { path: "home", element: <InventoryHome /> },
           {
             path: "products",
             children: [
