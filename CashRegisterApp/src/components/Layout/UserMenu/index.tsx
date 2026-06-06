@@ -33,6 +33,7 @@ export function UserMenu() {
       onClose={() => setUserMenuOpened(false)}
       onOpen={() => setUserMenuOpened(true)}
       withinPortal
+      closeOnItemClick={false}
     >
       <Menu.Target>
         <UnstyledButton
@@ -59,7 +60,7 @@ export function UserMenu() {
       <Menu.Dropdown>
         {/* Seção de Configurações */}
         <Menu.Label>Settings</Menu.Label>
-        <Menu.Item 
+        <Menu.Item
           leftSection={<IconSettings size={16} stroke={1.5} />}
           onClick={() => navigate("/settings")}
         >
