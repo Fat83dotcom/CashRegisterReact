@@ -2,26 +2,27 @@ import { notifications } from "@mantine/notifications";
 import type { IPagedResponse, SearchParams } from "../../../hooks/useSearch";
 import { apiClient } from "../../../lib/api";
 import type { ICreateResponse } from "../../../shared/ICreateResponse";
-import type {
+import {
   ICategoryRequest,
   ICategoryResponse,
-  IConversionResponse,
-  ICreateConversionRequest,
   ICreateProductRequest,
   ICreateTagRequest,
-  IGetAllUnitsResponse,
+  ICreateUnitRequest,
   IGetProductByIdResponse,
+  IGetTagByIdResponse,
   IGetUnitByIdResponse,
   IProductResponse,
   ITagResponse,
-  ICreateUnitRequest,
   IUnitResponse,
+  IUpdateCategoryRequest,
   IUpdateConversionRequest,
-  IUpdateConversionResponse,
   IUpdateProductRequest,
-  IUpdateUnitRequest,
   IUpdateTagRequest,
-  IGetTagByIdResponse,
+  IUpdateUnitRequest,
+  ICreateConversionRequest,
+  IConversionResponse,
+  IUpdateConversionResponse,
+  IGetAllUnitsResponse,
   ICreateWarehouseRequest,
   IUpdateWarehouseRequest,
 } from "../interfaces";
@@ -105,10 +106,17 @@ export const InventoryService = {
   // Products
   createProduct: async (
     request: ICreateProductRequest,
-    resetForms: () => void,
-  ) => {
-    apiClient
-      .post<ICreateResponse, ICreateProductRequest>("/product", request)
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/product", {
+        Sku: request.sku,
+        Name: request.name,
+        CategoryId: request.categoryId,
+        BaseUomId: request.baseUomId,
+        Description: request.description,
+        NcmCode: request.ncmCode,
+        TagIds: request.tagIds,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -118,8 +126,8 @@ export const InventoryService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
-          resetForms();
         }
+        return response;
       });
   },
 
@@ -128,16 +136,22 @@ export const InventoryService = {
     request: IUpdateProductRequest,
   ): Promise<IUpdateResponse> => {
     return apiClient
-      .put<
-        IUpdateResponse,
-        IUpdateProductRequest
-      >(`/product/${id}/update`, request)
+      .put<IUpdateResponse, any>(`/product/${id}/Update`, {
+        Sku: request.sku,
+        Name: request.name,
+        CategoryId: request.categoryId,
+        BaseUomId: request.baseUomId,
+        Description: request.description,
+        NcmCode: request.ncmCode,
+        TagIds: request.tagIds,
+        IsActive: request.isActive,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
             title: "Sucesso",
             message: "Produto atualizado com sucesso.",
-            color: "blue",
+            color: "green",
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
@@ -167,18 +181,23 @@ export const InventoryService = {
     }
 
     return apiClient.get<IPagedResponse<IProductResponse>>(
-      `/product/search?${queryParams.toString()}`,
+      `/product/Search?${queryParams.toString()}`,
     );
   },
 
   deactivateProduct: async (id: string | number): Promise<void> => {
-    return apiClient.put<void, {}>(`/product/${id}/deactivate`, {});
+    return apiClient.put<void, {}>(`/product/${id}/Deactivate`, {});
   },
 
   // Tags
-  createTag: async (request: ICreateTagRequest, resetForms: () => void) => {
-    apiClient
-      .post<ICreateResponse, ICreateTagRequest>("/tag", request)
+  createTag: async (
+    request: ICreateTagRequest,
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/Tag", {
+        Name: request.name,
+        ColorHex: request.colorHex,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -188,8 +207,8 @@ export const InventoryService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
-          resetForms();
         }
+        return response;
       });
   },
 
@@ -198,13 +217,17 @@ export const InventoryService = {
     request: IUpdateTagRequest,
   ): Promise<IUpdateResponse> => {
     return apiClient
-      .put<IUpdateResponse, IUpdateTagRequest>(`/tag/${id}/update`, request)
+      .put<IUpdateResponse, any>(`/Tag/${id}/Update`, {
+        Name: request.name,
+        ColorHex: request.colorHex,
+        IsActive: request.isActive,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
             title: "Sucesso",
             message: "Tag atualizada com sucesso.",
-            color: "blue",
+            color: "green",
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
@@ -213,8 +236,8 @@ export const InventoryService = {
       });
   },
 
-  getTagById: async (id: number): Promise<IGetTagByIdResponse> => {
-    return apiClient.get<IGetTagByIdResponse>(`/tag/${id}/GetTagById`);
+  getTagByIdResponse: async (id: number): Promise<ITagResponse> => {
+    return apiClient.get<ITagResponse>(`/Tag/${id}/GetTagById`);
   },
 
   searchTags: async (
@@ -229,18 +252,23 @@ export const InventoryService = {
     }
 
     return apiClient.get<IPagedResponse<ITagResponse>>(
-      `/tag/search?${queryParams.toString()}`,
+      `/Tag/Search?${queryParams.toString()}`,
     );
   },
 
   deactivateTag: async (id: string | number): Promise<void> => {
-    return apiClient.put<void, {}>(`/tag/${id}/deactivate`, {});
+    return apiClient.put<void, {}>(`/Tag/${id}/Deactivate`, {});
   },
 
   // Categories
-  createCategory: async (request: ICategoryRequest, resetForms: () => void) => {
-    apiClient
-      .post<ICreateResponse, ICategoryRequest>("/category", request)
+  createCategory: async (
+    request: ICategoryRequest,
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/Category", {
+        Name: request.name,
+        ParentCategoryId: request.parentCategoryId,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -250,8 +278,8 @@ export const InventoryService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
-          resetForms();
         }
+        return response;
       });
   },
 
@@ -267,18 +295,52 @@ export const InventoryService = {
     }
 
     return apiClient.get<IPagedResponse<ICategoryResponse>>(
-      `/category/search?${queryParams.toString()}`,
+      `/Category/Search?${queryParams.toString()}`,
     );
   },
 
+  getCategoryByIdResponse: async (id: number): Promise<ICategoryResponse> => {
+    return apiClient.get<ICategoryResponse>(`/Category/${id}/GetCategoryById`);
+  },
+
+  updateCategory: async (
+    id: number,
+    request: IUpdateCategoryRequest,
+  ): Promise<IUpdateResponse> => {
+    return apiClient
+      .put<IUpdateResponse, any>(`/Category/${id}/Update`, {
+        Name: request.name,
+        ParentCategoryId: request.parentCategoryId,
+        IsActive: request.isActive,
+      })
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Categoria atualizada com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
   deactivateCategory: async (id: string | number): Promise<void> => {
-    return apiClient.put<void, {}>(`/category/${id}/deactivate`, {});
+    return apiClient.put<void, {}>(`/Category/${id}/Deactivate`, {});
   },
 
   // Units
-  createUnit: async (request: ICreateUnitRequest, resetForms: () => void) => {
-    apiClient
-      .post<ICreateResponse, ICreateUnitRequest>("/UnitOfMeasure", request)
+  createUnit: async (
+    request: ICreateUnitRequest,
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/UnitOfMeasure", {
+        Code: request.code,
+        Name: request.name,
+        AllowDecimals: request.allowDecimals,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -288,8 +350,8 @@ export const InventoryService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
-          resetForms();
         }
+        return response;
       });
   },
 
@@ -298,10 +360,12 @@ export const InventoryService = {
     request: IUpdateUnitRequest,
   ): Promise<IUpdateResponse> => {
     return apiClient
-      .put<
-        IUpdateResponse,
-        IUpdateUnitRequest
-      >(`/UnitOfMeasure/${id}/update`, request)
+      .put<IUpdateResponse, any>(`/UnitOfMeasure/${id}/Update`, {
+        Code: request.code,
+        Name: request.name,
+        AllowDecimals: request.allowDecimals,
+        IsActive: request.isActive,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -323,11 +387,7 @@ export const InventoryService = {
   },
 
   GetAllUnits: async () => {
-    apiClient.get<IGetAllUnitsResponse[]>("UnitOfMeasure").then((resṕonse) => {
-      console.log(resṕonse);
-
-      return resṕonse;
-    });
+    return apiClient.get<IGetAllUnitsResponse[]>("UnitOfMeasure");
   },
 
   searchUnits: async (
@@ -342,24 +402,25 @@ export const InventoryService = {
     }
 
     return apiClient.get<IPagedResponse<IUnitResponse>>(
-      `/UnitOfMeasure/search?${queryParams.toString()}`,
+      `/UnitOfMeasure/Search?${queryParams.toString()}`,
     );
   },
 
   deactivateUnit: async (id: string | number): Promise<void> => {
-    return apiClient.put<void, {}>(`/UnitOfMeasure/${id}/deactivate`, {});
+    return apiClient.put<void, {}>(`/UnitOfMeasure/${id}/Deactivate`, {});
   },
 
   // Conversions
   createConversion: async (
     request: ICreateConversionRequest,
-    resetForms: () => void,
-  ) => {
-    apiClient
-      .post<
-        ICreateResponse,
-        ICreateConversionRequest
-      >("/UomConversion", request)
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/UomConversion", {
+        FromUnitId: request.fromUnitId,
+        ToUnitId: request.toUnitId,
+        Multiplier: request.multiplier,
+        ProductId: request.productId,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -369,8 +430,8 @@ export const InventoryService = {
             autoClose: 5000,
             icon: React.createElement(IconCheck),
           });
-          resetForms();
         }
+        return response;
       });
   },
 
@@ -386,7 +447,7 @@ export const InventoryService = {
     }
 
     return apiClient.get<IPagedResponse<IConversionResponse>>(
-      `/UomConversion/search?${queryParams.toString()}`,
+      `/UomConversion/Search?${queryParams.toString()}`,
     );
   },
 
@@ -395,10 +456,13 @@ export const InventoryService = {
     request: IUpdateConversionRequest,
   ): Promise<IUpdateResponse> => {
     return apiClient
-      .put<
-        IUpdateResponse,
-        IUpdateConversionRequest
-      >(`/UomConversion/${id}/update`, request)
+      .put<IUpdateResponse, any>(`/UomConversion/${id}/Update`, {
+        FromUnitId: request.fromUnitId,
+        ToUnitId: request.toUnitId,
+        Multiplier: request.multiplier,
+        ProductId: request.productId,
+        IsActive: request.isActive,
+      })
       .then((response) => {
         if (response && response.id > 0) {
           notifications.show({
@@ -420,6 +484,6 @@ export const InventoryService = {
   },
 
   deactivateConversion: async (id: string | number): Promise<void> => {
-    return apiClient.put<void, {}>(`/UomConversion/${id}/deactivate`, {});
+    return apiClient.put<void, {}>(`/UomConversion/${id}/Deactivate`, {});
   },
 };

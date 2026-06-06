@@ -1,29 +1,32 @@
 import { useState, useEffect } from "react";
 import { Button, Center, Paper, Title, Stack, LoadingOverlay, Grid } from "@mantine/core";
 import { Form, Select } from "../../../components/Form";
-import { tagSchema, type TagFormData } from "../schemas/tagSchema";
+import {
+  categorySchema,
+  type CategoryFormData,
+} from "../schemas/categorySchema";
 import { InventoryService } from "../api/inventoryService";
-import type { IUpdateTagRequest } from "../interfaces";
-import { TagFormFields } from "./base/TagFormFields";
+import type { IUpdateCategoryRequest } from "../interfaces";
+import { CategoryFormFields } from "./base/CategoryFormFields";
 import { z } from "zod";
 
-export const updateTagSchema = tagSchema.extend({
+export const updateCategorySchema = categorySchema.extend({
   isActive: z.string().default("true"),
 });
 
-export type UpdateTagFormData = z.infer<typeof updateTagSchema>;
+export type UpdateCategoryFormData = z.infer<typeof updateCategorySchema>;
 
-export interface UpdateTagFormProps {
+export interface UpdateCategoryFormProps {
   id: number;
   onSuccess: () => void;
 }
 
-export function UpdateTagForm({ id, onSuccess }: UpdateTagFormProps) {
+export function UpdateCategoryForm({ id, onSuccess }: UpdateCategoryFormProps) {
   const [loading, setLoading] = useState(true);
   const [initialData, setInitialData] = useState<any | null>(null);
 
   useEffect(() => {
-    InventoryService.getTagByIdResponse(id)
+    InventoryService.getCategoryByIdResponse(id)
       .then((data) => {
         setInitialData(data);
         setLoading(false);
@@ -33,16 +36,16 @@ export function UpdateTagForm({ id, onSuccess }: UpdateTagFormProps) {
       });
   }, [id]);
 
-  const handleSubmit = async (values: UpdateTagFormData) => {
+  const handleSubmit = async (values: UpdateCategoryFormData) => {
     setLoading(true);
-    const request: IUpdateTagRequest = {
+    const request: IUpdateCategoryRequest = {
       name: values.name,
-      colorHex: values.colorHex,
+      parentCategoryId: values.parentCategoryId ? Number(values.parentCategoryId) : null,
       isActive: values.isActive === "true",
     };
 
     try {
-      await InventoryService.updateTag(id, request).then((response) => {
+      await InventoryService.updateCategory(id, request).then((response) => {
         if (response && response.id > 0) onSuccess();
       });
     } finally {
@@ -58,27 +61,27 @@ export function UpdateTagForm({ id, onSuccess }: UpdateTagFormProps) {
     );
   }
 
-  const defaultValues: UpdateTagFormData = {
+  const defaultValues: UpdateCategoryFormData = {
     name: initialData?.name || "",
-    colorHex: initialData?.colorHex || "#228be6",
+    parentCategoryId: initialData?.parentCategoryId?.toString() || null,
     isActive: String(initialData?.isActive ?? true),
   };
 
   return (
-    <Paper withBorder shadow="md" p="xl" maw={500} mx="auto" mt="xl" pos="relative">
+    <Paper withBorder shadow="md" p="xl" maw={600} mx="auto" mt="xl" pos="relative">
       <LoadingOverlay visible={loading} />
       <Title order={2} ta="center" mb="xl" c="brainstorm.6">
-        Editar Tag
+        Editar Categoria
       </Title>
 
       <Form
-        schema={updateTagSchema}
+        schema={updateCategorySchema}
         onSubmit={handleSubmit}
         defaultValues={defaultValues}
       >
         {() => (
           <Stack gap="md">
-            <TagFormFields />
+            <CategoryFormFields />
             
             <Grid gutter="md">
               <Grid.Col span={12}>
@@ -103,7 +106,7 @@ export function UpdateTagForm({ id, onSuccess }: UpdateTagFormProps) {
                 variant="light"
                 loading={loading}
               >
-                Atualizar Tag
+                Atualizar Categoria
               </Button>
             </Center>
           </Stack>

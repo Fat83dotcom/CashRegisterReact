@@ -1,27 +1,30 @@
 import { useState } from "react";
 import { Button, Center, Paper, Stack, Title } from "@mantine/core";
 import { Form } from "../../../components/Form";
-import { tagSchema, type TagFormData } from "../schemas/tagSchema";
+import {
+  categorySchema,
+  type CategoryFormData,
+} from "../schemas/categorySchema";
 import { InventoryService } from "../api/inventoryService";
-import type { ICreateTagRequest } from "../interfaces";
-import { TagFormFields } from "./base/TagFormFields";
+import type { ICategoryRequest } from "../interfaces";
+import { CategoryFormFields } from "./base/CategoryFormFields";
 
-export interface CreateTagFormProps {
+export interface CreateCategoryFormProps {
   onSuccess?: () => void;
 }
 
-export function CreateTagForm({ onSuccess }: CreateTagFormProps) {
+export function CreateCategoryForm({ onSuccess }: CreateCategoryFormProps) {
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values: TagFormData) => {
+  const handleSubmit = async (values: CategoryFormData) => {
     setLoading(true);
-    const request: ICreateTagRequest = {
+    const request: ICategoryRequest = {
       name: values.name,
-      colorHex: values.colorHex,
+      parentCategoryId: values.parentCategoryId ? Number(values.parentCategoryId) : null,
     };
 
     try {
-      await InventoryService.createTag(request, () => {
+      await InventoryService.createCategory(request, () => {
         if (onSuccess) onSuccess();
       });
     } finally {
@@ -29,25 +32,25 @@ export function CreateTagForm({ onSuccess }: CreateTagFormProps) {
     }
   };
 
-  const defaultValues: TagFormData = {
+  const defaultValues: CategoryFormData = {
     name: "",
-    colorHex: "#228be6",
+    parentCategoryId: null,
   };
 
   return (
-    <Paper withBorder shadow="md" p="xl" maw={500} mx="auto" mt="xl">
+    <Paper withBorder shadow="md" p="xl" maw={600} mx="auto" mt="xl">
       <Title order={2} ta="center" mb="xl" c="brainstorm.6">
-        Nova Tag
+        Nova Categoria de Produto
       </Title>
 
       <Form
-        schema={tagSchema}
+        schema={categorySchema}
         onSubmit={handleSubmit}
         defaultValues={defaultValues}
       >
         {() => (
           <Stack gap="md">
-            <TagFormFields />
+            <CategoryFormFields />
 
             <Center mt="xl">
               <Button
@@ -58,7 +61,7 @@ export function CreateTagForm({ onSuccess }: CreateTagFormProps) {
                 variant="light"
                 loading={loading}
               >
-                Salvar Tag
+                Salvar Categoria
               </Button>
             </Center>
           </Stack>

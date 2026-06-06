@@ -34,7 +34,7 @@ export function TagSearch() {
       title: "Editar Tag",
       Form: (props) => (
         <UpdateTagForm
-          tagId={Number(id)}
+          id={Number(id)}
           onSuccess={() => {
             props.onSuccess();
             handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
@@ -109,9 +109,7 @@ export function TagSearch() {
             loading={loading}
             onSearch={handleSearch}
             selectedId={selectedId}
-            onRowSelect={(id) =>
-              setSelectedId((prev) => (prev === id ? null : id))
-            }
+            onRowSelect={(id) => setSelectedId((prev) => (prev === id ? null : id))}
             onRowDoubleClick={handleEditTrigger}
             onDeactivate={handleDeactivate}
           >

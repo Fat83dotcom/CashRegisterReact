@@ -12,7 +12,8 @@ import { InventoryService } from "../../../api/inventoryService";
 import type { ICategoryResponse } from "../../../interfaces";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
-import { CategoryForm } from "../../../components/CategoryForm";
+import { CreateCategoryForm } from "../../../components/CreateCategoryForm";
+import { UpdateCategoryForm } from "../../../components/UpdateCategoryForm";
 
 export function CategorySearch() {
   const initialFilters: CategorySearchFormData = {
@@ -24,7 +25,22 @@ export function CategorySearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Cadastrar Nova Categoria",
-      Form: CategoryForm,
+      Form: CreateCategoryForm,
+    });
+  };
+
+  const handleEditTrigger = (id: string | number) => {
+    modal({
+      title: "Editar Categoria",
+      Form: (props) => (
+        <UpdateCategoryForm
+          id={Number(id)}
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+          }}
+        />
+      ),
     });
   };
 
@@ -94,6 +110,7 @@ export function CategorySearch() {
             onRowSelect={(id) =>
               setSelectedId((prev) => (prev === id ? null : id))
             }
+            onRowDoubleClick={handleEditTrigger}
             onDeactivate={handleDeactivate}
           >
             <Grid.Col span={12}>
