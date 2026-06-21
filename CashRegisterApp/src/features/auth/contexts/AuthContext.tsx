@@ -5,6 +5,7 @@ import {
   type ReactNode,
   useEffect,
 } from "react";
+import { notifications } from "@mantine/notifications";
 import { AuthService } from "../api/authServices";
 import type { LoginFormData } from "../schemas/loginSchema";
 
@@ -17,9 +18,8 @@ interface IAuthContextType {
 }
 
 export interface ILoginResponse {
-  id: number;
-  userName: { firstName: string; lastName: string };
-  role: string;
+  userName: string;
+  name: { firstName: string; lastName: string };
 }
 
 const AuthContext = createContext<IAuthContextType | null>(null);
@@ -27,52 +27,46 @@ const AuthContext = createContext<IAuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<ILoginResponse | null>(() => {
-    const storedData = localStorage.getItem("user_data");
-    return storedData ? JSON.parse(storedData) : null;
-  });
+  const [user, setUser] = useState<ILoginResponse | null>(null);
 
-  const checkSession = async () => {
+  const fetchUser = async () => {
     try {
-      await AuthService.verify();
-      setIsAuthenticated(true);
+      const response = await AuthService.me();
+      if (response) {
+        setUser(response);
+        setIsAuthenticated(true);
+      }
     } catch {
       setIsAuthenticated(false);
       setUser(null);
-      localStorage.removeItem("user_data");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    checkSession();
-  }, []);
-
-  useEffect(() => {
-    const handleUnauthorized = () => {
-      setIsAuthenticated(false);
-      setUser(null);
-      localStorage.removeItem("user_data");
-    };
-
-    window.addEventListener("unauthorized", handleUnauthorized);
-
-    return () => {
-      window.removeEventListener("unauthorized", handleUnauthorized);
-    };
+    fetchUser();
   }, []);
 
   const login = async (credentials: LoginFormData) => {
-    await AuthService.login(credentials).then((response) => {
-      setUser(response);
-    });
-    setIsAuthenticated(true);
+    try {
+      await AuthService.login(credentials);
+      await fetchUser();
+    } catch (error: any) {
+      notifications.show({
+        title: "Erro",
+        message: error.response?.data?.message || "Falha ao realizar login.",
+        color: "red",
+        autoClose: 5000,
+      });
+      throw error;
+    }
   };
 
   const logout = async () => {
     await AuthService.logout();
     setIsAuthenticated(false);
+    setUser(null);
   };
 
   return (

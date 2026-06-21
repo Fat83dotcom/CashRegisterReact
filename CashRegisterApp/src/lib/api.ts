@@ -6,6 +6,7 @@ const BASE_URL = "http://localhost:5294/api";
 
 export interface ApiRequestOptions extends RequestInit {
   silent?: boolean;
+  _isRetry?: boolean;
 }
 
 async function request<T>(
@@ -27,7 +28,24 @@ async function request<T>(
   const errorData = text ? JSON.parse(text) : {};
 
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 && !options?._isRetry && !endpoint.includes("/Auth/refresh")) {
+      try {
+        const refreshResponse = await fetch(`${BASE_URL}/Auth/refresh`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include"
+        });
+
+        if (refreshResponse.ok) {
+          // Retry the original request
+          return await request<T>(endpoint, { ...options, _isRetry: true });
+        } else {
+          window.dispatchEvent(new CustomEvent("unauthorized"));
+        }
+      } catch {
+        window.dispatchEvent(new CustomEvent("unauthorized"));
+      }
+    } else if (response.status === 401) {
       window.dispatchEvent(new CustomEvent("unauthorized"));
     }
 
