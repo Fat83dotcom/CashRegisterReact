@@ -41,7 +41,7 @@ export function UserMenu() {
         >
           <Group gap={7}>
             <Avatar
-              name={`${user?.userName.firstName} ${user?.userName.lastName}`}
+              name={`${user?.name?.firstName} ${user?.name?.lastName}`}
               src={null}
               alt={"photo"}
               radius="xl"
@@ -49,7 +49,7 @@ export function UserMenu() {
             />
             <Text fw={500} size="sm" lh={1} mr={3}>
               {user
-                ? `${user.userName.firstName} ${user.userName.lastName}`
+                ? `${user.name.firstName} ${user.name.lastName}`
                 : "Sem nome"}
             </Text>
             <IconChevronDown size={12} stroke={1.5} />

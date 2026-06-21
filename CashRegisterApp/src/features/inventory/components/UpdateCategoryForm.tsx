@@ -3,7 +3,7 @@ import { Button, Center, Paper, Title, Stack, LoadingOverlay, Grid } from "@mant
 import { Form, Select } from "../../../components/Form";
 import {
   categorySchema,
-  type CategoryFormData,
+  
 } from "../schemas/categorySchema";
 import { InventoryService } from "../api/inventoryService";
 import type { IUpdateCategoryRequest } from "../interfaces";

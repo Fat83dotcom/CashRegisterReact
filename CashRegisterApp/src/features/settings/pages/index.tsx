@@ -17,7 +17,7 @@ export function SettingsHome() {
         />
         <div>
           <Text fw={500} size="lg">
-            {user ? `${user.userName.firstName} ${user.userName.lastName}` : "Usuário"}
+            {user ? user.userName : "Usuário"}
           </Text>
           <Text size="sm" c="dimmed">
             Perfil: {user?.role || "Desconhecido"}

@@ -29,11 +29,8 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
     const request = values as ICategoryRequest;
 
     try {
-      await InventoryService.createCategory(request, () => {
-        if (onSuccess) {
-          onSuccess();
-        }
-      });
+      await InventoryService.createCategory(request);
+      if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
     }

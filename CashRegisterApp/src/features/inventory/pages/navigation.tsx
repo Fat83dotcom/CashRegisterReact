@@ -12,7 +12,8 @@ import {
 } from "@tabler/icons-react";
 
 const links = [
-  { link: "/inventory", label: "Painel de Estoque", icon: IconLayoutDashboard },
+  { link: "/inventory/home", label: "Painel de Estoque", icon: IconLayoutDashboard },
+  { link: "/inventory/stock", label: "Movimentações de Estoque", icon: IconArrowsExchange },
   { link: "/inventory/products", label: "Produtos", icon: IconBox },
   { link: "/inventory/warehouses", label: "Almoxarifados", icon: IconBuildingWarehouse },
   { link: "/inventory/categories", label: "Categorias", icon: IconCategory },

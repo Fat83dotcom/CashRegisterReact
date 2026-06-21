@@ -41,9 +41,8 @@ export function CreateConversionForm({ onSuccess }: ConversionFormProps) {
     };
 
     try {
-      await InventoryService.createConversion(request, () => {
-        if (onSuccess) onSuccess();
-      });
+      await InventoryService.createConversion(request);
+      if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
     }

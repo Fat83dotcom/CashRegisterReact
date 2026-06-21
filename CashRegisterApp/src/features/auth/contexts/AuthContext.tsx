@@ -20,6 +20,7 @@ interface IAuthContextType {
 export interface ILoginResponse {
   userName: string;
   name: { firstName: string; lastName: string };
+  role: string;
 }
 
 const AuthContext = createContext<IAuthContextType | null>(null);

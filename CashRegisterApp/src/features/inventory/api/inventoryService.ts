@@ -2,19 +2,18 @@ import { notifications } from "@mantine/notifications";
 import type { IPagedResponse, SearchParams } from "../../../hooks/useSearch";
 import { apiClient } from "../../../lib/api";
 import type { ICreateResponse } from "../../../shared/ICreateResponse";
-import {
+import type {
   ICategoryRequest,
+  IUpdateCategoryRequest,
   ICategoryResponse,
   ICreateProductRequest,
   ICreateTagRequest,
   ICreateUnitRequest,
   IGetProductByIdResponse,
-  IGetTagByIdResponse,
   IGetUnitByIdResponse,
   IProductResponse,
   ITagResponse,
   IUnitResponse,
-  IUpdateCategoryRequest,
   IUpdateConversionRequest,
   IUpdateProductRequest,
   IUpdateTagRequest,
@@ -25,6 +24,7 @@ import {
   IGetAllUnitsResponse,
   ICreateWarehouseRequest,
   IUpdateWarehouseRequest,
+  ICreateInventoryTransactionRequest,
 } from "../interfaces";
 import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
@@ -32,6 +32,26 @@ import { IconCheck } from "@tabler/icons-react";
 import type { IUpdateResponse } from "../../../shared/IUpdateResponse";
 
 export const InventoryService = {
+  // Transactions
+  createTransaction: async (
+    data: ICreateInventoryTransactionRequest,
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/InventoryTransaction", data)
+      .then((response) => response || { id: 0 });
+  },
+
+  searchTransactions: async (params: any): Promise<IPagedResponse<any>> => {
+    // Provisório enquanto o backend não tem o endpoint de busca de histórico
+    return {
+      items: [],
+      totalCount: 0,
+      page: params.page || 1,
+      pageSize: params.pageSize || 10,
+      totalPages: 0,
+    };
+  },
+
   // Warehouses
   searchWarehouses: async (
     params: SearchParams & { searchTerm?: string },
@@ -96,7 +116,9 @@ export const InventoryService = {
   },
 
   getWarehouseById: async (id: number): Promise<IWarehouseResponse> => {
-    return apiClient.get<IWarehouseResponse>(`/warehouses/${id}/GetWarehouseById`);
+    return apiClient.get<IWarehouseResponse>(
+      `/warehouses/${id}/GetWarehouseById`,
+    );
   },
 
   deactivateWarehouse: async (id: string | number): Promise<void> => {
@@ -190,9 +212,7 @@ export const InventoryService = {
   },
 
   // Tags
-  createTag: async (
-    request: ICreateTagRequest,
-  ): Promise<ICreateResponse> => {
+  createTag: async (request: ICreateTagRequest): Promise<ICreateResponse> => {
     return apiClient
       .post<ICreateResponse, any>("/Tag", {
         Name: request.name,
@@ -332,9 +352,7 @@ export const InventoryService = {
   },
 
   // Units
-  createUnit: async (
-    request: ICreateUnitRequest,
-  ): Promise<ICreateResponse> => {
+  createUnit: async (request: ICreateUnitRequest): Promise<ICreateResponse> => {
     return apiClient
       .post<ICreateResponse, any>("/UnitOfMeasure", {
         Code: request.code,
@@ -416,8 +434,8 @@ export const InventoryService = {
   ): Promise<ICreateResponse> => {
     return apiClient
       .post<ICreateResponse, any>("/UomConversion", {
-        FromUnitId: request.fromUnitId,
-        ToUnitId: request.toUnitId,
+        FromUnitId: request.fromUomId,
+        ToUnitId: request.toUomId,
         Multiplier: request.multiplier,
         ProductId: request.productId,
       })
@@ -457,8 +475,8 @@ export const InventoryService = {
   ): Promise<IUpdateResponse> => {
     return apiClient
       .put<IUpdateResponse, any>(`/UomConversion/${id}/Update`, {
-        FromUnitId: request.fromUnitId,
-        ToUnitId: request.toUnitId,
+        FromUnitId: request.fromUomId,
+        ToUnitId: request.toUomId,
         Multiplier: request.multiplier,
         ProductId: request.productId,
         IsActive: request.isActive,

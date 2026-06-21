@@ -22,11 +22,8 @@ export function CreateUnitForm({ onSuccess }: CreateUnitFormProps) {
     };
 
     try {
-      await InventoryService.createUnit(request, () => {
-        if (onSuccess) {
-          onSuccess();
-        }
-      });
+      await InventoryService.createUnit(request);
+      if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
     }

@@ -7,6 +7,7 @@ import { UserHome } from "./features/users/pages";
 import { ProtectedRoute } from "./components/Layout/ProtectedRoute";
 
 import { InventoryHome } from "./features/inventory/pages";
+import { StockPage } from "./features/inventory/pages/Stock";
 import { InventoryNavigation } from "./features/inventory/pages/navigation";
 import { UnitsPage } from "./features/inventory/pages/Units";
 import { CategoriesPage } from "./features/inventory/pages/Categories";
@@ -67,6 +68,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <InventoryHome /> },
           { path: "home", element: <InventoryHome /> },
+          { path: "stock", element: <StockPage /> },
           {
             path: "products",
             children: [

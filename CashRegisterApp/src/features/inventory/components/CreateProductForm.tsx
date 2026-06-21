@@ -33,9 +33,8 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
     };
 
     try {
-      await InventoryService.createProduct(request, () => {
-        if (onSuccess) onSuccess();
-      });
+      await InventoryService.createProduct(request);
+      if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
     }

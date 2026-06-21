@@ -21,9 +21,8 @@ export function CreateTagForm({ onSuccess }: CreateTagFormProps) {
     };
 
     try {
-      await InventoryService.createTag(request, () => {
-        if (onSuccess) onSuccess();
-      });
+      await InventoryService.createTag(request);
+      if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
     }
@@ -32,6 +31,7 @@ export function CreateTagForm({ onSuccess }: CreateTagFormProps) {
   const defaultValues: TagFormData = {
     name: "",
     colorHex: "#228be6",
+    isActive: "true",
   };
 
   return (

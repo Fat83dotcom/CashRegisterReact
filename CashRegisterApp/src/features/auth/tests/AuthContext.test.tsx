@@ -25,7 +25,7 @@ const TestComponent = () => {
   return (
     <div>
       <div data-testid="auth-status">{isAuthenticated ? "Authenticated" : "Unauthenticated"}</div>
-      <div data-testid="user-name">{user?.userName.firstName}</div>
+      <div data-testid="user-name">{user?.userName}</div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Center, Paper, Title, Stack, LoadingOverlay, Grid } from "@mantine/core";
 import { Form, Select } from "../../../components/Form";
-import { tagSchema, type TagFormData } from "../schemas/tagSchema";
+import { tagSchema } from "../schemas/tagSchema";
 import { InventoryService } from "../api/inventoryService";
 import type { IUpdateTagRequest } from "../interfaces";
 import { TagFormFields } from "./base/TagFormFields";

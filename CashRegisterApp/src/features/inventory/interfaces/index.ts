@@ -17,9 +17,29 @@ export interface IUpdateWarehouseRequest {
   isActive: boolean;
 }
 
+export interface ICreateInventoryTransactionItemRequest {
+  productId: number;
+  uomId: number;
+  transactionQuantity: number;
+  baseQuantity: number;
+  sourceWarehouseId?: number;
+  destinationWarehouseId?: number;
+}
+
+export interface ICreateInventoryTransactionRequest {
+  userId: number;
+  transactionType: "PurchaseEntry" | "Transfer" | "RequisitionExit" | "Reversal";
+  referenceDocument?: string;
+  items: ICreateInventoryTransactionItemRequest[];
+}
+
 export interface ICategoryRequest {
   name: string;
   parentCategoryId?: number | null;
+}
+
+export interface IUpdateCategoryRequest extends ICategoryRequest {
+  isActive: boolean;
 }
 
 export interface ICreateUnitRequest {

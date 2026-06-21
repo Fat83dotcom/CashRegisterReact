@@ -24,9 +24,8 @@ export function CreateCategoryForm({ onSuccess }: CreateCategoryFormProps) {
     };
 
     try {
-      await InventoryService.createCategory(request, () => {
-        if (onSuccess) onSuccess();
-      });
+      await InventoryService.createCategory(request);
+      if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
     }
