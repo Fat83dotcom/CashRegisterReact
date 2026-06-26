@@ -25,6 +25,7 @@ import type {
   ICreateWarehouseRequest,
   IUpdateWarehouseRequest,
   ICreateInventoryTransactionRequest,
+  IInventoryTransactionDetailsResponse,
 } from "../interfaces";
 import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
@@ -41,15 +42,57 @@ export const InventoryService = {
       .then((response) => response || { id: 0 });
   },
 
+  getTransactionById: async (
+    id: number,
+  ): Promise<IInventoryTransactionDetailsResponse> => {
+    return apiClient.get<IInventoryTransactionDetailsResponse>(
+      `/InventoryTransaction/${id}`,
+    );
+  },
+
   searchTransactions: async (params: any): Promise<IPagedResponse<any>> => {
-    // Provisório enquanto o backend não tem o endpoint de busca de histórico
-    return {
-      items: [],
-      totalCount: 0,
-      page: params.page || 1,
-      pageSize: params.pageSize || 10,
-      totalPages: 0,
-    };
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.referenceDocument) {
+      queryParams.append("ReferenceDocument", params.referenceDocument);
+    }
+
+    return apiClient.get<IPagedResponse<any>>(`/InventoryTransaction/Search?${queryParams.toString()}`);
+  },
+
+  searchStockBalances: async (
+    params: SearchParams & { searchTerm?: string; warehouseId?: string; categoryId?: string; tagIds?: string[]; hideEmpty?: boolean }
+  ): Promise<IPagedResponse<any>> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.searchTerm) {
+      queryParams.append("Term", params.searchTerm);
+    }
+    if (params.warehouseId) {
+      queryParams.append("WarehouseId", params.warehouseId);
+    }
+    if (params.categoryId) {
+      queryParams.append("CategoryId", params.categoryId);
+    }
+    if (params.hideEmpty) {
+      queryParams.append("HideEmpty", "true");
+    }
+
+    return apiClient.get<IPagedResponse<any>>(
+      `/StockBalance/Search?${queryParams.toString()}`,
+    );
+  },
+
+  getAvailableBalance: async (productId: number, warehouseId?: number | null): Promise<number> => {
+    let url = `/StockBalance/GetAvailableBalance?productId=${productId}`;
+    if (warehouseId) {
+      url += `&warehouseId=${warehouseId}`;
+    }
+    return apiClient.get<number>(url);
   },
 
   // Warehouses

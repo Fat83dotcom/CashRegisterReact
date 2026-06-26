@@ -86,6 +86,8 @@ async function request<T>(
         icon: React.createElement(IconExclamationCircle),
       });
     }
+
+    throw errorData;
   }
 
   return errorData as T;

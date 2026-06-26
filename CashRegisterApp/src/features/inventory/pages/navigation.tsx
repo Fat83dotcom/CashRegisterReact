@@ -13,6 +13,7 @@ import {
 
 const links = [
   { link: "/inventory/home", label: "Painel de Estoque", icon: IconLayoutDashboard },
+  { link: "/inventory/balances", label: "Saldos de Estoque", icon: IconBox },
   { link: "/inventory/stock", label: "Movimentações de Estoque", icon: IconArrowsExchange },
   { link: "/inventory/products", label: "Produtos", icon: IconBox },
   { link: "/inventory/warehouses", label: "Almoxarifados", icon: IconBuildingWarehouse },

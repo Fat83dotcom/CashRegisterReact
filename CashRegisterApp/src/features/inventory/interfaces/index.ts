@@ -3,18 +3,21 @@ export interface IWarehouseRequest {
   name: string;
   type: string;
   isActive: boolean;
+  isPrincipal: boolean;
   createdAt: string;
 }
 
 export interface ICreateWarehouseRequest {
   name: string;
   type: string;
+  isPrincipal: boolean;
 }
 
 export interface IUpdateWarehouseRequest {
   name: string;
   type: string;
   isActive: boolean;
+  isPrincipal: boolean;
 }
 
 export interface ICreateInventoryTransactionItemRequest {
@@ -27,9 +30,11 @@ export interface ICreateInventoryTransactionItemRequest {
 }
 
 export interface ICreateInventoryTransactionRequest {
-  userId: number;
-  transactionType: "PurchaseEntry" | "Transfer" | "RequisitionExit" | "Reversal";
+  userId?: number;
+  transactionType: "PurchaseEntry" | "Transfer" | "RequisitionExit" | "Reversal" | "InventoryAdjustmentEntry" | "InventoryAdjustmentExit";
   referenceDocument?: string;
+  name?: string;
+  description?: string;
   items: ICreateInventoryTransactionItemRequest[];
 }
 
@@ -145,6 +150,15 @@ export interface ITagResponse {
   isActive: boolean;
 }
 
+export interface IWarehouseResponse {
+  id: number;
+  name: string;
+  type: string;
+  isActive: boolean;
+  isPrincipal: boolean;
+  createdAt: string;
+}
+
 export interface IProductResponse {
   id: number;
   name: string;
@@ -215,4 +229,27 @@ export interface IGetAllUnitsResponse {
   code: string;
   name: string;
   allowDecimals: boolean;
+}
+
+export interface IInventoryTransactionItemResponse {
+  id: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  sourceWarehouseId?: number | null;
+  sourceWarehouseName?: string | null;
+  destinationWarehouseId?: number | null;
+  destinationWarehouseName?: string | null;
+}
+
+export interface IInventoryTransactionDetailsResponse {
+  id: number;
+  transactionType: string;
+  referenceDocument?: string | null;
+  name?: string | null;
+  description?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  isActive: boolean;
+  items: IInventoryTransactionItemResponse[];
 }

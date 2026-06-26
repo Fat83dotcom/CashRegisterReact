@@ -22,6 +22,7 @@ export function CreateWarehouseForm({ onSuccess }: CreateWarehouseFormProps) {
     const request: ICreateWarehouseRequest = {
       name: values.name,
       type: values.type,
+      isPrincipal: values.isPrincipal,
     };
 
     try {
@@ -38,6 +39,7 @@ export function CreateWarehouseForm({ onSuccess }: CreateWarehouseFormProps) {
   const defaultValues: WarehouseFormData = {
     name: "",
     type: "",
+    isPrincipal: false,
   };
 
   return (

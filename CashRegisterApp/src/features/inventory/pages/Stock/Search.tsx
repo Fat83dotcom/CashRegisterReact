@@ -1,5 +1,6 @@
-import { Button, Grid, Drawer } from "@mantine/core";
+import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { useState } from "react";
 import type { ColumnConfig } from "../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../hooks/useSearch";
 import { TextInput } from "../../../../components/Form";
@@ -8,19 +9,37 @@ import {
   type TransactionSearchFormData,
 } from "../../schemas/transactionSearchSchema";
 import { SearchPageTemplate } from "../../../../components/Layout/SearchPageTemplate";
+import { useGenericModal } from "../../../../hooks/useGenericModal";
+import { useDisclosure } from "@mantine/hooks";
 import { InventoryService } from "../../api/inventoryService";
 import { CreateInventoryTransactionForm } from "../../components/CreateInventoryTransactionForm";
-import { useDisclosure } from "@mantine/hooks";
+import { TransactionDetailsModal } from "../../components/TransactionDetailsModal";
+import type { IInventoryTransactionDetailsResponse } from "../../interfaces";
 
 interface InventoryTransactionResponse {
   id: number;
   transactionType: string;
   referenceDocument: string | null;
+  name: string | null;
+  description: string | null;
   createdAt: string;
+  isActive: boolean;
 }
 
+export const transactionTypeLabels: Record<string, string> = {
+  PurchaseEntry: "Entrada (Compra)",
+  Transfer: "Transferência",
+  RequisitionExit: "Saída (Requisição)",
+  Reversal: "Estorno",
+  InventoryAdjustmentEntry: "Ajuste de Estoque (+)",
+  InventoryAdjustmentExit: "Ajuste de Estoque (-)",
+};
+
 export function StockSearch() {
-  const [opened, { open, close }] = useDisclosure(false);
+  const modal = useGenericModal();
+  const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false);
+  const [transactionDetails, setTransactionDetails] = useState<IInventoryTransactionDetailsResponse | null>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const initialFilters: TransactionSearchFormData = {
     referenceDocument: "",
@@ -37,12 +56,42 @@ export function StockSearch() {
     initialFilters,
   );
 
+  const handleOpenCreateModal = () => {
+    modal({
+      title: "Nova Movimentação de Estoque",
+      Form: (props) => (
+        <CreateInventoryTransactionForm
+          onSuccess={() => {
+            props.onSuccess();
+            handleSearch(initialFilters, pagedData?.page || 1, pagedData?.pageSize || 10);
+          }}
+        />
+      ),
+    });
+  };
+
   const columns: ColumnConfig<InventoryTransactionResponse>[] = [
     { key: "id", label: "ID" },
-    { key: "transactionType", label: "Tipo de Movimentação" },
+    { key: "transactionType", label: "Tipo de Movimentação", render: (item) => transactionTypeLabels[item.transactionType] || item.transactionType },
+    { key: "name", label: "Nome", render: (item: InventoryTransactionResponse) => item.name || "-" },
+    { key: "description", label: "Descrição", render: (item: InventoryTransactionResponse) => item.description || "-" },
     { key: "referenceDocument", label: "Doc. Referência", render: (item: InventoryTransactionResponse) => item.referenceDocument || "-" },
     { key: "createdAt", label: "Data", render: (item: InventoryTransactionResponse) => new Date(item.createdAt).toLocaleDateString() },
+    { key: "isActive", label: "Status", render: (item: InventoryTransactionResponse) => item.isActive ? "Concluído" : "Cancelado" },
   ];
+
+  const handleRowDoubleClick = async (id: string | number) => {
+    try {
+      setLoadingDetails(true);
+      openDetails();
+      const details = await InventoryService.getTransactionById(Number(id));
+      setTransactionDetails(details);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
 
   return (
     <>
@@ -50,7 +99,7 @@ export function StockSearch() {
         <Grid.Col span={12} ta="right">
           <Button
             leftSection={<IconPlus size={18} />}
-            onClick={open}
+            onClick={handleOpenCreateModal}
             color="brainstorm.6"
             variant="light"
           >
@@ -68,6 +117,7 @@ export function StockSearch() {
             onSearch={handleSearch}
             selectedId={selectedId}
             onRowSelect={(id: string | number | null) => setSelectedId((prev: string | number | null) => (prev === id ? null : id))}
+            onRowDoubleClick={handleRowDoubleClick}
           >
             <Grid.Col span={12}>
               <TextInput
@@ -81,21 +131,15 @@ export function StockSearch() {
         </Grid.Col>
       </Grid>
 
-      <Drawer
-        opened={opened}
-        onClose={close}
-        position="right"
-        size="lg"
-        title={null}
-        withCloseButton={false}
-      >
-        <CreateInventoryTransactionForm
-          onSuccess={() => {
-            close();
-            handleSearch(initialFilters, pagedData?.page || 1, pagedData?.pageSize || 10);
-          }}
-        />
-      </Drawer>
+      <TransactionDetailsModal
+        opened={detailsOpened}
+        onClose={() => {
+          closeDetails();
+          setTransactionDetails(null);
+        }}
+        transaction={transactionDetails}
+        loading={loadingDetails}
+      />
     </>
   );
 }

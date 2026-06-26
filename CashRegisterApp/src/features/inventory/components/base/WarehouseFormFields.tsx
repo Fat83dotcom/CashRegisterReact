@@ -1,5 +1,5 @@
 import { Grid } from "@mantine/core";
-import { TextInput, Select } from "../../../../components/Form";
+import { TextInput, Select, Switch } from "../../../../components/Form";
 
 export function WarehouseFormFields() {
   return (
@@ -24,6 +24,13 @@ export function WarehouseFormFields() {
             { value: "Terceiros", label: "Terceiros" }
           ]}
           withAsterisk
+        />
+      </Grid.Col>
+      <Grid.Col span={12}>
+        <Switch
+          name="isPrincipal"
+          label="Definir como Almoxarifado Principal"
+          description="Apenas um almoxarifado pode ser o principal. Ao marcar esta opção, o almoxarifado atual se tornará o principal."
         />
       </Grid.Col>
     </Grid>

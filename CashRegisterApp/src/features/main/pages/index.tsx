@@ -1,7 +1,7 @@
-import { AppShell, Burger, Container, Group, Paper, Text } from "@mantine/core";
+import { AppShell, Burger, Container, Group, Paper, Text, Center } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { HeaderSearch } from "../../../components/Layout/Header";
-import { Outlet, useMatches } from "react-router-dom";
+import { Outlet, useMatches, useLocation } from "react-router-dom";
 import { IconBrain } from "@tabler/icons-react";
 
 export * from "./navigation";
@@ -10,12 +10,19 @@ export function RootLayout() {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   const matches = useMatches();
+  const location = useLocation();
   const currentMatch = matches.find(
     (match) => match.handle && (match.handle as any).navbar,
   );
   const NavbarContent = currentMatch
     ? (currentMatch.handle as any).navbar
     : null;
+
+  // Elegante: verifica se é uma rota de formulário/criação ou configuração de segurança
+  // Isso permite centralizar apenas os formulários no quadro branco, sem quebrar tabelas.
+  const isFormRoute = 
+    location.pathname.includes("/create") || 
+    location.pathname.includes("/security");
 
   return (
     <AppShell
@@ -63,7 +70,7 @@ export function RootLayout() {
         {NavbarContent ? NavbarContent : <p>Selecione um módulo no topo</p>}
       </AppShell.Navbar>
       <AppShell.Main>
-        <Container fluid p="0">
+        <Container size="xl" p="0">
           {/* Paper atua como o seu "quadro branco" para o conteúdo */}
           <Paper
             shadow="sm"
@@ -72,7 +79,15 @@ export function RootLayout() {
             withBorder
             style={{ minHeight: "calc(100vh - 100px)" }}
           >
-            <Outlet />
+            {isFormRoute ? (
+              <Center style={{ minHeight: "calc(100vh - 150px)" }}>
+                <Container size="sm" w="100%">
+                  <Outlet />
+                </Container>
+              </Center>
+            ) : (
+              <Outlet />
+            )}
           </Paper>
         </Container>
       </AppShell.Main>

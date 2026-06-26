@@ -107,6 +107,10 @@ export function useSearch<T, TFilters>(
     handleSearch(initialFilters);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const refresh = useCallback(() => {
+    handleSearch(currentFilters, pagedData.page, pagedData.pageSize);
+  }, [handleSearch, currentFilters, pagedData.page, pagedData.pageSize]);
+
   return {
     loading,
     pagedData,
@@ -114,5 +118,7 @@ export function useSearch<T, TFilters>(
     setSelectedId,
     handleSearch,
     handleDeactivate,
+    currentFilters,
+    refresh,
   };
 }

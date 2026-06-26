@@ -46,6 +46,7 @@ export function UpdateWarehouseForm({
       name: values.name,
       type: values.type,
       isActive: values.isActive === "true",
+      isPrincipal: values.isPrincipal,
     };
 
     try {
@@ -69,6 +70,7 @@ export function UpdateWarehouseForm({
     name: initialData?.name || "",
     type: initialData?.type || "",
     isActive: String(initialData?.isActive ?? true),
+    isPrincipal: initialData?.isPrincipal || false,
   };
 
   return (
