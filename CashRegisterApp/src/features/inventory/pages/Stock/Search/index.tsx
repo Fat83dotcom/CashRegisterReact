@@ -1,20 +1,20 @@
 import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { useState } from "react";
-import type { ColumnConfig } from "../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../hooks/useSearch";
-import { TextInput } from "../../../../components/Form";
+import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
+import { useSearch } from "../../../../../hooks/useSearch";
+import { TextInput } from "../../../../../components/Form";
 import {
   transactionSearchSchema,
   type TransactionSearchFormData,
-} from "../../schemas/transactionSearchSchema";
-import { SearchPageTemplate } from "../../../../components/Layout/SearchPageTemplate";
-import { useGenericModal } from "../../../../hooks/useGenericModal";
+} from "../../../schemas/transactionSearchSchema";
+import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
+import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { useDisclosure } from "@mantine/hooks";
-import { InventoryService } from "../../api/inventoryService";
-import { CreateInventoryTransactionForm } from "../../components/CreateInventoryTransactionForm";
-import { TransactionDetailsModal } from "../../components/TransactionDetailsModal";
-import type { IInventoryTransactionDetailsResponse } from "../../interfaces";
+import { InventoryService } from "../../../api/inventoryService";
+import { CreateInventoryTransactionForm } from "../../../components/CreateInventoryTransactionForm";
+import { TransactionDetailsModal } from "../../../components/TransactionDetailsModal";
+import type { IInventoryTransactionDetailsResponse } from "../../../interfaces";
 
 interface InventoryTransactionResponse {
   id: number;
@@ -59,7 +59,7 @@ export function StockSearch() {
   const handleOpenCreateModal = () => {
     modal({
       title: "Nova Movimentação de Estoque",
-      Form: (props) => (
+      Form: (props: any) => (
         <CreateInventoryTransactionForm
           onSuccess={() => {
             props.onSuccess();
@@ -72,7 +72,7 @@ export function StockSearch() {
 
   const columns: ColumnConfig<InventoryTransactionResponse>[] = [
     { key: "id", label: "ID" },
-    { key: "transactionType", label: "Tipo de Movimentação", render: (item) => transactionTypeLabels[item.transactionType] || item.transactionType },
+    { key: "transactionType", label: "Tipo de Movimentação", render: (item: InventoryTransactionResponse) => transactionTypeLabels[item.transactionType] || item.transactionType },
     { key: "name", label: "Nome", render: (item: InventoryTransactionResponse) => item.name || "-" },
     { key: "description", label: "Descrição", render: (item: InventoryTransactionResponse) => item.description || "-" },
     { key: "referenceDocument", label: "Doc. Referência", render: (item: InventoryTransactionResponse) => item.referenceDocument || "-" },

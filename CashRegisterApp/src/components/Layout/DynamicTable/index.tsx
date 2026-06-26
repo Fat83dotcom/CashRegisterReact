@@ -157,24 +157,28 @@ export function DynamicTable<T>({
             />
 
             <Group gap="xs" align="center">
-              <Button
-                disabled={!selectedId}
-                onClick={() => onDeactivate && selectedId && onDeactivate(selectedId)}
-                variant="light"
-                color="yellow"
-                leftSection={<IconCircleMinus size={18} />}
-              >
-                Desativar
-              </Button>
-              <Button
-                disabled={!selectedId}
-                onClick={() => onDelete && selectedId && onDelete(selectedId)}
-                variant="light"
-                color="red"
-                leftSection={<IconX size={18} />}
-              >
-                Excluir
-              </Button>
+              {onDeactivate && (
+                <Button
+                  disabled={!selectedId}
+                  onClick={() => selectedId && onDeactivate(selectedId)}
+                  variant="light"
+                  color="yellow"
+                  leftSection={<IconCircleMinus size={18} />}
+                >
+                  Desativar
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  disabled={!selectedId}
+                  onClick={() => selectedId && onDelete(selectedId)}
+                  variant="light"
+                  color="red"
+                  leftSection={<IconX size={18} />}
+                >
+                  Excluir
+                </Button>
+              )}
             </Group>
           </Group>
         )}

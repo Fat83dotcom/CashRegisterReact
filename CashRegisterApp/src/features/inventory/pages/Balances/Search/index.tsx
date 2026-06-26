@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
-import { Grid, Select, MultiSelect, Modal } from "@mantine/core";
-import { Controller } from "react-hook-form";
+import { useState } from "react";
+import { Grid, Modal } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import type { ColumnConfig } from "../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../hooks/useSearch";
-import { TextInput } from "../../../../components/Form";
+import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
+import { useSearch } from "../../../../../hooks/useSearch";
+import { TextInput, AsyncSelect, MultiSelectAsync } from "../../../../../components/Form";
 import {
   stockBalanceSearchSchema,
   type StockBalanceSearchFormData,
-} from "../../schemas/stockBalanceSearchSchema";
-import { SearchPageTemplate } from "../../../../components/Layout/SearchPageTemplate";
-import { InventoryService } from "../../api/inventoryService";
-import { AdjustStockForm } from "../../components/AdjustStockForm";
+} from "../../../schemas/stockBalanceSearchSchema";
+import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
+import { InventoryService } from "../../../api/inventoryService";
+import { AdjustStockForm } from "../../../components/AdjustStockForm";
 
 interface StockBalanceResponse {
   id: number;
@@ -46,32 +45,35 @@ export function StockBalanceSearch() {
     initialFilters,
   );
 
-  const [warehouses, setWarehouses] = useState<{ value: string; label: string }[]>([]);
-  const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
-  const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
-
   const [adjustmentModalOpen, setAdjustmentModalOpen] = useState(false);
   const [itemToAdjust, setItemToAdjust] = useState<StockBalanceResponse | null>(null);
 
-  useEffect(() => {
-    // Busca dados de suporte para os dropdowns de filtro
-    const fetchFilters = async () => {
-      try {
-        const [warehousesRes, categoriesRes, tagsRes] = await Promise.all([
-          InventoryService.searchWarehouses({ page: 1, pageSize: 100 }),
-          InventoryService.searchCategories({ page: 1, pageSize: 100 }),
-          InventoryService.searchTags({ page: 1, pageSize: 100 }),
-        ]);
+const fetchWarehouses = async (query: string) => {
+  const response = await InventoryService.searchWarehouses({
+    searchTerm: query,
+    page: 1,
+    pageSize: 20,
+  });
+  return response.items || [];
+};
 
-        setWarehouses(warehousesRes.items.map((w: any) => ({ value: String(w.id), label: w.name })));
-        setCategories(categoriesRes.items.map((c: any) => ({ value: String(c.id), label: c.name })));
-        setTags(tagsRes.items.map((t: any) => ({ value: String(t.id), label: t.name })));
-      } catch (e) {
-        console.error("Falha ao carregar filtros de suporte", e);
-      }
-    };
-    fetchFilters();
-  }, []);
+const fetchCategories = async (query: string) => {
+  const response = await InventoryService.searchCategories({
+    name: query,
+    page: 1,
+    pageSize: 20,
+  });
+  return response.items || [];
+};
+
+const fetchTags = async (query: string) => {
+  const response = await InventoryService.searchTags({
+    searchTerm: query,
+    page: 1,
+    pageSize: 20,
+  });
+  return response.items || [];
+};
 
   const columns: ColumnConfig<StockBalanceResponse>[] = [
     { key: "productSku", label: "SKU" },
@@ -87,7 +89,7 @@ export function StockBalanceSearch() {
   ];
 
   const handleOpenAdjustmentModal = (id: string | number) => {
-    const item = pagedData?.items.find((x) => x.id === id);
+    const item = pagedData?.items.find((x: StockBalanceResponse) => x.id === id);
     if (item) {
       setItemToAdjust(item);
       setAdjustmentModalOpen(true);
@@ -141,52 +143,39 @@ export function StockBalanceSearch() {
             leftSection={<IconSearch size={18} stroke={1.5} />}
           />
         </Grid.Col>
-        
         <Grid.Col span={{ base: 12, md: 3 }}>
-          <Controller
+          <AsyncSelect
             name="warehouseId"
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Almoxarifado"
-                placeholder="Todos"
-                data={warehouses}
-                searchable
-                clearable
-              />
-            )}
+            label="Almoxarifado"
+            placeholder="Todos"
+            fetcher={fetchWarehouses}
+            getLabel={(item: any) => item.name}
+            getValue={(item: any) => item.id.toString()}
+            clearable
           />
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 3 }}>
-          <Controller
+          <AsyncSelect
             name="categoryId"
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Categoria"
-                placeholder="Todas"
-                data={categories}
-                searchable
-                clearable
-              />
-            )}
+            label="Categoria"
+            placeholder="Todas"
+            fetcher={fetchCategories}
+            getLabel={(item: any) => item.name}
+            getValue={(item: any) => item.id.toString()}
+            clearable
           />
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 3 }}>
-           <Controller
+           <MultiSelectAsync
             name="tagIds"
-            render={({ field }) => (
-              <MultiSelect
-                {...field}
-                label="Tags"
-                placeholder="Nenhuma selecionada"
-                data={tags}
-                searchable
-                clearable
-              />
-            )}
+            label="Tags"
+            placeholder="Nenhuma selecionada"
+            fetcher={fetchTags}
+            getLabel={(item: any) => item.name}
+            getValue={(item: any) => item.id.toString()}
+            clearable
           />
         </Grid.Col>
       </Grid>

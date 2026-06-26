@@ -1,12 +1,10 @@
 import { z } from "zod";
 
+import { zSelectString } from "../../../lib/zodUtils";
+
 export const productSearchSchema = z.object({
   searchTerm: z.string().optional(),
-  categoryId: z
-    .preprocess((value) => {
-      return value === null || value === undefined ? "0" : value;
-    }, z.string())
-    .optional(),
+  categoryId: zSelectString.optional(),
 });
 
 export type ProductSearchFormData = z.infer<typeof productSearchSchema>;

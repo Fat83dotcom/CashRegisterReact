@@ -18,6 +18,7 @@ interface SearchPageTemplateProps<T, TFilters extends FieldValues> {
   onRowSelect: (id: string | number | null) => void;
   onRowDoubleClick?: (id: string | number) => void;
   onDeactivate?: (id: string | number) => void;
+  onDelete?: (id: string | number) => void;
   children: React.ReactNode;
 }
 
@@ -33,6 +34,7 @@ export function SearchPageTemplate<T, TFilters extends FieldValues>({
   onRowSelect,
   onRowDoubleClick,
   onDeactivate,
+  onDelete,
   children,
 }: SearchPageTemplateProps<T, TFilters>) {
   return (
@@ -65,6 +67,7 @@ export function SearchPageTemplate<T, TFilters extends FieldValues>({
         onRowSelect={onRowSelect}
         onRowDoubleClick={onRowDoubleClick}
         onDeactivate={onDeactivate}
+        onDelete={onDelete}
       />
     </Stack>
   );
