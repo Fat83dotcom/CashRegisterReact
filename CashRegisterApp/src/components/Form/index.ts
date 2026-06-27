@@ -7,6 +7,7 @@ import { DateInput } from "./DateInput";
 import { AsyncSelect } from "./AsyncSelect";
 import { MultiSelectAsync } from "./MultiSelectAsync";
 import { Switch } from "./Switch";
+import { DateRangeInput } from "./DateRangeInput";
 
 export {
   Form,
@@ -18,4 +19,5 @@ export {
   AsyncSelect,
   MultiSelectAsync,
   Switch,
+  DateRangeInput,
 };

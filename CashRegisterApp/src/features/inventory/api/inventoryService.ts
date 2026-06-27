@@ -59,6 +59,11 @@ export const InventoryService = {
       queryParams.append("ReferenceDocument", params.referenceDocument);
     }
 
+    if (params.dateRange) {
+      if (params.dateRange[0]) queryParams.append("StartDate", params.dateRange[0].toISOString());
+      if (params.dateRange[1]) queryParams.append("EndDate", params.dateRange[1].toISOString());
+    }
+
     return apiClient.get<IPagedResponse<any>>(`/InventoryTransaction/Search?${queryParams.toString()}`);
   },
 

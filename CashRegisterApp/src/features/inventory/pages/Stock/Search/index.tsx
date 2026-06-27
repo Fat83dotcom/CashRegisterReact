@@ -3,7 +3,7 @@ import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { useState } from "react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
-import { TextInput } from "../../../../../components/Form";
+import { TextInput, DateRangeInput } from "../../../../../components/Form";
 import {
   transactionSearchSchema,
   type TransactionSearchFormData,
@@ -43,6 +43,7 @@ export function StockSearch() {
 
   const initialFilters: TransactionSearchFormData = {
     referenceDocument: "",
+    dateRange: [null, null],
   };
 
   const {
@@ -119,12 +120,19 @@ export function StockSearch() {
             onRowSelect={(id: string | number | null) => setSelectedId((prev: string | number | null) => (prev === id ? null : id))}
             onRowDoubleClick={handleRowDoubleClick}
           >
-            <Grid.Col span={12}>
+            <Grid.Col span={{ base: 12, md: 4 }}>
               <TextInput
                 name="referenceDocument"
                 label="Documento de Referência"
                 placeholder="Ex: NF-12345"
                 leftSection={<IconSearch size={18} stroke={1.5} />}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <DateRangeInput
+                name="dateRange"
+                label="Período de Movimentação"
+                placeholder="Selecione as datas"
               />
             </Grid.Col>
           </SearchPageTemplate>
