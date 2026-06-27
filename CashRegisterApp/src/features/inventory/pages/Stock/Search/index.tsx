@@ -22,7 +22,7 @@ interface InventoryTransactionResponse {
   referenceDocument: string | null;
   name: string | null;
   description: string | null;
-  createdAt: string;
+  transactionDate: string;
   isActive: boolean;
 }
 
@@ -77,7 +77,7 @@ export function StockSearch() {
     { key: "name", label: "Nome", render: (item: InventoryTransactionResponse) => item.name || "-" },
     { key: "description", label: "Descrição", render: (item: InventoryTransactionResponse) => item.description || "-" },
     { key: "referenceDocument", label: "Doc. Referência", render: (item: InventoryTransactionResponse) => item.referenceDocument || "-" },
-    { key: "createdAt", label: "Data", render: (item: InventoryTransactionResponse) => new Date(item.createdAt).toLocaleDateString() },
+    { key: "transactionDate", label: "Data", render: (item: InventoryTransactionResponse) => new Date(item.transactionDate).toLocaleDateString() },
     { key: "isActive", label: "Status", render: (item: InventoryTransactionResponse) => item.isActive ? "Concluído" : "Cancelado" },
   ];
 
