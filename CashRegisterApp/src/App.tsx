@@ -113,6 +113,12 @@ const theme = createTheme({
         size: "md",
       },
     },
+    DatePickerInput: {
+      defaultProps: {
+        radius: "xl",
+        size: "md",
+      },
+    },
   },
 });
 
