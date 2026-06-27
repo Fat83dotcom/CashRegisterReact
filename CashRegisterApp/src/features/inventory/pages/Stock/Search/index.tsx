@@ -1,5 +1,5 @@
 import { Button, Grid } from "@mantine/core";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconPlus, IconSearch, IconCalendar } from "@tabler/icons-react";
 import { useState } from "react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
@@ -133,6 +133,7 @@ export function StockSearch() {
                 name="dateRange"
                 label="Período de Movimentação"
                 placeholder="Selecione as datas"
+                leftSection={<IconCalendar size={18} stroke={1.5} />}
               />
             </Grid.Col>
           </SearchPageTemplate>
