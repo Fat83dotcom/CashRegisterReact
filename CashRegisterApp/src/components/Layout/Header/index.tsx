@@ -37,7 +37,13 @@ const links: NavLinkItem[] = [
           { link: "/inventory/conversions", label: "Regras de Conversão" },
         ],
       },
-      { label: "Operações", items: [] },
+      { 
+        label: "Operações", 
+        items: [
+          { link: "/inventory/balances", label: "Saldos de Estoque" },
+          { link: "/inventory/stock", label: "Movimentações de Estoque" },
+        ] 
+      },
       { label: "Relatórios", items: [] },
     ],
   },
