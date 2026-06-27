@@ -60,8 +60,18 @@ export const InventoryService = {
     }
 
     if (params.dateRange) {
-      if (params.dateRange[0]) queryParams.append("StartDate", params.dateRange[0].toISOString());
-      if (params.dateRange[1]) queryParams.append("EndDate", params.dateRange[1].toISOString());
+      if (params.dateRange[0]) {
+        // Garantir o início do dia no timezone local
+        const start = new Date(params.dateRange[0]);
+        start.setHours(0, 0, 0, 0);
+        queryParams.append("StartDate", start.toISOString());
+      }
+      if (params.dateRange[1]) {
+        // Garantir o final do dia no timezone local
+        const end = new Date(params.dateRange[1]);
+        end.setHours(23, 59, 59, 999);
+        queryParams.append("EndDate", end.toISOString());
+      }
     }
 
     return apiClient.get<IPagedResponse<any>>(`/InventoryTransaction/Search?${queryParams.toString()}`);
