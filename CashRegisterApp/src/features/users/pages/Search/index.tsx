@@ -17,7 +17,8 @@ export function UserSearch() {
     birthDate: null,
   };
 
-  const { loading, pagedData, selectedId, setSelectedId, handleSearch, handleDeactivate } = useSearch<
+  const { loading, pagedData, selectedId, setSelectedId, handleSearch,
+    currentFilters, handleDeactivate } = useSearch<
     IGetAllUsersResponse,
     SearchUserFormData
   >(UserService.search, initialFilters, {
@@ -44,6 +45,7 @@ export function UserSearch() {
       title="Consulta de Usuários"
       schema={searchUserSchema}
       defaultValues={initialFilters}
+            currentFilters={currentFilters}
       columns={columns}
       pagedData={pagedData}
       loading={loading}

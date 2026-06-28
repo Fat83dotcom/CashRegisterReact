@@ -58,6 +58,7 @@ export function UnitSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     handleDeactivate,
   } = useSearch<IUnitResponse, UnitSearchFormData>(
     InventoryService.searchUnits,
@@ -107,6 +108,7 @@ export function UnitSearch() {
             title="Consulta de Unidades de Medida"
             schema={unitSearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}

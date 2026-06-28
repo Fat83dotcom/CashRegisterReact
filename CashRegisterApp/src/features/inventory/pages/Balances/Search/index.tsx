@@ -39,6 +39,7 @@ export function StockBalanceSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     refresh,
   } = useSearch<StockBalanceResponse, StockBalanceSearchFormData>(
     InventoryService.searchStockBalances,
@@ -126,6 +127,7 @@ const fetchTags = async (query: string) => {
       title="Consulta Avançada de Saldos"
       schema={stockBalanceSearchSchema}
       defaultValues={initialFilters}
+            currentFilters={currentFilters}
       columns={columns}
       pagedData={pagedData}
       loading={loading}

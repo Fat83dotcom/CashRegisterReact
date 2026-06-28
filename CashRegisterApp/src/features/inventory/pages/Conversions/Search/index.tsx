@@ -42,6 +42,7 @@ export function ConversionSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     handleDeactivate,
   } = useSearch<IConversionResponse, ConversionSearchFormData>(
     InventoryService.searchConversions,
@@ -128,6 +129,7 @@ export function ConversionSearch() {
             title="Consulta de Regras de Conversão"
             schema={conversionSearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}

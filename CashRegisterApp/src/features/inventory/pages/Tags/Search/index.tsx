@@ -57,6 +57,7 @@ export function TagSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     handleDeactivate,
   } = useSearch<ITagResponse, TagSearchFormData>(
     InventoryService.searchTags,
@@ -111,6 +112,7 @@ export function TagSearch() {
             title="Consulta de Tags"
             schema={tagSearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}

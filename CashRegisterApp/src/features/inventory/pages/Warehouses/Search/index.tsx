@@ -28,6 +28,7 @@ export function WarehouseSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     handleDeactivate,
   } = useSearch<IWarehouseResponse, WarehouseSearchFormData>(
     InventoryService.searchWarehouses,
@@ -101,6 +102,7 @@ export function WarehouseSearch() {
             title="Consulta de Almoxarifados"
             schema={warehouseSearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}

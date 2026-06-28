@@ -52,6 +52,7 @@ export function StockSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
   } = useSearch<InventoryTransactionResponse, TransactionSearchFormData>(
     InventoryService.searchTransactions,
     initialFilters,
@@ -112,6 +113,7 @@ export function StockSearch() {
             title="Consulta de Movimentações"
             schema={transactionSearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}

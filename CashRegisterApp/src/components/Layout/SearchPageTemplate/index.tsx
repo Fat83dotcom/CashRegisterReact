@@ -13,6 +13,7 @@ interface SearchPageTemplateProps<T, TFilters extends FieldValues> {
   columns: ColumnConfig<T>[];
   pagedData: IPagedResponse<T>;
   loading: boolean;
+  currentFilters?: TFilters;
   onSearch: (filters: TFilters, page?: number, pageSize?: number) => void;
   selectedId: string | number | null;
   onRowSelect: (id: string | number | null) => void;
@@ -29,6 +30,7 @@ export function SearchPageTemplate<T, TFilters extends FieldValues>({
   columns,
   pagedData,
   loading,
+  currentFilters,
   onSearch,
   selectedId,
   onRowSelect,
@@ -59,9 +61,9 @@ export function SearchPageTemplate<T, TFilters extends FieldValues>({
         totalCount={pagedData?.totalCount || 0}
         page={pagedData?.page || 1}
         pageSize={pagedData?.pageSize || 10}
-        onPageChange={(page) => onSearch(defaultValues as TFilters, page)}
+        onPageChange={(page) => onSearch(currentFilters || defaultValues as TFilters, page)}
         onPageSizeChange={(size) =>
-          onSearch(defaultValues as TFilters, 1, parseInt(size))
+          onSearch(currentFilters || defaultValues as TFilters, 1, parseInt(size))
         }
         selectedId={selectedId}
         onRowSelect={onRowSelect}

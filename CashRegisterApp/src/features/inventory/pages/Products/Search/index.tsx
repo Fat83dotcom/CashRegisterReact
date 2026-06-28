@@ -71,6 +71,7 @@ export function ProductSearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     handleDeactivate,
   } = useSearch<IProductResponse, ProductSearchFormData>(
     InventoryService.searchProducts,
@@ -119,6 +120,7 @@ export function ProductSearch() {
             title="Consulta de Produtos"
             schema={productSearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}

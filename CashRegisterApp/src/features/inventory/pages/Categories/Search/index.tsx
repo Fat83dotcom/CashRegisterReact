@@ -57,6 +57,7 @@ export function CategorySearch() {
     selectedId,
     setSelectedId,
     handleSearch,
+    currentFilters,
     handleDeactivate,
   } = useSearch<ICategoryResponse, CategorySearchFormData>(
     InventoryService.searchCategories,
@@ -109,6 +110,7 @@ export function CategorySearch() {
             title="Consulta de Categorias"
             schema={categorySearchSchema}
             defaultValues={initialFilters}
+            currentFilters={currentFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}
