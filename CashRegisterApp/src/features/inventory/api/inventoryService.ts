@@ -62,13 +62,13 @@ export const InventoryService = {
 
     if (params.dateRange) {
       if (params.dateRange[0]) {
-        // dayjs() interpreta o input corretamente no fuso local e format("YYYY-MM-DDT00:00:00Z") anexa o offset do cliente (ex: -03:00).
-        // Isso evita que o C# converta a data de forma incorreta dependendo do timezone do servidor.
-        const startStr = dayjs(params.dateRange[0]).format("YYYY-MM-DDT00:00:00Z");
+        // Envia exatamente a data selecionada sem o offset de fuso (-03:00).
+        // Assim, o .NET recebe (Unspecified) no mesmo dia, sem pular para o dia seguinte no model binder.
+        const startStr = dayjs(params.dateRange[0]).format("YYYY-MM-DDT00:00:00");
         queryParams.append("StartDate", startStr);
       }
       if (params.dateRange[1]) {
-        const endStr = dayjs(params.dateRange[1]).format("YYYY-MM-DDT23:59:59Z");
+        const endStr = dayjs(params.dateRange[1]).format("YYYY-MM-DDT23:59:59");
         queryParams.append("EndDate", endStr);
       }
     }
