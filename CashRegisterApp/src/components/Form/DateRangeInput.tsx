@@ -24,21 +24,9 @@ export function DateRangeInput({ name, ...props }: DateRangeInputProps) {
       name={name}
       control={control}
       render={({ field }) => {
-        const parseDate = (d: any) => {
-          if (!d) return null;
-          if (d instanceof Date) return d;
-          // Se d chegou como string (ex: "2026-06-27T00:00:00.000Z"),
-          // forçamos para ser meia-noite no fuso local adicionando o offset.
-          const date = new Date(d);
-          if (typeof d === "string" && d.includes("T00:00:00.000Z")) {
-             date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-          }
-          return date;
-        };
-
-        const value: [Date | null, Date | null] = Array.isArray(field.value)
-          ? [parseDate(field.value[0]), parseDate(field.value[1])]
-          : [null, null];
+        // O Mantine já retorna e espera um array [Date | null, Date | null].
+        // Repassar diretamente evita recriar a referência do array e causar loops de renderização no componente.
+        const value = Array.isArray(field.value) ? field.value : [null, null];
 
         return (
           <MantineDatePickerInput
