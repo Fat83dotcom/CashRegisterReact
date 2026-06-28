@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { notifications } from "@mantine/notifications";
 import type { IPagedResponse, SearchParams } from "../../../hooks/useSearch";
 import { apiClient } from "../../../lib/api";
@@ -61,16 +62,14 @@ export const InventoryService = {
 
     if (params.dateRange) {
       if (params.dateRange[0]) {
-        // Garantir o início do dia no timezone local
-        const start = new Date(params.dateRange[0]);
-        start.setHours(0, 0, 0, 0);
-        queryParams.append("StartDate", start.toISOString());
+        // dayjs() interpreta o input corretamente no fuso local e format("YYYY-MM-DDT00:00:00Z") anexa o offset do cliente (ex: -03:00).
+        // Isso evita que o C# converta a data de forma incorreta dependendo do timezone do servidor.
+        const startStr = dayjs(params.dateRange[0]).format("YYYY-MM-DDT00:00:00Z");
+        queryParams.append("StartDate", startStr);
       }
       if (params.dateRange[1]) {
-        // Garantir o final do dia no timezone local
-        const end = new Date(params.dateRange[1]);
-        end.setHours(23, 59, 59, 999);
-        queryParams.append("EndDate", end.toISOString());
+        const endStr = dayjs(params.dateRange[1]).format("YYYY-MM-DDT23:59:59Z");
+        queryParams.append("EndDate", endStr);
       }
     }
 
