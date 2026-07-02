@@ -18,6 +18,7 @@ import { ProductsPage } from "./features/inventory/pages/Products";
 import { SalesNavigation } from "./features/sales/pages/navigation";
 import { FinancialHome } from "./features/financial/pages";
 import { FinancialNavigation } from "./features/financial/pages/navigation";
+import { RequisitionsPage } from "./features/financial/pages/Operations/Requisitions";
 
 import { SettingsHome } from "./features/settings/pages";
 import { ChangePassword } from "./features/settings/pages/ChangePassword";
@@ -131,6 +132,12 @@ export const router = createBrowserRouter([
           { index: true, element: <FinancialHome /> },
           { path: "cashFlow", element: <h2>Em breve: Fluxo de Caixa</h2> },
           { path: "reports", element: <h2>Em breve: Relatórios</h2> },
+          {
+            path: "operations",
+            children: [
+              { path: "requisitions", element: <RequisitionsPage /> },
+            ]
+          }
         ],
       },
     ],

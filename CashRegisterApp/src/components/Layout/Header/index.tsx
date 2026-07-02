@@ -57,7 +57,12 @@ const links: NavLinkItem[] = [
           { link: "/financial/accounts", label: "Contas" },
         ],
       },
-      { label: "Operações", items: [] },
+      { 
+        label: "Operações", 
+        items: [
+          { link: "/financial/operations/requisitions", label: "Requisição de Material" }
+        ] 
+      },
       { label: "Relatórios", items: [] },
     ],
   },
