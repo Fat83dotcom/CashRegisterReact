@@ -50,7 +50,7 @@ describe("AuthContext", () => {
   });
 
   it("should be authenticated if /me succeeds", async () => {
-    const mockUser = { id: 1, userName: { firstName: "John", lastName: "Doe" }, role: "Admin" };
+    const mockUser = { userName: "John", name: { firstName: "John", lastName: "Doe" }, role: "Admin" };
     (AuthService.me as any).mockResolvedValue(mockUser);
 
     render(
