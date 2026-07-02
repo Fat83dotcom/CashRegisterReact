@@ -11,18 +11,7 @@ import {
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
 import { InventoryService } from "../../../api/inventoryService";
 import { AdjustStockForm } from "../../../components/AdjustStockForm";
-
-interface StockBalanceResponse {
-  id: number;
-  productId: number;
-  productSku: string;
-  productName: string;
-  warehouseId: number;
-  warehouseName: string;
-  physicalQuantity: number;
-  reservedQuantity: number;
-  availableQuantity: number;
-}
+import type { StockBalanceResponse } from "../../../interfaces";
 
 export function StockBalanceSearch() {
   const initialFilters: StockBalanceSearchFormData = {

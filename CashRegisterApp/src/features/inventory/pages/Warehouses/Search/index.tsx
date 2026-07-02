@@ -9,7 +9,7 @@ import {
   warehouseSearchSchema,
   type WarehouseSearchFormData,
 } from "../../../schemas/warehouseSearchSchema";
-import type { IWarehouseResponse } from "../../../interfaces/IWarehouseResponse";
+import type { IWarehouseResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateWarehouseForm } from "../../../components/UpdateWarehouseForm";

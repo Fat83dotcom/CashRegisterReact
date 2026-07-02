@@ -253,3 +253,61 @@ export interface IInventoryTransactionDetailsResponse {
   isActive: boolean;
   items: IInventoryTransactionItemResponse[];
 }
+
+export interface StockBalanceResponse {
+  id: number;
+  productId: number;
+  productSku: string;
+  productName: string;
+  warehouseId: number;
+  warehouseName: string;
+  physicalQuantity: number;
+  reservedQuantity: number;
+  availableQuantity: number;
+}
+
+export interface InventoryTransactionResponse {
+  id: number;
+  transactionType: string;
+  referenceDocument: string | null;
+  name: string | null;
+  description: string | null;
+  transactionDate: string;
+  isActive: boolean;
+}
+
+export interface InventoryRequisitionItem {
+  id?: number;
+  productId: number;
+  productName?: string;
+  quantity: number;
+}
+
+export interface InventoryRequisition {
+  id: number;
+  originModule: string;
+  requestedByUserId: number;
+  requestedByUserName: string;
+  status: number;
+  statusDescription: string;
+  notes?: string;
+  createdAt: string;
+  fulfilledAt?: string;
+  items?: InventoryRequisitionItem[];
+  isActive: boolean;
+}
+
+export interface CreateInventoryRequisitionRequest {
+  originModule: string;
+  notes?: string;
+  items: { productId: number; quantity: number }[];
+}
+
+export interface SearchInventoryRequisitionRequest {
+  page: number;
+  pageSize: number;
+  originModule?: string;
+  status?: number;
+  startDate?: string;
+  endDate?: string;
+}

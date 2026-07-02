@@ -27,8 +27,11 @@ import type {
   IUpdateWarehouseRequest,
   ICreateInventoryTransactionRequest,
   IInventoryTransactionDetailsResponse,
+  IWarehouseResponse,
+  InventoryRequisition,
+  CreateInventoryRequisitionRequest,
+  SearchInventoryRequisitionRequest,
 } from "../interfaces";
-import type { IWarehouseResponse } from "../interfaces/IWarehouseResponse";
 import React from "react";
 import { IconCheck } from "@tabler/icons-react";
 import type { IUpdateResponse } from "../../../shared/IUpdateResponse";
@@ -71,6 +74,14 @@ export const InventoryService = {
         const endStr = dayjs(params.dateRange[1]).format("YYYY-MM-DDT23:59:59");
         queryParams.append("EndDate", endStr);
       }
+    }
+
+    if (params.transactionType) {
+      queryParams.append("TransactionType", params.transactionType);
+    }
+
+    if (params.isActive !== undefined && params.isActive !== null && params.isActive !== "") {
+      queryParams.append("IsActive", params.isActive);
     }
 
     return apiClient.get<IPagedResponse<any>>(`/InventoryTransaction/Search?${queryParams.toString()}`);
@@ -560,5 +571,37 @@ export const InventoryService = {
 
   deactivateConversion: async (id: string | number): Promise<void> => {
     return apiClient.put<void, {}>(`/UomConversion/${id}/Deactivate`, {});
+  },
+
+  // Requisitions
+  createRequisition: async (request: CreateInventoryRequisitionRequest) => {
+    const response = await apiClient.post<{ id: number }, CreateInventoryRequisitionRequest>('/inventoryrequisitions', request);
+    return response;
+  },
+
+  searchRequisitions: async (request: SearchInventoryRequisitionRequest) => {
+    const queryParams = new URLSearchParams();
+    Object.entries(request).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value.toString());
+      }
+    });
+    const response = await apiClient.get<IPagedResponse<InventoryRequisition>>(`/inventoryrequisitions?${queryParams.toString()}`);
+    return response;
+  },
+
+  getRequisitionById: async (id: number) => {
+    const response = await apiClient.get<InventoryRequisition>(`/inventoryrequisitions/${id}`);
+    return response;
+  },
+
+  fulfillRequisition: async (id: number, payload: { sourceWarehouseId: number }) => {
+    const response = await apiClient.put<{ id: number }, { sourceWarehouseId: number }>(`/inventoryrequisitions/${id}/fulfill`, payload);
+    return response;
+  },
+
+  cancelRequisition: async (id: number) => {
+    const response = await apiClient.put<{ id: number }, {}>(`/inventoryrequisitions/${id}/cancel`, {});
+    return response;
   },
 };

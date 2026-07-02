@@ -1,9 +1,9 @@
-import { Button, Grid } from "@mantine/core";
-import { IconPlus, IconSearch, IconCalendar } from "@tabler/icons-react";
+import { Button, Grid, Group } from "@mantine/core";
+import { IconPlus, IconSearch, IconCalendar, IconClipboardCheck } from "@tabler/icons-react";
 import { useState } from "react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useSearch } from "../../../../../hooks/useSearch";
-import { TextInput, DateRangeInput } from "../../../../../components/Form";
+import { TextInput, DateRangeInput, Select } from "../../../../../components/Form";
 import {
   transactionSearchSchema,
   type TransactionSearchFormData,
@@ -14,17 +14,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { InventoryService } from "../../../api/inventoryService";
 import { CreateInventoryTransactionForm } from "../../../components/CreateInventoryTransactionForm";
 import { TransactionDetailsModal } from "../../../components/TransactionDetailsModal";
-import type { IInventoryTransactionDetailsResponse } from "../../../interfaces";
-
-interface InventoryTransactionResponse {
-  id: number;
-  transactionType: string;
-  referenceDocument: string | null;
-  name: string | null;
-  description: string | null;
-  transactionDate: string;
-  isActive: boolean;
-}
+import type { IInventoryTransactionDetailsResponse, InventoryTransactionResponse } from "../../../interfaces";
+import { PendingRequisitionsModal } from "../../../components/PendingRequisitionsModal";
 
 export const transactionTypeLabels: Record<string, string> = {
   PurchaseEntry: "Entrada (Compra)",
@@ -40,10 +31,13 @@ export function StockSearch() {
   const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false);
   const [transactionDetails, setTransactionDetails] = useState<IInventoryTransactionDetailsResponse | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [requisitionsOpened, { open: openRequisitions, close: closeRequisitions }] = useDisclosure(false);
 
   const initialFilters: TransactionSearchFormData = {
     referenceDocument: "",
     dateRange: [null, null],
+    transactionType: "",
+    isActive: "",
   };
 
   const {
@@ -98,15 +92,25 @@ export function StockSearch() {
   return (
     <>
       <Grid>
-        <Grid.Col span={12} ta="right">
-          <Button
-            leftSection={<IconPlus size={18} />}
-            onClick={handleOpenCreateModal}
-            color="brainstorm.6"
-            variant="light"
-          >
-            Nova Movimentação
-          </Button>
+        <Grid.Col span={12}>
+          <Group justify="flex-end">
+            <Button
+              leftSection={<IconClipboardCheck size={18} />}
+              onClick={openRequisitions}
+              color="orange"
+              variant="light"
+            >
+              Baixar Requisições Pendentes
+            </Button>
+            <Button
+              leftSection={<IconPlus size={18} />}
+              onClick={handleOpenCreateModal}
+              color="brainstorm.6"
+              variant="light"
+            >
+              Nova Movimentação
+            </Button>
+          </Group>
         </Grid.Col>
         <Grid.Col>
           <SearchPageTemplate
@@ -122,7 +126,7 @@ export function StockSearch() {
             onRowSelect={(id: string | number | null) => setSelectedId((prev: string | number | null) => (prev === id ? null : id))}
             onRowDoubleClick={handleRowDoubleClick}
           >
-            <Grid.Col span={{ base: 12, md: 4 }}>
+            <Grid.Col span={{ base: 12, md: 6 }}>
               <TextInput
                 name="referenceDocument"
                 label="Documento de Referência"
@@ -130,12 +134,40 @@ export function StockSearch() {
                 leftSection={<IconSearch size={18} stroke={1.5} />}
               />
             </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 4 }}>
+            <Grid.Col span={{ base: 12, md: 6 }}>
               <DateRangeInput
                 name="dateRange"
                 label="Período de Movimentação"
                 placeholder="Selecione as datas"
                 leftSection={<IconCalendar size={18} stroke={1.5} />}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <Select
+                name="transactionType"
+                label="Tipo"
+                placeholder="Todos"
+                data={[
+                  { value: "", label: "Todos" },
+                  { value: "PurchaseEntry", label: "Entrada (Compra)" },
+                  { value: "Transfer", label: "Transferência" },
+                  { value: "RequisitionExit", label: "Saída (Requisição)" },
+                  { value: "Reversal", label: "Estorno" },
+                  { value: "InventoryAdjustmentEntry", label: "Ajuste (+)" },
+                  { value: "InventoryAdjustmentExit", label: "Ajuste (-)" },
+                ]}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <Select
+                name="isActive"
+                label="Status"
+                placeholder="Todos"
+                data={[
+                  { value: "", label: "Todos" },
+                  { value: "true", label: "Concluído" },
+                  { value: "false", label: "Cancelado" },
+                ]}
               />
             </Grid.Col>
           </SearchPageTemplate>
@@ -150,6 +182,12 @@ export function StockSearch() {
         }}
         transaction={transactionDetails}
         loading={loadingDetails}
+      />
+
+      <PendingRequisitionsModal 
+        opened={requisitionsOpened} 
+        onClose={closeRequisitions} 
+        onFulfill={() => handleSearch(initialFilters, pagedData?.page || 1, pagedData?.pageSize || 10)} 
       />
     </>
   );
