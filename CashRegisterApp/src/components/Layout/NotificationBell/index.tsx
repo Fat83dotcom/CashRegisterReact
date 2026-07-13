@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ActionIcon, Popover, Text, Indicator, Stack, Divider, Group, Button } from "@mantine/core";
 import { IconBell, IconCheck } from "@tabler/icons-react";
 import { notificationService } from "../../../services/notificationService";
-import { apiClient } from "../../../lib/api";
 import { useNavigate } from "react-router-dom";
 
 export function NotificationBell() {
@@ -11,14 +10,8 @@ export function NotificationBell() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 1. Busca inicial da contagem de requisições pendentes
-    apiClient.get<number>("/InventoryRequisitions/pending/count")
-      .then((count) => setPendingCount(count))
-      .catch((err) => console.error("Erro ao buscar notificações", err));
-
-    // 2. Assina o tópico SSE para receber o valor atualizado em tempo real
+    // Assina o tópico SSE para receber o valor inicial instantaneamente e atualizações
     const unsubscribe = notificationService.subscribe("inventory.requisitions.pending", (msg: any) => {
-      // O backend agora envia { count: X, timestamp: Y }
       if (typeof msg.count === "number") {
         setPendingCount(msg.count);
       }
