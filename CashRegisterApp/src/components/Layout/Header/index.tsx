@@ -5,6 +5,7 @@ import classes from "./styles/HeaderSearch.module.css";
 import { NavLink } from "react-router-dom";
 import { UserMenu } from "../UserMenu";
 import { useAuth } from "../../../features/auth/contexts/AuthContext";
+import { NotificationBell } from "../NotificationBell";
 
 type NavSubItem = { link: string; label: string };
 type NavSection = { label: string; items: NavSubItem[] };
@@ -183,7 +184,8 @@ export function HeaderSearch() {
         visibleFrom="xs"
       />
       
-      <Group wrap="nowrap">
+      <Group wrap="nowrap" gap="sm">
+        <NotificationBell />
         <UserMenu />
       </Group>
     </Group>

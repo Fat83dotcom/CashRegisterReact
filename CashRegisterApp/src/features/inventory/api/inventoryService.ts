@@ -144,6 +144,7 @@ export const InventoryService = {
       .post<ICreateResponse, any>("/warehouses", {
         Name: request.name,
         Type: request.type,
+        IsPrincipal: request.isPrincipal,
       })
       .then((response) => {
         if (response && response.id > 0) {
@@ -168,6 +169,7 @@ export const InventoryService = {
         Name: request.name,
         Type: request.type,
         IsActive: request.isActive,
+        IsPrincipal: request.isPrincipal,
       })
       .then((response) => {
         if (response && response.id > 0) {
@@ -502,8 +504,8 @@ export const InventoryService = {
   ): Promise<ICreateResponse> => {
     return apiClient
       .post<ICreateResponse, any>("/UomConversion", {
-        FromUnitId: request.fromUomId,
-        ToUnitId: request.toUomId,
+        FromUomId: request.fromUomId,
+        ToUomId: request.toUomId,
         Multiplier: request.multiplier,
         ProductId: request.productId,
       })
@@ -543,8 +545,8 @@ export const InventoryService = {
   ): Promise<IUpdateResponse> => {
     return apiClient
       .put<IUpdateResponse, any>(`/UomConversion/${id}/Update`, {
-        FromUnitId: request.fromUomId,
-        ToUnitId: request.toUomId,
+        FromUomId: request.fromUomId,
+        ToUomId: request.toUomId,
         Multiplier: request.multiplier,
         ProductId: request.productId,
         IsActive: request.isActive,

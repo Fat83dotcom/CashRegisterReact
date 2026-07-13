@@ -2,7 +2,7 @@ import { notifications } from "@mantine/notifications";
 import { IconExclamationCircle } from "@tabler/icons-react";
 import React from "react";
 
-const BASE_URL = "http://localhost:5294/api";
+export const BASE_URL = "http://localhost:5294/api";
 
 export interface ApiRequestOptions extends RequestInit {
   silent?: boolean;

@@ -283,13 +283,14 @@ export interface InventoryRequisitionItem {
   quantity: number;
 }
 
+export type RequisitionStatus = "Pending" | "Fulfilled" | "Canceled";
+
 export interface InventoryRequisition {
   id: number;
   originModule: string;
   requestedByUserId: number;
-  requestedByUserName: string;
-  status: number;
-  statusDescription: string;
+  requestedByUserName?: string;
+  status?: RequisitionStatus;
   notes?: string;
   createdAt: string;
   fulfilledAt?: string;
@@ -307,7 +308,7 @@ export interface SearchInventoryRequisitionRequest {
   page: number;
   pageSize: number;
   originModule?: string;
-  status?: number;
+  status?: RequisitionStatus;
   startDate?: string;
   endDate?: string;
 }

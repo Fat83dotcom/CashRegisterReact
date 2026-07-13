@@ -1,12 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Modal, Button, Table, Group, Badge, Text, ActionIcon, Tooltip, Stack } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
-import { InventoryService } from '../api/inventoryService';
-import type { InventoryRequisition } from '../interfaces';
-import { showNotification } from '@mantine/notifications';
-import dayjs from 'dayjs';
-import { FulfillRequisitionForm } from './FulfillRequisitionForm';
-import { useGenericModal } from '../../../hooks/useGenericModal';
+import { useEffect, useState } from "react";
+import {
+  Modal,
+  Button,
+  Table,
+  Group,
+  Badge,
+  Text,
+  ActionIcon,
+  Tooltip,
+  Stack,
+} from "@mantine/core";
+import { IconCheck } from "@tabler/icons-react";
+import { InventoryService } from "../api/inventoryService";
+import type { InventoryRequisition } from "../interfaces";
+import { showNotification } from "@mantine/notifications";
+import dayjs from "dayjs";
+import { FulfillRequisitionForm } from "./FulfillRequisitionForm";
+import { useGenericModal } from "../../../hooks/useGenericModal";
 
 interface Props {
   opened: boolean;
@@ -14,7 +24,11 @@ interface Props {
   onFulfill: () => void;
 }
 
-export function PendingRequisitionsModal({ opened, onClose, onFulfill }: Props) {
+export function PendingRequisitionsModal({
+  opened,
+  onClose,
+  onFulfill,
+}: Props) {
   const [requisitions, setRequisitions] = useState<InventoryRequisition[]>([]);
   const [loading, setLoading] = useState(false);
   const modal = useGenericModal();
@@ -26,15 +40,15 @@ export function PendingRequisitionsModal({ opened, onClose, onFulfill }: Props) 
       const response = await InventoryService.searchRequisitions({
         page: 1,
         pageSize: 50,
-        status: 0 
+        status: "Pending",
       });
       setRequisitions(response.items);
     } catch (error) {
       console.error(error);
       showNotification({
-        title: 'Erro',
-        message: 'Falha ao buscar requisições pendentes.',
-        color: 'red'
+        title: "Erro",
+        message: "Falha ao buscar requisições pendentes.",
+        color: "red",
       });
     } finally {
       setLoading(false);
@@ -68,14 +82,18 @@ export function PendingRequisitionsModal({ opened, onClose, onFulfill }: Props) 
       <Table.Td>{req.id}</Table.Td>
       <Table.Td>{req.originModule}</Table.Td>
       <Table.Td>{req.requestedByUserName}</Table.Td>
-      <Table.Td>{dayjs(req.createdAt).format('DD/MM/YYYY HH:mm')}</Table.Td>
+      <Table.Td>{dayjs(req.createdAt).format("DD/MM/YYYY HH:mm")}</Table.Td>
       <Table.Td>
         <Badge color="orange">Pendente</Badge>
       </Table.Td>
       <Table.Td>
         <Group gap="xs">
           <Tooltip label="Atender Requisição">
-            <ActionIcon color="green" variant="light" onClick={() => handleOpenFulfillModal(req.id)}>
+            <ActionIcon
+              color="green"
+              variant="light"
+              onClick={() => handleOpenFulfillModal(req.id)}
+            >
               <IconCheck size={18} />
             </ActionIcon>
           </Tooltip>
@@ -85,10 +103,17 @@ export function PendingRequisitionsModal({ opened, onClose, onFulfill }: Props) 
   ));
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Requisições de Estoque Pendentes" size="xl">
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title="Requisições de Estoque Pendentes"
+      size="xl"
+    >
       <Stack>
         {requisitions.length === 0 && !loading ? (
-          <Text c="dimmed" ta="center" py="xl">Nenhuma requisição pendente no momento.</Text>
+          <Text c="dimmed" ta="center" py="xl">
+            Nenhuma requisição pendente no momento.
+          </Text>
         ) : (
           <Table striped highlightOnHover>
             <Table.Thead>
@@ -105,7 +130,9 @@ export function PendingRequisitionsModal({ opened, onClose, onFulfill }: Props) 
           </Table>
         )}
         <Group justify="flex-end">
-          <Button variant="default" onClick={onClose}>Fechar</Button>
+          <Button variant="default" onClick={onClose}>
+            Fechar
+          </Button>
         </Group>
       </Stack>
     </Modal>
