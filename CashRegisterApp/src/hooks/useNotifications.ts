@@ -1,4 +1,5 @@
-import { apiClient, BASE_URL } from "../lib/api";
+import { useEffect } from "react";
+import { BASE_URL } from "../lib/api";
 
 export interface NotificationMessage {
   type: string;
@@ -9,21 +10,23 @@ export interface NotificationMessage {
   id: string;
 }
 
-class NotificationService {
-  private eventSources: Map<string, EventSource> = new Map();
-  private subscribers: Map<string, ((msg: NotificationMessage) => void)[]> = new Map();
+// Memória global mantida fora do React para que múltiplas instâncias 
+// do hook compartilhem os mesmos EventSources
+const eventSources: Map<string, EventSource> = new Map();
+const subscribers: Map<string, ((msg: NotificationMessage) => void)[]> = new Map();
 
-  subscribe(topic: string, callback: (msg: NotificationMessage) => void) {
-    if (!this.subscribers.has(topic)) {
-      this.subscribers.set(topic, []);
+export function useNotifications(topic: string, callback: (msg: NotificationMessage) => void) {
+  useEffect(() => {
+    if (!subscribers.has(topic)) {
+      subscribers.set(topic, []);
     }
     
-    const callbacks = this.subscribers.get(topic);
+    const callbacks = subscribers.get(topic);
     if (callbacks) {
       callbacks.push(callback);
     }
 
-    if (!this.eventSources.has(topic)) {
+    if (!eventSources.has(topic)) {
       const eventSource = new EventSource(`${BASE_URL}/Notifications/stream/${topic}`, {
         withCredentials: true, 
       });
@@ -37,7 +40,7 @@ class NotificationService {
             id: crypto.randomUUID()
           };
 
-          const topicCallbacks = this.subscribers.get(topic);
+          const topicCallbacks = subscribers.get(topic);
           topicCallbacks?.forEach((cb) => cb(notification));
         } catch (error) {
           console.error("Erro ao fazer parse da notificação SSE:", error);
@@ -48,21 +51,19 @@ class NotificationService {
         console.error(`Erro no EventSource do tópico ${topic}:`, error);
       };
 
-      this.eventSources.set(topic, eventSource);
+      eventSources.set(topic, eventSource);
     }
 
     return () => {
-      const topicCallbacks = this.subscribers.get(topic);
+      const topicCallbacks = subscribers.get(topic);
       if (topicCallbacks) {
-        this.subscribers.set(topic, topicCallbacks.filter((cb) => cb !== callback));
+        subscribers.set(topic, topicCallbacks.filter((cb) => cb !== callback));
         
-        if (this.subscribers.get(topic)?.length === 0) {
-          this.eventSources.get(topic)?.close();
-          this.eventSources.delete(topic);
+        if (subscribers.get(topic)?.length === 0) {
+          eventSources.get(topic)?.close();
+          eventSources.delete(topic);
         }
       }
     };
-  }
+  }, [topic, callback]);
 }
-
-export const notificationService = new NotificationService();

@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { RootLayout, MainNavigation } from "./features/main/pages";
+import { NotFoundPage } from "./features/main/pages/NotFoundPage";
 
 import { CreateUserNavigation } from "./features/users/pages/navigation";
 import { UserHome } from "./features/users/pages";
@@ -140,6 +141,10 @@ export const router = createBrowserRouter([
           }
         ],
       },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      }
     ],
   },
   {

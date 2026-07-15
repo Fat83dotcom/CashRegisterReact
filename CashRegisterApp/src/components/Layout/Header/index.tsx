@@ -1,11 +1,16 @@
-import { IconSearch, IconChevronDown, IconChevronRight } from "@tabler/icons-react";
+import {
+  IconSearch,
+  IconChevronDown,
+  IconChevronRight,
+} from "@tabler/icons-react";
 import { Autocomplete, Center, Group, Menu } from "@mantine/core";
 
 import classes from "./styles/HeaderSearch.module.css";
 import { NavLink } from "react-router-dom";
 import { UserMenu } from "../UserMenu";
 import { useAuth } from "../../../features/auth/contexts/AuthContext";
-import { NotificationBell } from "../NotificationBell";
+import { NotificationGroup } from "../NotificationGroup";
+import { InventoryRequisitionsBell } from "../../../features/inventory/components/InventoryRequisitionsBell";
 
 type NavSubItem = { link: string; label: string };
 type NavSection = { label: string; items: NavSubItem[] };
@@ -38,12 +43,12 @@ const links: NavLinkItem[] = [
           { link: "/inventory/conversions", label: "Regras de Conversão" },
         ],
       },
-      { 
-        label: "Operações", 
+      {
+        label: "Operações",
         items: [
           { link: "/inventory/balances", label: "Saldos de Estoque" },
           { link: "/inventory/stock", label: "Movimentações de Estoque" },
-        ] 
+        ],
       },
       { label: "Relatórios", items: [] },
     ],
@@ -54,15 +59,16 @@ const links: NavLinkItem[] = [
     sections: [
       {
         label: "Cadastros",
-        items: [
-          { link: "/financial/accounts", label: "Contas" },
-        ],
+        items: [{ link: "/financial/accounts", label: "Contas" }],
       },
-      { 
-        label: "Operações", 
+      {
+        label: "Operações",
         items: [
-          { link: "/financial/operations/requisitions", label: "Requisição de Material" }
-        ] 
+          {
+            link: "/financial/operations/requisitions",
+            label: "Requisição de Material",
+          },
+        ],
       },
       { label: "Relatórios", items: [] },
     ],
@@ -73,9 +79,7 @@ const links: NavLinkItem[] = [
     sections: [
       {
         label: "Cadastros",
-        items: [
-          { link: "/sales/customers", label: "Clientes" },
-        ],
+        items: [{ link: "/sales/customers", label: "Clientes" }],
       },
       { label: "Operações", items: [] },
       { label: "Relatórios", items: [] },
@@ -111,11 +115,7 @@ export function HeaderSearch() {
         <Menu.Dropdown>
           {section.items.length > 0 ? (
             section.items.map((item) => (
-              <Menu.Item 
-                key={item.link} 
-                component={NavLink} 
-                to={item.link}
-              >
+              <Menu.Item key={item.link} component={NavLink} to={item.link}>
                 {item.label}
               </Menu.Item>
             ))
@@ -169,23 +169,21 @@ export function HeaderSearch() {
       <Group gap={5} className={classes.links} visibleFrom="sm" wrap="nowrap">
         {items}
       </Group>
-      
+
       <Autocomplete
         className={classes.search}
         placeholder="Pesquisar..."
         leftSection={<IconSearch size={16} stroke={1.5} />}
-        data={[
-          "Usuários",
-          "Produtos",
-          "Almoxarifados",
-          "Vendas",
-          "Relatórios",
-        ]}
+        data={["Usuários", "Produtos", "Almoxarifados", "Vendas", "Relatórios"]}
         visibleFrom="xs"
       />
-      
+
       <Group wrap="nowrap" gap="sm">
-        <NotificationBell />
+        <NotificationGroup>
+          {user && ["Admin", "Logistics"].includes(user.role) && (
+            <InventoryRequisitionsBell />
+          )}
+        </NotificationGroup>
         <UserMenu />
       </Group>
     </Group>
