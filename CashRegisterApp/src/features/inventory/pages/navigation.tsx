@@ -21,6 +21,7 @@ const links = [
   { link: "/inventory/tags", label: "Tags", icon: IconTags },
   { link: "/inventory/units", label: "Unidades de Medida", icon: IconRulerMeasure },
   { link: "/inventory/conversions", label: "Regras de Conversão", icon: IconArrowsExchange },
+  { link: "/inventory/suppliers", label: "Fornecedores", icon: IconBuildingWarehouse },
 ];
 
 export function InventoryNavigation() {

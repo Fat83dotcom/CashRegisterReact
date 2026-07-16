@@ -312,3 +312,40 @@ export interface SearchInventoryRequisitionRequest {
   startDate?: string;
   endDate?: string;
 }
+
+export interface ICreateSupplierRequest {
+  personId?: number;
+  person?: {
+    personType?: number;
+    firstName: string;
+    lastName: string;
+    taxId?: string;
+    birthdate?: string;
+    email?: string;
+  };
+}
+
+export interface IUpdateSupplierRequest {
+  isActive: boolean;
+}
+
+export interface IGetSupplierByIdResponse {
+  id: number;
+  personId: number;
+  name: {
+    firstName: string;
+    lastName: string;
+  };
+  taxId?: string;
+  isActive: boolean;
+}
+
+export interface IGetSearchSupplierResponse {
+  id: number;
+  name: {
+    firstName: string;
+    lastName: string;
+  };
+  taxId?: string;
+  isActive: boolean;
+}

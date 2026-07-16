@@ -31,6 +31,10 @@ import type {
   InventoryRequisition,
   CreateInventoryRequisitionRequest,
   SearchInventoryRequisitionRequest,
+  ICreateSupplierRequest,
+  IUpdateSupplierRequest,
+  IGetSupplierByIdResponse,
+  IGetSearchSupplierResponse,
 } from "../interfaces";
 import React from "react";
 import { IconCheck } from "@tabler/icons-react";
@@ -605,5 +609,70 @@ export const InventoryService = {
   cancelRequisition: async (id: number) => {
     const response = await apiClient.put<{ id: number }, {}>(`/inventoryrequisitions/${id}/cancel`, {});
     return response;
+  },
+
+  // Suppliers
+  createSupplier: async (
+    request: ICreateSupplierRequest,
+  ): Promise<ICreateResponse> => {
+    return apiClient
+      .post<ICreateResponse, any>("/Supplier", request)
+      .then((response) => {
+        if (response && response.id > 0) {
+          notifications.show({
+            title: "Sucesso",
+            message: "Fornecedor criado com sucesso.",
+            color: "green",
+            autoClose: 5000,
+            icon: React.createElement(IconCheck),
+          });
+        }
+        return response;
+      });
+  },
+
+  updateSupplier: async (
+    id: number,
+    request: IUpdateSupplierRequest,
+  ): Promise<IUpdateResponse> => {
+    return apiClient
+      .put<IUpdateResponse, any>(`/Supplier/${id}`, request)
+      .then((response) => {
+        notifications.show({
+          title: "Sucesso",
+          message: "Fornecedor atualizado com sucesso.",
+          color: "green",
+          autoClose: 5000,
+          icon: React.createElement(IconCheck),
+        });
+        return response;
+      });
+  },
+
+  getSupplierById: async (id: number): Promise<IGetSupplierByIdResponse> => {
+    return apiClient.get<IGetSupplierByIdResponse>(`/Supplier/${id}`);
+  },
+
+  searchSuppliers: async (
+    params: SearchParams & { name?: string; taxId?: string },
+  ): Promise<IPagedResponse<IGetSearchSupplierResponse>> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.name) {
+      queryParams.append("Name", params.name);
+    }
+    if (params.taxId) {
+      queryParams.append("TaxId", params.taxId);
+    }
+
+    return apiClient.get<IPagedResponse<IGetSearchSupplierResponse>>(
+      `/Supplier/Search?${queryParams.toString()}`,
+    );
+  },
+
+  deactivateSupplier: async (id: string | number): Promise<void> => {
+    return apiClient.put<void, {}>(`/Supplier/${id}/deactivate`, {});
   },
 };

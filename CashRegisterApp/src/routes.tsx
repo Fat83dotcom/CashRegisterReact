@@ -16,6 +16,7 @@ import { CategoriesPage } from "./features/inventory/pages/Categories";
 import { ConversionsPage } from "./features/inventory/pages/Conversions";
 import { WarehousesPage } from "./features/inventory/pages/Warehouses";
 import { ProductsPage } from "./features/inventory/pages/Products";
+import { SuppliersPage } from "./features/inventory/pages/Suppliers";
 import { SalesNavigation } from "./features/sales/pages/navigation";
 import { FinancialHome } from "./features/financial/pages";
 import { FinancialNavigation } from "./features/financial/pages/navigation";
@@ -113,6 +114,12 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <ConversionsPage /> },
               { path: "create", element: <ConversionsPage /> },
+            ],
+          },
+          {
+            path: "suppliers",
+            children: [
+              { index: true, element: <SuppliersPage /> },
             ],
           },
         ],
