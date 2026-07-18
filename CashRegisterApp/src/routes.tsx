@@ -12,7 +12,7 @@ import { StockPage } from "./features/inventory/pages/Stock";
 import { StockBalancesPage } from "./features/inventory/pages/Balances";
 import { InventoryNavigation } from "./features/inventory/pages/navigation";
 import { UnitsPage } from "./features/inventory/pages/Units";
-import { CategoriesPage } from "./features/inventory/pages/Categories";
+// CategoriesPage foi movida para lazy loading
 import { ConversionsPage } from "./features/inventory/pages/Conversions";
 import { WarehousesPage } from "./features/inventory/pages/Warehouses";
 import { ProductsPage } from "./features/inventory/pages/Products";
@@ -29,9 +29,30 @@ import { Login } from "./features/auth/pages";
 import { SalesHome } from "./features/sales/pages";
 import { TagsPage } from "./features/inventory/pages/Tags";
 
+import { GlobalErrorBoundary } from "./components/Layout/GlobalErrorBoundary";
+
+import type { LoaderFunction } from "react-router-dom";
+import type { ComponentType } from "react";
+
+// Helper genérico para Lazy Loading de módulos com exports nomeados
+const lazyPage = <TModule extends Record<string, unknown>>(
+  importFunc: () => Promise<TModule>,
+  componentName: keyof TModule,
+  loaderName?: keyof TModule
+) => {
+  return async () => {
+    const module = await importFunc();
+    return { 
+      Component: module[componentName] as ComponentType<unknown>,
+      loader: loaderName ? (module[loaderName] as LoaderFunction) : undefined
+    };
+  };
+};
+
 export const router = createBrowserRouter([
   {
     path: "/",
+    errorElement: <GlobalErrorBoundary />,
     element: (
       <ProtectedRoute>
         <RootLayout />
@@ -91,8 +112,14 @@ export const router = createBrowserRouter([
           {
             path: "categories",
             children: [
-              { index: true, element: <CategoriesPage /> },
-              { path: "create", element: <CategoriesPage /> },
+              { 
+                index: true, 
+                lazy: lazyPage(() => import("./features/inventory/pages/Categories"), "CategoriesPage", "categoriesLoader")
+              },
+              { 
+                path: "create", 
+                lazy: lazyPage(() => import("./features/inventory/pages/Categories"), "CategoriesPage", "categoriesLoader")
+              },
             ],
           },
           {

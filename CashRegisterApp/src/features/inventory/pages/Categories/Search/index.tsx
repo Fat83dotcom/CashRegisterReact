@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput } from "../../../../../components/Form";
 import {
   categorySearchSchema,
@@ -29,7 +29,7 @@ export function CategorySearch() {
         <CreateCategoryForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -44,7 +44,7 @@ export function CategorySearch() {
           id={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -59,10 +59,8 @@ export function CategorySearch() {
     handleSearch,
     currentFilters,
     handleDeactivate,
-  } = useSearch<ICategoryResponse, CategorySearchFormData>(
-    InventoryService.searchCategories,
-    initialFilters,
-    {
+    refresh,
+  } = useRouteSearch<ICategoryResponse, CategorySearchFormData>({
       action: InventoryService.deactivateCategory,
       renderContent: (category) => {
         return (

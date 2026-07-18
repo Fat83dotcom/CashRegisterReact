@@ -45,8 +45,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const logout = async () => {
+    try {
+      await AuthService.logout();
+    } catch {
+      // Ignorar erros se o token já estiver inválido/expirado
+    } finally {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
+
+    // Listener Global para capturar 401s interceptados pelo apiClient
+    const handleUnauthorized = () => {
+      logout();
+    };
+
+    window.addEventListener("unauthorized", handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("unauthorized", handleUnauthorized);
+    };
   }, []);
 
   const login = async (credentials: LoginFormData) => {
@@ -62,12 +84,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       throw error;
     }
-  };
-
-  const logout = async () => {
-    await AuthService.logout();
-    setIsAuthenticated(false);
-    setUser(null);
   };
 
   return (
