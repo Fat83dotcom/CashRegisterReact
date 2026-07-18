@@ -49,7 +49,7 @@ async function request<T>(
       window.dispatchEvent(new CustomEvent("unauthorized"));
     }
 
-    const title = errorData?.Message || "Erro na requisição";
+    const title = errorData?.Title || errorData?.title || errorData?.Type || errorData?.type || "Erro na requisição";
 
     let formattedMessage = `Ocorreu um erro inesperado (HTTP ${response.status}).`;
 

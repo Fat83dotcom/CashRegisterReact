@@ -15,7 +15,7 @@ export const ProtectedRoute = ({
   if (isLoading) {
     return (
       <Center h="100vh" bg="gray.1">
-        <Loader size="xl" type="bars" />
+        <Loader color="brainstorm.6" size="xl" type="dots" />
       </Center>
     );
   }

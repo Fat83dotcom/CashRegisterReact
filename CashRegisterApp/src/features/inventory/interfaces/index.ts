@@ -316,17 +316,37 @@ export interface SearchInventoryRequisitionRequest {
 export interface ICreateSupplierRequest {
   personId?: number;
   person?: {
-    personType?: number;
+    personType?: string;
     firstName: string;
     lastName: string;
     taxId?: string;
     birthdate?: string;
     email?: string;
+    tradeName?: string;
+    stateRegistration?: string;
+    municipalRegistration?: string;
+    cellPhone?: string;
+    phone?: string;
+    gender?: string;
   };
 }
 
 export interface IUpdateSupplierRequest {
   isActive: boolean;
+  person?: {
+    personType?: string;
+    firstName: string;
+    lastName: string;
+    taxId?: string;
+    birthdate?: string;
+    email?: string;
+    tradeName?: string;
+    stateRegistration?: string;
+    municipalRegistration?: string;
+    cellPhone?: string;
+    phone?: string;
+    gender?: string;
+  };
 }
 
 export interface IGetSupplierByIdResponse {

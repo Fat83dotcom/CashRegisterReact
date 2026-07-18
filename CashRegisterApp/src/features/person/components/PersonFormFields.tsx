@@ -3,11 +3,11 @@ import { useFormContext } from "react-hook-form";
 import { TextInput, Select } from "../../../components/Form";
 import { DateInput } from "../../../components/Form/DateInput";
 
-export function PersonForm() {
+export function PersonFormFields() {
   const { watch } = useFormContext();
   const personType = watch("person.personType");
   // Permite suportar strings caso venha do select antes de ser parseado
-  const isLegalPerson = personType === 2 || personType === "2";
+  const isLegalPerson = personType === "Legal";
 
   return (
     <Grid grow gutter={{ base: 5, xs: "md", md: "xl" }}>
@@ -18,8 +18,8 @@ export function PersonForm() {
           label="Tipo de Pessoa"
           placeholder="Selecione o tipo de pessoa"
           data={[
-            { value: "1", label: "Pessoa Física" },
-            { value: "2", label: "Pessoa Jurídica" },
+            { value: "Physical", label: "Pessoa Física" },
+            { value: "Legal", label: "Pessoa Jurídica" },
           ]}
         />
       </Grid.Col>
@@ -44,7 +44,7 @@ export function PersonForm() {
         <DateInput
           name="person.birthdate"
           withAsterisk
-          label="Nascimento / Fundação"
+          label={isLegalPerson ? "Data de Fundação" : "Data de Nascimento"}
           placeholder="Selecione a data"
         />
       </Grid.Col>
@@ -52,8 +52,8 @@ export function PersonForm() {
         <TextInput
           name="person.taxId"
           withAsterisk
-          label="Documento (CPF/CNPJ)"
-          placeholder="Digite o documento"
+          label={isLegalPerson ? "CNPJ" : "CPF"}
+          placeholder={isLegalPerson ? "Digite o CNPJ" : "Digite o CPF"}
         />
       </Grid.Col>
 
@@ -92,18 +92,20 @@ export function PersonForm() {
         />
       </Grid.Col>
 
-      <Grid.Col span={6}>
-        <Select
-          name="person.gender"
-          label="Gênero"
-          placeholder="Selecione"
-          data={[
-            { value: "Male", label: "Masculino" },
-            { value: "Female", label: "Feminino" },
-            { value: "Other", label: "Outro" },
-          ]}
-        />
-      </Grid.Col>
+      {!isLegalPerson && (
+        <Grid.Col span={6}>
+          <Select
+            name="person.gender"
+            label="Gênero"
+            placeholder="Selecione"
+            data={[
+              { value: "Male", label: "Masculino" },
+              { value: "Female", label: "Feminino" },
+              { value: "Other", label: "Outro" },
+            ]}
+          />
+        </Grid.Col>
+      )}
 
       <Grid.Col span={6}>
         <TextInput

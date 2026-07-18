@@ -585,6 +585,11 @@ export const InventoryService = {
     return response;
   },
 
+  createFinancialRequisition: async (request: CreateInventoryRequisitionRequest) => {
+    const response = await apiClient.post<{ id: number }, CreateInventoryRequisitionRequest>('/inventoryrequisitions/financial', request);
+    return response;
+  },
+
   searchRequisitions: async (request: SearchInventoryRequisitionRequest) => {
     const queryParams = new URLSearchParams();
     Object.entries(request).forEach(([key, value]) => {

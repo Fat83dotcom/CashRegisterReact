@@ -1,4 +1,12 @@
-import { AppShell, Burger, Container, Group, Paper, Text, Center } from "@mantine/core";
+import {
+  AppShell,
+  Burger,
+  Container,
+  Group,
+  Paper,
+  Text,
+  Center,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { HeaderSearch } from "../../../components/Layout/Header";
 import { Outlet, useMatches, useLocation } from "react-router-dom";
@@ -18,10 +26,8 @@ export function RootLayout() {
     ? (currentMatch.handle as any).navbar
     : null;
 
-  // Elegante: verifica se é uma rota de formulário/criação ou configuração de segurança
-  // Isso permite centralizar apenas os formulários no quadro branco, sem quebrar tabelas.
-  const isFormRoute = 
-    location.pathname.includes("/create") || 
+  const isFormRoute =
+    location.pathname.includes("/create") ||
     location.pathname.includes("/security");
 
   return (
@@ -35,7 +41,13 @@ export function RootLayout() {
       }}
     >
       <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between" align="center" wrap="nowrap">
+        <Group
+          h="100%"
+          px="md"
+          justify="space-between"
+          align="center"
+          wrap="nowrap"
+        >
           <Group wrap="nowrap">
             <Burger
               opened={mobileOpened}
@@ -55,7 +67,7 @@ export function RootLayout() {
                 size="xl"
                 fw={900}
                 variant="gradient"
-                gradient={{ from: 'brainstorm.6', to: 'cyan', deg: 45 }}
+                gradient={{ from: "brainstorm.6", to: "cyan", deg: 45 }}
                 style={{ letterSpacing: -1 }}
               >
                 BrainstormTech
@@ -71,7 +83,6 @@ export function RootLayout() {
       </AppShell.Navbar>
       <AppShell.Main>
         <Container size="xl" p="0">
-          {/* Paper atua como o seu "quadro branco" para o conteúdo */}
           <Paper
             shadow="sm"
             radius="md"

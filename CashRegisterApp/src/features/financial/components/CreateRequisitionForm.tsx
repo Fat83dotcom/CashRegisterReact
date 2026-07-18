@@ -112,7 +112,7 @@ export function CreateRequisitionForm({ onSuccess }: CreateRequisitionFormProps)
     }));
 
     try {
-      await InventoryService.createRequisition({
+      await InventoryService.createFinancialRequisition({
         originModule: "Financeiro",
         notes: values.notes,
         items: formattedItems

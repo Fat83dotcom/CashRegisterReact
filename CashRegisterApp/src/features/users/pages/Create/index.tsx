@@ -10,7 +10,7 @@ import { userSchema, type UserFormData } from "../../schemas/userSchema";
 // Dependências legadas / lógicas atuais da feature
 import { UserService } from "../../api/userService";
 import { PasswordManager } from "../../../../components/Layout/PasswordManager";
-import { PersonForm } from "../../../person/components/PersonForm";
+import { PersonFormFields } from "../../../person/components/PersonFormFields";
 import { PersonSelect } from "../../../person/components/PersonSelect";
 
 export function CreateUser() {
@@ -26,7 +26,7 @@ export function CreateUser() {
     if (isNewPerson && userValues.person) {
       personRequest = {
         ...userValues.person,
-        personType: Number(userValues.person.personType),
+        personType: String(userValues.person.personType),
         birthdate: dayjs(userValues.person.birthdate).format("YYYY-MM-DDT00:00:00Z"),
       };
     }
@@ -53,7 +53,7 @@ export function CreateUser() {
           userName: "",
           personId: undefined,
           person: {
-            personType: 1,
+            personType: "Physical",
             firstName: "",
             lastName: "",
             taxId: "",
@@ -93,7 +93,7 @@ export function CreateUser() {
                     <Divider label="Dados da Nova Pessoa" labelPosition="center" my="md" />
                   </Grid.Col>
                   <Grid.Col span={12}>
-                    <PersonForm />
+                    <PersonFormFields />
                   </Grid.Col>
                 </>
               )}

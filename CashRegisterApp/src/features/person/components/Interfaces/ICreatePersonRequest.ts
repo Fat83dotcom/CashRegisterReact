@@ -1,5 +1,5 @@
 export interface ICreatePersonRequest {
-  personType: number;
+  personType: string;
   firstName: string;
   lastName: string;
   taxId: string;

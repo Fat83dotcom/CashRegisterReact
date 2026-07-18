@@ -33,6 +33,20 @@ export function UpdateSupplierForm({ id, onSuccess }: UpdateSupplierFormProps) {
     setLoading(true);
     const request: IUpdateSupplierRequest = {
       isActive: values.isActive === "true",
+      person: {
+        personType: values.person?.personType,
+        firstName: values.person?.firstName ?? "",
+        lastName: values.person?.lastName ?? "",
+        taxId: values.person?.taxId,
+        birthdate: values.person?.birthdate ? values.person.birthdate.toISOString() : undefined,
+        email: values.person?.email,
+        tradeName: values.person?.tradeName,
+        stateRegistration: values.person?.stateRegistration,
+        municipalRegistration: values.person?.municipalRegistration,
+        cellPhone: values.person?.cellPhone,
+        phone: values.person?.phone,
+        gender: values.person?.gender,
+      }
     };
 
     try {
@@ -55,12 +69,18 @@ export function UpdateSupplierForm({ id, onSuccess }: UpdateSupplierFormProps) {
   const defaultValues: SupplierFormData = {
     personId: initialData?.personId,
     person: {
-      personType: initialData?.person?.personType ?? 1,
+      personType: initialData?.person?.personType ?? "Legal",
       firstName: initialData?.name?.firstName ?? "",
       lastName: initialData?.name?.lastName ?? "",
       taxId: initialData?.taxId ?? "",
       birthdate: initialData?.person?.birthdate ? new Date(initialData.person.birthdate) : new Date(),
       email: initialData?.person?.email ?? "",
+      tradeName: initialData?.person?.tradeName ?? "",
+      stateRegistration: initialData?.person?.stateRegistration ?? "",
+      municipalRegistration: initialData?.person?.municipalRegistration ?? "",
+      cellPhone: initialData?.person?.cellPhone ?? "",
+      phone: initialData?.person?.phone ?? "",
+      gender: initialData?.person?.gender ?? "Other",
     },
     isActive: String(initialData?.isActive ?? true),
   };

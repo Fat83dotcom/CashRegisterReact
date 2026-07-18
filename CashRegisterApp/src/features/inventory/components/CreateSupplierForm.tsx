@@ -16,7 +16,7 @@ export interface CreateSupplierFormProps {
 export function CreateSupplierForm({ onSuccess }: CreateSupplierFormProps) {
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values: SupplierFormData) => {
+  const handleSubmit = async (values: SupplierFormData, methods: any) => {
     setLoading(true);
     const request: ICreateSupplierRequest = {
       personId: values.personId,
@@ -27,11 +27,18 @@ export function CreateSupplierForm({ onSuccess }: CreateSupplierFormProps) {
         taxId: values.person?.taxId,
         birthdate: values.person?.birthdate ? values.person.birthdate.toISOString() : undefined,
         email: values.person?.email,
+        tradeName: values.person?.tradeName,
+        stateRegistration: values.person?.stateRegistration,
+        municipalRegistration: values.person?.municipalRegistration,
+        cellPhone: values.person?.cellPhone,
+        phone: values.person?.phone,
+        gender: values.person?.gender,
       },
     };
 
     try {
       await InventoryService.createSupplier(request);
+      methods.reset();
       if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
@@ -40,7 +47,7 @@ export function CreateSupplierForm({ onSuccess }: CreateSupplierFormProps) {
 
   const defaultValues: SupplierFormData = {
     person: {
-      personType: 1,
+      personType: "Legal",
       firstName: "",
       lastName: "",
       taxId: "",

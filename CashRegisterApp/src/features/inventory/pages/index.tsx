@@ -16,6 +16,7 @@ import {
   IconArrowsExchange,
   IconClipboardList,
   IconListDetails,
+  IconTruckDelivery,
 } from "@tabler/icons-react";
 import { NavLink } from "react-router-dom";
 
@@ -70,6 +71,13 @@ export function InventoryHome() {
       icon: IconArrowsExchange,
       link: "/inventory/conversions",
       color: "yellow",
+    },
+    {
+      subtitle: "Cadastro",
+      title: "Fornecedores",
+      icon: IconTruckDelivery,
+      link: "/inventory/suppliers",
+      color: "red",
     },
   ];
 

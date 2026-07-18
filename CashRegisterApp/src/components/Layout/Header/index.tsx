@@ -41,6 +41,7 @@ const links: NavLinkItem[] = [
           { link: "/inventory/tags", label: "Tags" },
           { link: "/inventory/units", label: "Unidades de Medida" },
           { link: "/inventory/conversions", label: "Regras de Conversão" },
+          { link: "/inventory/suppliers", label: "Fornecedores" },
         ],
       },
       {

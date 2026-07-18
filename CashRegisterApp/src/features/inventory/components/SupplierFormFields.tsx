@@ -1,11 +1,11 @@
 import { Grid } from "@mantine/core";
-import { PersonForm } from "../../person/components/PersonForm";
+import { PersonFormFields } from "../../person/components/PersonFormFields";
 
-export function SupplierFormFields({ isUpdate = false }: { isUpdate?: boolean }) {
+export function SupplierFormFields({}: { isUpdate?: boolean }) {
   return (
     <Grid grow gutter={{ base: 5, xs: "md", md: "xl" }}>
       <Grid.Col span={12}>
-        <PersonForm />
+        <PersonFormFields />
       </Grid.Col>
     </Grid>
   );
