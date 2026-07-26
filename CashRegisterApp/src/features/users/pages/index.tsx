@@ -4,6 +4,11 @@ import { UserSearch } from "./Search";
 import { CreateUser } from "./Create";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { UserService } from "../api/userService";
+import { createSearchLoader } from "../../../utils/routeLoaders";
+
+export const usersLoader = createSearchLoader(UserService.search);
+
 export function UserHome() {
   const location = useLocation();
   const navigate = useNavigate();

@@ -81,7 +81,7 @@ export function UpdateConversionForm({
     fromUomId: initialData?.fromUomId?.toString() || "",
     toUomId: initialData?.toUomId?.toString() || "",
     multiplier: initialData?.multiplier || 1,
-    productId: initialData?.productId?.toString() || null,
+    productId: initialData?.productId?.toString() || "",
     isActive: String(initialData?.isActive ?? true),
   };
 

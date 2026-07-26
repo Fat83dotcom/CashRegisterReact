@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { zSelectString } from "../../../lib/zodUtils";
 
 export const personSchema = z
   .object({
-    personType: z.enum(["Physical", "Legal"]).default("Physical"),
-    firstName: z.string().trim().min(1, "Nome é obrigatório."),
-    lastName: z.string().trim().min(1, "Sobrenome é obrigatório."),
-    taxId: z.string().transform((v) => (v ? v.replace(/\D/g, "") : "")),
+    personType: zSelectString.refine((val) => val === "Physical" || val === "Legal", "Tipo de pessoa inválido").default("Physical"),
+    firstName: z.string().trim().min(1, "Nome é obrigatório.").max(255, "Máximo de 255 caracteres."),
+    lastName: z.string().trim().max(255, "Máximo de 255 caracteres.").optional(),
+    taxId: z.string().transform((v) => (v ? v.replace(/[^A-Z0-9]/gi, "").toUpperCase() : "")),
     birthdate: z.preprocess(
       (arg) => {
         if (arg == null || arg === "") return undefined;
@@ -33,7 +34,7 @@ export const personSchema = z
       .string()
       .transform((v) => (v ? v.replace(/\D/g, "") : v))
       .optional(),
-    gender: z.string().optional(),
+    gender: zSelectString.optional(),
   })
   .superRefine((data, ctx) => {
     if (data.personType === "Legal") {
@@ -56,6 +57,12 @@ export const personSchema = z
           message: "CNPJ deve ter exatamente 14 dígitos.",
           path: ["taxId"],
         });
+      } else if (!/^[A-Z0-9]{12}[0-9]{2}$/.test(data.taxId)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Formato de CNPJ inválido.",
+          path: ["taxId"],
+        });
       }
     } else {
       if (!data.taxId || data.taxId.length === 0) {
@@ -69,6 +76,14 @@ export const personSchema = z
           code: "custom",
           message: "CPF deve ter exatamente 11 dígitos.",
           path: ["taxId"],
+        });
+      }
+      
+      if (!data.lastName || data.lastName.trim().length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Sobrenome é obrigatório para Pessoa Física.",
+          path: ["lastName"],
         });
       }
     }

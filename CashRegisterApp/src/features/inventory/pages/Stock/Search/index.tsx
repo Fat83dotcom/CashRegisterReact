@@ -2,7 +2,7 @@ import { Button, Grid, Group } from "@mantine/core";
 import { IconPlus, IconSearch, IconCalendar, IconClipboardCheck } from "@tabler/icons-react";
 import { useState } from "react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput, DateRangeInput, Select } from "../../../../../components/Form";
 import {
   transactionSearchSchema,
@@ -47,10 +47,8 @@ export function StockSearch() {
     setSelectedId,
     handleSearch,
     currentFilters,
-  } = useSearch<InventoryTransactionResponse, TransactionSearchFormData>(
-    InventoryService.searchTransactions,
-    initialFilters,
-  );
+    refresh,
+  } = useRouteSearch<InventoryTransactionResponse, TransactionSearchFormData>();
 
   const handleOpenCreateModal = () => {
     modal({
@@ -59,7 +57,7 @@ export function StockSearch() {
         <CreateInventoryTransactionForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData?.page || 1, pagedData?.pageSize || 10);
+            refresh();
           }}
         />
       ),
@@ -187,7 +185,7 @@ export function StockSearch() {
       <PendingRequisitionsModal 
         opened={requisitionsOpened} 
         onClose={closeRequisitions} 
-        onFulfill={() => handleSearch(initialFilters, pagedData?.page || 1, pagedData?.pageSize || 10)} 
+        onFulfill={() => refresh()} 
       />
     </>
   );

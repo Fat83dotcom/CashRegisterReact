@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput } from "../../../../../components/Form";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
@@ -15,6 +15,7 @@ import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateWarehouseForm } from "../../../components/UpdateWarehouseForm";
 import { CreateWarehouseForm } from "../../../components/CreateWarehouseForm";
 
+// Componente de Busca de Almoxarifados
 export function WarehouseSearch() {
   const initialFilters: WarehouseSearchFormData = {
     searchTerm: "",
@@ -30,20 +31,17 @@ export function WarehouseSearch() {
     handleSearch,
     currentFilters,
     handleDeactivate,
-  } = useSearch<IWarehouseResponse, WarehouseSearchFormData>(
-    InventoryService.searchWarehouses,
-    initialFilters,
-    {
-      action: InventoryService.deactivateWarehouse,
-      renderContent: (warehouse) => (
-        <ActionConfirmContent
-          description="Este almoxarifado será desativado e não poderá ser usado para novas movimentações."
-          itemDetails={`${warehouse.name} (Tipo: ${warehouse.type})`}
-          warningMessage="Verifique se há estoques pendentes neste local."
-        />
-      ),
-    },
-  );
+    refresh,
+  } = useRouteSearch<IWarehouseResponse, WarehouseSearchFormData>({
+    action: InventoryService.deactivateWarehouse,
+    renderContent: (warehouse) => (
+      <ActionConfirmContent
+        description="Este almoxarifado será desativado e não poderá ser usado para novas movimentações."
+        itemDetails={`${warehouse.name} (Tipo: ${warehouse.type})`}
+        warningMessage="Verifique se há estoques pendentes neste local."
+      />
+    ),
+  });
 
   const handleOpenCreateModal = () => {
     modal({
@@ -52,7 +50,7 @@ export function WarehouseSearch() {
         <CreateWarehouseForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -67,7 +65,7 @@ export function WarehouseSearch() {
           id={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),

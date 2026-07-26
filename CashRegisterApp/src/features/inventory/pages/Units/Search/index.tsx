@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput } from "../../../../../components/Form";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 
@@ -30,7 +30,7 @@ export function UnitSearch() {
         <CreateUnitForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -45,7 +45,7 @@ export function UnitSearch() {
           unitId={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -60,20 +60,17 @@ export function UnitSearch() {
     handleSearch,
     currentFilters,
     handleDeactivate,
-  } = useSearch<IUnitResponse, UnitSearchFormData>(
-    InventoryService.searchUnits,
-    initialFilters,
-    {
-      action: InventoryService.deactivateUnit,
-      renderContent: (unit) => (
-        <ActionConfirmContent
-          description="Esta unidade de medida será desativada do sistema e não aparecerá para novas seleções."
-          itemDetails={`${unit.name} (${unit.code})`}
-          warningMessage="Produtos e conversões que já utilizam esta unidade manterão o histórico, mas você não poderá criar novas associações."
-        />
-      ),
-    },
-  );
+    refresh,
+  } = useRouteSearch<IUnitResponse, UnitSearchFormData>({
+    action: InventoryService.deactivateUnit,
+    renderContent: (unit) => (
+      <ActionConfirmContent
+        description="Esta unidade de medida será desativada do sistema e não aparecerá para novas seleções."
+        itemDetails={`${unit.name} (${unit.code})`}
+        warningMessage="Produtos e conversões que já utilizam esta unidade manterão o histórico, mas você não poderá criar novas associações."
+      />
+    ),
+  });
 
   const columns: ColumnConfig<IUnitResponse>[] = [
     { key: "code", label: "Sigla/Código" },

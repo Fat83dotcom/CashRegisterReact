@@ -33,7 +33,7 @@ export function CreateCategoryForm({ onSuccess }: CreateCategoryFormProps) {
 
   const defaultValues: CategoryFormData = {
     name: "",
-    parentCategoryId: null,
+    parentCategoryId: "",
   };
 
   return (

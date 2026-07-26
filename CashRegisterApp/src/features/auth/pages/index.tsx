@@ -1,5 +1,4 @@
 import {
-  Anchor,
   Button,
   Center,
   Group,
@@ -57,19 +56,14 @@ export function Login() {
                 />
 
                 <Group justify="space-between" mb={5}>
-                  <Text component="label" htmlFor="your-password" size="sm" fw={500}>
+                  <Text
+                    component="label"
+                    htmlFor="your-password"
+                    size="sm"
+                    fw={500}
+                  >
                     Sua senha
                   </Text>
-
-                  <Anchor
-                    href="#"
-                    onClick={(event) => event.preventDefault()}
-                    pt={2}
-                    fw={500}
-                    fz="xs"
-                  >
-                    Esqueceu a senha?
-                  </Anchor>
                 </Group>
 
                 <PasswordInput
@@ -79,9 +73,9 @@ export function Login() {
                   required
                 />
 
-                <Button 
-                  fullWidth 
-                  mt="xl" 
+                <Button
+                  fullWidth
+                  mt="xl"
                   type="submit"
                   size="md"
                   color="brainstorm.6"

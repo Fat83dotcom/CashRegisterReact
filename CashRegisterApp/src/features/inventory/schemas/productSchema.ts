@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { zSelectString, zMultiSelectArray } from "../../../lib/zodUtils";
 
 export const productSchema = z.object({
   name: z
@@ -19,9 +20,9 @@ export const productSchema = z.object({
     .string()
     .max(8, "O NCM deve ter no máximo 8 caracteres")
     .nullable(),
-  categoryId: z.string().min(1, "A categoria é obrigatória"),
-  baseUomId: z.string().min(1, "A unidade de medida é obrigatória"),
-  tagIds: z.array(z.string()).default([]),
+  categoryId: zSelectString.refine((val) => val.length > 0, "A categoria é obrigatória"),
+  baseUomId: zSelectString.refine((val) => val.length > 0, "A unidade de medida é obrigatória"),
+  tagIds: zMultiSelectArray.optional(),
   isActive: z.string().default("true"),
 });
 

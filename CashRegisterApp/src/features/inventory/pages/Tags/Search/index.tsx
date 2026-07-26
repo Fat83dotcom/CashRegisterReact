@@ -1,7 +1,7 @@
 import { Button, Grid, ColorSwatch, Group, Text } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput } from "../../../../../components/Form";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
@@ -29,7 +29,7 @@ export function TagSearch() {
         <CreateTagForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -44,7 +44,7 @@ export function TagSearch() {
           id={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -59,22 +59,19 @@ export function TagSearch() {
     handleSearch,
     currentFilters,
     handleDeactivate,
-  } = useSearch<ITagResponse, TagSearchFormData>(
-    InventoryService.searchTags,
-    initialFilters,
-    {
-      action: InventoryService.deactivateTag,
-      renderContent: (tag) => {
-        return (
-          <ActionConfirmContent
-            description="Esta tag será desativada do sistema e não poderá mais ser vinculada a produtos."
-            itemDetails={`${tag.name}`}
-            warningMessage="Os produtos que já possuem essa tag poderão continuar a exibi-la dependendo da regra de negócio."
-          />
-        );
-      },
+    refresh,
+  } = useRouteSearch<ITagResponse, TagSearchFormData>({
+    action: InventoryService.deactivateTag,
+    renderContent: (tag) => {
+      return (
+        <ActionConfirmContent
+          description="Esta tag será desativada do sistema e não poderá mais ser vinculada a produtos."
+          itemDetails={`${tag.name}`}
+          warningMessage="Os produtos que já possuem essa tag poderão continuar a exibi-la dependendo da regra de negócio."
+        />
+      );
     },
-  );
+  });
 
   const columns: ColumnConfig<ITagResponse>[] = [
     {

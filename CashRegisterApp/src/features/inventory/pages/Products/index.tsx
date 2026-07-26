@@ -1,5 +1,9 @@
 import { Title, Stack } from "@mantine/core";
 import { ProductSearch } from "./Search";
+import { InventoryService } from "../../api/inventoryService";
+import { createSearchLoader } from "../../../../utils/routeLoaders";
+
+export const productsLoader = createSearchLoader(InventoryService.searchProducts);
 
 export function ProductsPage() {
   return (

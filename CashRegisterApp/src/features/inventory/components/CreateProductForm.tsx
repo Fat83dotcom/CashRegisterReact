@@ -28,7 +28,7 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
       ncmCode: values.ncmCode,
       categoryId: Number(values.categoryId),
       baseUomId: Number(values.baseUomId),
-      tagIds: values.tagIds.map(Number),
+      tagIds: values.tagIds?.map(Number),
       isActive: values.isActive === "true",
     };
 
@@ -72,7 +72,9 @@ export function CreateProductForm({ onSuccess }: ProductFormProps) {
                     Form: CreateUnitForm,
                   })
                 }
-                onAddTag={() => openModal({ title: "Nova Tag", Form: CreateTagForm })}
+                onAddTag={() =>
+                  openModal({ title: "Nova Tag", Form: CreateTagForm })
+                }
               />
 
               <Center mt="xl">

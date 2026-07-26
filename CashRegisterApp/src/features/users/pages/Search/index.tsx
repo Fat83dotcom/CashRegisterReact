@@ -2,7 +2,7 @@ import { Grid } from "@mantine/core";
 import { IconUser, IconFingerprint, IconCalendar } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../components/Layout/DynamicTable";
 import { UserService } from "../../api/userService";
-import { useSearch } from "../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../hooks/useRouteSearch";
 import type { IGetAllUsersResponse } from "../Interfaces/IGetAllUsersResponse";
 import dayjs from "dayjs";
 import { TextInput, DateInput } from "../../../../components/Form";
@@ -18,10 +18,10 @@ export function UserSearch() {
   };
 
   const { loading, pagedData, selectedId, setSelectedId, handleSearch,
-    currentFilters, handleDeactivate } = useSearch<
+    currentFilters, handleDeactivate } = useRouteSearch<
     IGetAllUsersResponse,
     SearchUserFormData
-  >(UserService.search, initialFilters, {
+  >({
     action: UserService.deactivate,
     renderContent: (user) => (
       <ActionConfirmContent

@@ -23,8 +23,10 @@ export function CreateInventoryTransactionForm({ onSuccess }: CreateInventoryTra
       description: values.description,
       items: values.items.map(item => ({
         ...item,
-        sourceWarehouseId: values.globalSourceWarehouseId,
-        destinationWarehouseId: values.globalDestinationWarehouseId,
+        productId: Number(item.productId),
+        uomId: Number(item.uomId),
+        sourceWarehouseId: values.globalSourceWarehouseId ? Number(values.globalSourceWarehouseId) : undefined,
+        destinationWarehouseId: values.globalDestinationWarehouseId ? Number(values.globalDestinationWarehouseId) : undefined,
       })),
     };
 

@@ -166,6 +166,8 @@ export interface IProductResponse {
   category: string;
   uomSymbol: string;
   isActive: boolean;
+  stockQuantity: number;
+  warehouseName?: string;
 }
 
 export interface IGetProductByIdResponse {

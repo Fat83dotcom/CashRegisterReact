@@ -63,7 +63,7 @@ export function UpdateCategoryForm({ id, onSuccess }: UpdateCategoryFormProps) {
 
   const defaultValues: UpdateCategoryFormData = {
     name: initialData?.name || "",
-    parentCategoryId: initialData?.parentCategoryId?.toString() || null,
+    parentCategoryId: initialData?.parentCategoryId?.toString() || "",
     isActive: String(initialData?.isActive ?? true),
   };
 

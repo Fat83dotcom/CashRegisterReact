@@ -59,7 +59,7 @@ export function CreateConversionForm({ onSuccess }: ConversionFormProps) {
         onSubmit={handleSubmit}
         defaultValues={{
           multiplier: 1,
-          productId: null,
+          productId: "",
           fromUomId: "",
           toUomId: "",
           isActive: "true",

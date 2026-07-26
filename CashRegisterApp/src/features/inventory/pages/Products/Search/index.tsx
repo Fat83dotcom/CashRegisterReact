@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput, AsyncSelect } from "../../../../../components/Form";
 import { ActionConfirmContent } from "../../../../../components/Layout/ActionConfirmContent";
 import { SearchPageTemplate } from "../../../../../components/Layout/SearchPageTemplate";
@@ -9,7 +9,7 @@ import {
   productSearchSchema,
   type ProductSearchFormData,
 } from "../../../schemas/productSearchSchema";
-import type { IProductResponse, ICategoryResponse } from "../../../interfaces";
+import type { IProductResponse, ICategoryResponse, IWarehouseResponse } from "../../../interfaces";
 import { InventoryService } from "../../../api/inventoryService";
 import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { UpdateProductForm } from "../../../components/UpdateProductForm";
@@ -24,10 +24,21 @@ const fetchCategories = async (query: string) => {
   return response.items || [];
 };
 
+const fetchWarehouses = async (query: string) => {
+  const response = await InventoryService.searchWarehouses({
+    searchTerm: query,
+    page: 1,
+    pageSize: 20,
+  });
+  return response.items || [];
+};
+
+// Componente de Busca de Produtos
 export function ProductSearch() {
   const initialFilters: ProductSearchFormData = {
     searchTerm: "",
     categoryId: "",
+    warehouseId: "",
   };
 
   const modal = useGenericModal();
@@ -39,7 +50,7 @@ export function ProductSearch() {
         <CreateProductForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -54,11 +65,7 @@ export function ProductSearch() {
           productId={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(
-              initialFilters,
-              pagedData.page,
-              pagedData.pageSize,
-            );
+            refresh();
           }}
         />
       ),
@@ -73,28 +80,34 @@ export function ProductSearch() {
     handleSearch,
     currentFilters,
     handleDeactivate,
-  } = useSearch<IProductResponse, ProductSearchFormData>(
-    InventoryService.searchProducts,
-    initialFilters,
-    {
-      action: InventoryService.deactivateProduct,
-      renderContent: (product) => {
-        return (
-          <ActionConfirmContent
-            description="Este produto será desativado do sistema e não aparecerá para novas vendas."
-            itemDetails={`${product.name} (SKU: ${product.sku})`}
-            warningMessage="Certifique-se de que não há estoque ativo que precise ser ajustado."
-          />
-        );
-      },
+    refresh,
+  } = useRouteSearch<IProductResponse, ProductSearchFormData>({
+    action: InventoryService.deactivateProduct,
+    renderContent: (product) => {
+      return (
+        <ActionConfirmContent
+          description="Este produto será desativado do sistema e não aparecerá para novas vendas."
+          itemDetails={`${product.name} (SKU: ${product.sku})`}
+          warningMessage="Certifique-se de que não há estoque ativo que precise ser ajustado."
+        />
+      );
     },
-  );
+  });
 
   const columns: ColumnConfig<IProductResponse>[] = [
     { key: "sku", label: "SKU" },
     { key: "name", label: "Nome" },
     { key: "category", label: "Categoria" },
     { key: "uomSymbol", label: "UM" },
+    { 
+      key: "stockQuantity", 
+      label: "Quantidade",
+      render: (item) => item.stockQuantity?.toString() || "0"
+    },
+    {
+      key: "warehouseName",
+      label: "Almoxarifado",
+    },
     {
       key: "isActive",
       label: "Status",
@@ -130,7 +143,7 @@ export function ProductSearch() {
             onRowDoubleClick={handleEditTrigger}
             onDeactivate={handleDeactivate}
           >
-            <Grid.Col span={{ base: 12, md: 8 }}>
+            <Grid.Col span={{ base: 12, md: 4 }}>
               <TextInput
                 name="searchTerm"
                 label="Pesquisar"
@@ -148,6 +161,16 @@ export function ProductSearch() {
                     ? `${item.parentCategoryName} - ${item.name}`
                     : item.name || ""
                 }
+                getValue={(item) => item.id?.toString() || ""}
+                clearable
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <AsyncSelect<IWarehouseResponse>
+                name="warehouseId"
+                label="Almoxarifado"
+                fetcher={fetchWarehouses}
+                getLabel={(item) => item.name}
                 getValue={(item) => item.id?.toString() || ""}
                 clearable
               />

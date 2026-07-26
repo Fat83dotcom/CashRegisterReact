@@ -1,13 +1,15 @@
-import { Grid } from "@mantine/core";
+import { Grid, ActionIcon } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 import { useFormContext } from "react-hook-form";
 import { TextInput, Select } from "../../../components/Form";
 import { DateInput } from "../../../components/Form/DateInput";
+import { useCnpjConsultation } from "../../../lib/publicApi/useCnpjConsultation";
 
 export function PersonFormFields() {
   const { watch } = useFormContext();
   const personType = watch("person.personType");
-  // Permite suportar strings caso venha do select antes de ser parseado
   const isLegalPerson = personType === "Legal";
+  const { isConsulting, handleConsultar } = useCnpjConsultation();
 
   return (
     <Grid grow gutter={{ base: 5, xs: "md", md: "xl" }}>
@@ -24,22 +26,26 @@ export function PersonFormFields() {
         />
       </Grid.Col>
 
-      <Grid.Col span={6}>
+      <Grid.Col span={isLegalPerson ? 12 : 6}>
         <TextInput
           name="person.firstName"
           withAsterisk
-          label="Nome"
-          placeholder="Digite o nome ou razão social"
+          label={isLegalPerson ? "Razão Social" : "Nome"}
+          placeholder={
+            isLegalPerson ? "Digite a razão social" : "Digite o nome"
+          }
         />
       </Grid.Col>
-      <Grid.Col span={6}>
-        <TextInput
-          name="person.lastName"
-          withAsterisk
-          label="Sobrenome"
-          placeholder="Digite o sobrenome"
-        />
-      </Grid.Col>
+      {!isLegalPerson && (
+        <Grid.Col span={6}>
+          <TextInput
+            name="person.lastName"
+            withAsterisk
+            label="Sobrenome"
+            placeholder="Digite o sobrenome"
+          />
+        </Grid.Col>
+      )}
       <Grid.Col span={4}>
         <DateInput
           name="person.birthdate"
@@ -54,6 +60,20 @@ export function PersonFormFields() {
           withAsterisk
           label={isLegalPerson ? "CNPJ" : "CPF"}
           placeholder={isLegalPerson ? "Digite o CNPJ" : "Digite o CPF"}
+          rightSectionPointerEvents="all"
+          rightSection={
+            isLegalPerson ? (
+              <ActionIcon
+                variant="transparent"
+                color="brainstorm.6"
+                loading={isConsulting}
+                onClick={handleConsultar}
+                title="Consultar dados da empresa na Receita"
+              >
+                <IconSearch size={18} />
+              </ActionIcon>
+            ) : undefined
+          }
         />
       </Grid.Col>
 

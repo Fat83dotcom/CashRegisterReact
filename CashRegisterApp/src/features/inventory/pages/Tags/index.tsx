@@ -1,5 +1,9 @@
 import { Title, Stack } from "@mantine/core";
 import { TagSearch } from "./Search";
+import { InventoryService } from "../../api/inventoryService";
+import { createSearchLoader } from "../../../../utils/routeLoaders";
+
+export const tagsLoader = createSearchLoader(InventoryService.searchTags);
 
 export function TagsPage() {
   return (

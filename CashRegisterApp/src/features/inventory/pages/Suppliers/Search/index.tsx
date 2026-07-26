@@ -1,7 +1,7 @@
 import { Button, Grid } from "@mantine/core";
 import { IconPlus, IconSearch, IconId } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput } from "../../../../../components/Form";
 import {
   supplierSearchSchema,
@@ -15,6 +15,7 @@ import { useGenericModal } from "../../../../../hooks/useGenericModal";
 import { CreateSupplierForm } from "../../../components/CreateSupplierForm";
 import { UpdateSupplierForm } from "../../../components/UpdateSupplierForm";
 
+// Componente de Busca de Fornecedores
 export function SupplierSearch() {
   const initialFilters: SupplierSearchFormData = {
     name: "",
@@ -30,7 +31,7 @@ export function SupplierSearch() {
         <CreateSupplierForm
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -45,7 +46,7 @@ export function SupplierSearch() {
           id={Number(id)}
           onSuccess={() => {
             props.onSuccess();
-            handleSearch(initialFilters, pagedData.page, pagedData.pageSize);
+            refresh();
           }}
         />
       ),
@@ -60,24 +61,21 @@ export function SupplierSearch() {
     handleSearch,
     currentFilters,
     handleDeactivate,
-  } = useSearch<IGetSearchSupplierResponse, SupplierSearchFormData>(
-    InventoryService.searchSuppliers,
-    initialFilters,
-    {
-      action: InventoryService.deactivateSupplier,
-      renderContent: (supplier) => {
-        return (
-          <ActionConfirmContent
-            description="Este fornecedor será desativado do sistema e não aparecerá para novas operações"
-            itemDetails={`${supplier.name?.firstName} ${supplier.name?.lastName}`}
-            warningMessage={
-              "Esta ação não excluirá o registro da pessoa associada, apenas o vínculo de fornecedor."
-            }
-          />
-        );
-      },
+    refresh,
+  } = useRouteSearch<IGetSearchSupplierResponse, SupplierSearchFormData>({
+    action: InventoryService.deactivateSupplier,
+    renderContent: (supplier) => {
+      return (
+        <ActionConfirmContent
+          description="Este fornecedor será desativado do sistema e não aparecerá para novas operações"
+          itemDetails={`${supplier.name?.firstName} ${supplier.name?.lastName}`}
+          warningMessage={
+            "Esta ação não excluirá o registro da pessoa associada, apenas o vínculo de fornecedor."
+          }
+        />
+      );
     },
-  );
+  });
 
   const columns: ColumnConfig<IGetSearchSupplierResponse>[] = [
     {

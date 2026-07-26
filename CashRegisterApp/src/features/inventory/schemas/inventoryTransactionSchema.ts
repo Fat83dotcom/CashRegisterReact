@@ -1,17 +1,13 @@
 import { z } from "zod";
-
-const optionalNumber = z.preprocess(
-  (val) => (val === "" || val == null ? undefined : Number(val)),
-  z.number().optional()
-);
+import { zSelectString } from "../../../lib/zodUtils";
 
 export const CreateInventoryTransactionItemSchema = z.object({
-  productId: z.coerce.number().min(1, "Produto é obrigatório"),
-  uomId: z.coerce.number().min(1, "Unidade de Medida é obrigatória"),
+  productId: zSelectString.refine((val) => val.length > 0, "Produto é obrigatório"),
+  uomId: zSelectString.refine((val) => val.length > 0, "Unidade de Medida é obrigatória"),
   transactionQuantity: z.coerce.number().min(0.01, "A quantidade deve ser maior que zero"),
   baseQuantity: z.coerce.number().min(0.01, "A quantidade base deve ser maior que zero"),
-  sourceWarehouseId: optionalNumber,
-  destinationWarehouseId: optionalNumber,
+  sourceWarehouseId: zSelectString.optional(),
+  destinationWarehouseId: zSelectString.optional(),
 }).superRefine(() => {
   // This will be validated along with the main transactionType context inside the form or component if needed
 });
@@ -21,8 +17,8 @@ export const CreateInventoryTransactionSchema = z.object({
   referenceDocument: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
-  globalSourceWarehouseId: optionalNumber,
-  globalDestinationWarehouseId: optionalNumber,
+  globalSourceWarehouseId: zSelectString.optional(),
+  globalDestinationWarehouseId: zSelectString.optional(),
   items: z.array(CreateInventoryTransactionItemSchema).min(1, "É necessário adicionar pelo menos um item"),
 }).superRefine((data, ctx) => {
   const type = data.transactionType;

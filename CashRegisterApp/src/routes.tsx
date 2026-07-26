@@ -1,36 +1,20 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { RootLayout, MainNavigation } from "./features/main/pages";
 import { NotFoundPage } from "./features/main/pages/NotFoundPage";
-
 import { CreateUserNavigation } from "./features/users/pages/navigation";
-import { UserHome } from "./features/users/pages";
-
 import { ProtectedRoute } from "./components/Layout/ProtectedRoute";
-
 import { InventoryHome } from "./features/inventory/pages";
-import { StockPage } from "./features/inventory/pages/Stock";
-import { StockBalancesPage } from "./features/inventory/pages/Balances";
 import { InventoryNavigation } from "./features/inventory/pages/navigation";
-import { UnitsPage } from "./features/inventory/pages/Units";
-// CategoriesPage foi movida para lazy loading
-import { ConversionsPage } from "./features/inventory/pages/Conversions";
-import { WarehousesPage } from "./features/inventory/pages/Warehouses";
-import { ProductsPage } from "./features/inventory/pages/Products";
-import { SuppliersPage } from "./features/inventory/pages/Suppliers";
 import { SalesNavigation } from "./features/sales/pages/navigation";
 import { FinancialHome } from "./features/financial/pages";
 import { FinancialNavigation } from "./features/financial/pages/navigation";
 import { RequisitionsPage } from "./features/financial/pages/Operations/Requisitions";
-
 import { SettingsHome } from "./features/settings/pages";
 import { ChangePassword } from "./features/settings/pages/ChangePassword";
 import { SettingsNavigation } from "./features/settings/pages/navigation";
 import { Login } from "./features/auth/pages";
 import { SalesHome } from "./features/sales/pages";
-import { TagsPage } from "./features/inventory/pages/Tags";
-
 import { GlobalErrorBoundary } from "./components/Layout/GlobalErrorBoundary";
-
 import type { LoaderFunction } from "react-router-dom";
 import type { ComponentType } from "react";
 
@@ -38,13 +22,13 @@ import type { ComponentType } from "react";
 const lazyPage = <TModule extends Record<string, unknown>>(
   importFunc: () => Promise<TModule>,
   componentName: keyof TModule,
-  loaderName?: keyof TModule
+  loaderName?: keyof TModule,
 ) => {
   return async () => {
     const module = await importFunc();
-    return { 
+    return {
       Component: module[componentName] as ComponentType<unknown>,
-      loader: loaderName ? (module[loaderName] as LoaderFunction) : undefined
+      loader: loaderName ? (module[loaderName] as LoaderFunction) : undefined,
     };
   };
 };
@@ -83,8 +67,22 @@ export const router = createBrowserRouter([
         ),
         handle: { navbar: <CreateUserNavigation /> },
         children: [
-          { index: true, element: <UserHome /> },
-          { path: "create", element: <UserHome /> },
+          {
+            index: true,
+            lazy: lazyPage(
+              () => import("./features/users/pages"),
+              "UserHome",
+              "usersLoader",
+            ),
+          },
+          {
+            path: "create",
+            lazy: lazyPage(
+              () => import("./features/users/pages"),
+              "UserHome",
+              "usersLoader",
+            ),
+          },
         ],
       },
       {
@@ -93,60 +91,159 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <InventoryHome /> },
           { path: "home", element: <InventoryHome /> },
-          { path: "balances", element: <StockBalancesPage /> },
-          { path: "stock", element: <StockPage /> },
+          {
+            path: "balances",
+            lazy: lazyPage(
+              () => import("./features/inventory/pages/Balances"),
+              "StockBalancesPage",
+              "balancesLoader",
+            ),
+          },
+          {
+            path: "stock",
+            lazy: lazyPage(
+              () => import("./features/inventory/pages/Stock"),
+              "StockPage",
+              "stockLoader",
+            ),
+          },
           {
             path: "products",
             children: [
-              { index: true, element: <ProductsPage /> },
-              { path: "create", element: <ProductsPage /> },
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Products"),
+                  "ProductsPage",
+                  "productsLoader",
+                ),
+              },
+              {
+                path: "create",
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Products"),
+                  "ProductsPage",
+                  "productsLoader",
+                ),
+              },
             ],
           },
           {
             path: "warehouses",
             children: [
-              { index: true, element: <WarehousesPage /> },
-              { path: "create", element: <WarehousesPage /> },
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Warehouses"),
+                  "WarehousesPage",
+                  "warehousesLoader",
+                ),
+              },
+              {
+                path: "create",
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Warehouses"),
+                  "WarehousesPage",
+                  "warehousesLoader",
+                ),
+              },
             ],
           },
           {
             path: "categories",
             children: [
-              { 
-                index: true, 
-                lazy: lazyPage(() => import("./features/inventory/pages/Categories"), "CategoriesPage", "categoriesLoader")
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Categories"),
+                  "CategoriesPage",
+                  "categoriesLoader",
+                ),
               },
-              { 
-                path: "create", 
-                lazy: lazyPage(() => import("./features/inventory/pages/Categories"), "CategoriesPage", "categoriesLoader")
+              {
+                path: "create",
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Categories"),
+                  "CategoriesPage",
+                  "categoriesLoader",
+                ),
               },
             ],
           },
           {
             path: "tags",
             children: [
-              { index: true, element: <TagsPage /> },
-              { path: "create", element: <TagsPage /> },
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Tags"),
+                  "TagsPage",
+                  "tagsLoader",
+                ),
+              },
+              {
+                path: "create",
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Tags"),
+                  "TagsPage",
+                  "tagsLoader",
+                ),
+              },
             ],
           },
           {
             path: "units",
             children: [
-              { index: true, element: <UnitsPage /> },
-              { path: "create", element: <UnitsPage /> },
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Units"),
+                  "UnitsPage",
+                  "unitsLoader",
+                ),
+              },
+              {
+                path: "create",
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Units"),
+                  "UnitsPage",
+                  "unitsLoader",
+                ),
+              },
             ],
           },
           {
             path: "conversions",
             children: [
-              { index: true, element: <ConversionsPage /> },
-              { path: "create", element: <ConversionsPage /> },
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Conversions"),
+                  "ConversionsPage",
+                  "conversionsLoader",
+                ),
+              },
+              {
+                path: "create",
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Conversions"),
+                  "ConversionsPage",
+                  "conversionsLoader",
+                ),
+              },
             ],
           },
           {
             path: "suppliers",
             children: [
-              { index: true, element: <SuppliersPage /> },
+              {
+                index: true,
+                lazy: lazyPage(
+                  () => import("./features/inventory/pages/Suppliers"),
+                  "SuppliersPage",
+                  "suppliersLoader",
+                ),
+              },
             ],
           },
         ],
@@ -169,16 +266,14 @@ export const router = createBrowserRouter([
           { path: "reports", element: <h2>Em breve: Relatórios</h2> },
           {
             path: "operations",
-            children: [
-              { path: "requisitions", element: <RequisitionsPage /> },
-            ]
-          }
+            children: [{ path: "requisitions", element: <RequisitionsPage /> }],
+          },
         ],
       },
       {
         path: "*",
         element: <NotFoundPage />,
-      }
+      },
     ],
   },
   {

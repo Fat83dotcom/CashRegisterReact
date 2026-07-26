@@ -263,7 +263,7 @@ export const InventoryService = {
   },
 
   searchProducts: async (
-    params: SearchParams & { searchTerm?: string; categoryId?: string },
+    params: SearchParams & { searchTerm?: string; categoryId?: string; warehouseId?: string },
   ): Promise<IPagedResponse<IProductResponse>> => {
     const queryParams = new URLSearchParams();
     queryParams.append("Page", params.page.toString());
@@ -274,6 +274,9 @@ export const InventoryService = {
     }
     if (params.categoryId) {
       queryParams.append("CategoryId", params.categoryId);
+    }
+    if (params.warehouseId) {
+      queryParams.append("WarehouseId", params.warehouseId);
     }
 
     return apiClient.get<IPagedResponse<IProductResponse>>(

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Grid, Modal } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
-import { useSearch } from "../../../../../hooks/useSearch";
+import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
 import { TextInput, AsyncSelect, MultiSelectAsync } from "../../../../../components/Form";
 import {
   stockBalanceSearchSchema,
@@ -30,10 +30,7 @@ export function StockBalanceSearch() {
     handleSearch,
     currentFilters,
     refresh,
-  } = useSearch<StockBalanceResponse, StockBalanceSearchFormData>(
-    InventoryService.searchStockBalances,
-    initialFilters,
-  );
+  } = useRouteSearch<StockBalanceResponse, StockBalanceSearchFormData>();
 
   const [adjustmentModalOpen, setAdjustmentModalOpen] = useState(false);
   const [itemToAdjust, setItemToAdjust] = useState<StockBalanceResponse | null>(null);
