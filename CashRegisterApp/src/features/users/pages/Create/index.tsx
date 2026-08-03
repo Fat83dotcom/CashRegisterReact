@@ -26,6 +26,7 @@ export function CreateUser() {
     if (isNewPerson && userValues.person) {
       personRequest = {
         ...userValues.person,
+        lastName: userValues.person.lastName || "",
         personType: String(userValues.person.personType),
         birthdate: dayjs(userValues.person.birthdate).format("YYYY-MM-DDT00:00:00Z"),
       };

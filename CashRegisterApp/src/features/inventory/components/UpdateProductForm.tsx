@@ -55,7 +55,7 @@ export function UpdateProductForm({
       ncmCode: values.ncmCode,
       categoryId: Number(values.categoryId),
       baseUomId: Number(values.baseUomId),
-      tagIds: values.tagIds.map(Number),
+      tagIds: values.tagIds?.map(Number) || [],
       isActive: values.isActive === "true",
     };
 

@@ -22,6 +22,8 @@ import type {
   ICreateConversionRequest,
   IConversionResponse,
   IUpdateConversionResponse,
+  IGetUomConversionRuleRequest,
+  IProductConversionItemResponse,
   IGetAllUnitsResponse,
   ICreateWarehouseRequest,
   IUpdateWarehouseRequest,
@@ -68,14 +70,15 @@ export const InventoryService = {
     }
 
     if (params.dateRange) {
-      if (params.dateRange[0]) {
+      const dates = typeof params.dateRange === "string" ? params.dateRange.split(",") : params.dateRange;
+      if (dates[0]) {
         // Envia exatamente a data selecionada sem o offset de fuso (-03:00).
         // Assim, o .NET recebe (Unspecified) no mesmo dia, sem pular para o dia seguinte no model binder.
-        const startStr = dayjs(params.dateRange[0]).format("YYYY-MM-DDT00:00:00");
+        const startStr = dayjs(dates[0]).format("YYYY-MM-DDT00:00:00");
         queryParams.append("StartDate", startStr);
       }
-      if (params.dateRange[1]) {
-        const endStr = dayjs(params.dateRange[1]).format("YYYY-MM-DDT23:59:59");
+      if (dates[1]) {
+        const endStr = dayjs(dates[1]).format("YYYY-MM-DDT23:59:59");
         queryParams.append("EndDate", endStr);
       }
     }
@@ -580,6 +583,38 @@ export const InventoryService = {
 
   deactivateConversion: async (id: string | number): Promise<void> => {
     return apiClient.put<void, {}>(`/UomConversion/${id}/Deactivate`, {});
+  },
+
+  getUomConversionRule: async (
+    request: IGetUomConversionRuleRequest,
+  ): Promise<{ id: number; multiplier: number } | null> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("FromUomId", request.fromUomId.toString());
+    queryParams.append("ToUomId", request.toUomId.toString());
+    if (request.productId) {
+      queryParams.append("ProductId", request.productId.toString());
+    }
+    try {
+      const response = await apiClient.get<{ id: number; multiplier: number }>(
+        `/UomConversion/rule?${queryParams.toString()}`,
+      );
+      return response;
+    } catch {
+      return null;
+    }
+  },
+
+  getProductConversions: async (
+    productId: number,
+  ): Promise<IProductConversionItemResponse[]> => {
+    try {
+      const response = await apiClient.get<IProductConversionItemResponse[]>(
+        `/Product/${productId}/conversions`,
+      );
+      return response;
+    } catch {
+      return [];
+    }
   },
 
   // Requisitions

@@ -57,6 +57,15 @@ export function useRouteSearch<T, TFilters>(
 
         if (value === undefined || value === null || value === "") {
           newParams.delete(key);
+        } else if (Array.isArray(value)) {
+          const strValue = value.map(v => v instanceof Date ? v.toISOString() : (v ? String(v) : "")).join(",");
+          if (strValue && strValue !== ",") {
+            newParams.set(key, strValue);
+          } else {
+            newParams.delete(key);
+          }
+        } else if (value instanceof Date) {
+          newParams.set(key, value.toISOString());
         } else {
           newParams.set(key, String(value));
         }

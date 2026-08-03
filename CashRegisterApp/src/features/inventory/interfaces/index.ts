@@ -141,6 +141,18 @@ export interface IUpdateConversionRequest extends ICreateConversionRequest {
   isActive: boolean;
 }
 
+export interface IGetUomConversionRuleRequest {
+  fromUomId: number;
+  toUomId: number;
+  productId?: number | null;
+}
+
+export interface IGetUomConversionRuleResponse {
+  id: number;
+  multiplier: number;
+  isActive: boolean;
+}
+
 //Responses
 
 export interface ITagResponse {
@@ -165,6 +177,7 @@ export interface IProductResponse {
   sku: string;
   category: string;
   uomSymbol: string;
+  baseUomId: number;
   isActive: boolean;
   stockQuantity: number;
   warehouseName?: string;
@@ -238,10 +251,19 @@ export interface IInventoryTransactionItemResponse {
   productId: number;
   productName: string;
   quantity: number;
+  uomSymbol: string;
+  uomName: string;
   sourceWarehouseId?: number | null;
   sourceWarehouseName?: string | null;
   destinationWarehouseId?: number | null;
   destinationWarehouseName?: string | null;
+}
+
+export interface IProductConversionItemResponse {
+  uomId: number;
+  uomSymbol: string;
+  multiplier: number;
+  ruleType: "Base" | "ProductSpecific" | "Global";
 }
 
 export interface IInventoryTransactionDetailsResponse {
@@ -252,7 +274,7 @@ export interface IInventoryTransactionDetailsResponse {
   description?: string | null;
   notes?: string | null;
   createdAt: string;
-  isActive: boolean;
+  transactionStatus: string;
   items: IInventoryTransactionItemResponse[];
 }
 
@@ -275,7 +297,7 @@ export interface InventoryTransactionResponse {
   name: string | null;
   description: string | null;
   transactionDate: string;
-  isActive: boolean;
+  transactionStatus: string;
 }
 
 export interface InventoryRequisitionItem {

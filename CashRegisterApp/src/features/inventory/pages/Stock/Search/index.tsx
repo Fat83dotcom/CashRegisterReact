@@ -1,9 +1,18 @@
-import { Button, Grid, Group } from "@mantine/core";
-import { IconPlus, IconSearch, IconCalendar, IconClipboardCheck } from "@tabler/icons-react";
+import { Button, Grid, Group, Badge } from "@mantine/core";
+import {
+  IconPlus,
+  IconSearch,
+  IconCalendar,
+  IconClipboardCheck,
+} from "@tabler/icons-react";
 import { useState } from "react";
 import type { ColumnConfig } from "../../../../../components/Layout/DynamicTable";
 import { useRouteSearch } from "../../../../../hooks/useRouteSearch";
-import { TextInput, DateRangeInput, Select } from "../../../../../components/Form";
+import {
+  TextInput,
+  DateRangeInput,
+  Select,
+} from "../../../../../components/Form";
 import {
   transactionSearchSchema,
   type TransactionSearchFormData,
@@ -14,7 +23,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { InventoryService } from "../../../api/inventoryService";
 import { CreateInventoryTransactionForm } from "../../../components/CreateInventoryTransactionForm";
 import { TransactionDetailsModal } from "../../../components/TransactionDetailsModal";
-import type { IInventoryTransactionDetailsResponse, InventoryTransactionResponse } from "../../../interfaces";
+import type {
+  IInventoryTransactionDetailsResponse,
+  InventoryTransactionResponse,
+} from "../../../interfaces";
 import { PendingRequisitionsModal } from "../../../components/PendingRequisitionsModal";
 
 export const transactionTypeLabels: Record<string, string> = {
@@ -28,16 +40,21 @@ export const transactionTypeLabels: Record<string, string> = {
 
 export function StockSearch() {
   const modal = useGenericModal();
-  const [detailsOpened, { open: openDetails, close: closeDetails }] = useDisclosure(false);
-  const [transactionDetails, setTransactionDetails] = useState<IInventoryTransactionDetailsResponse | null>(null);
+  const [detailsOpened, { open: openDetails, close: closeDetails }] =
+    useDisclosure(false);
+  const [transactionDetails, setTransactionDetails] =
+    useState<IInventoryTransactionDetailsResponse | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
-  const [requisitionsOpened, { open: openRequisitions, close: closeRequisitions }] = useDisclosure(false);
+  const [
+    requisitionsOpened,
+    { open: openRequisitions, close: closeRequisitions },
+  ] = useDisclosure(false);
 
   const initialFilters: TransactionSearchFormData = {
     referenceDocument: "",
     dateRange: [null, null],
     transactionType: "",
-    isActive: "",
+    transactionStatus: "",
   };
 
   const {
@@ -49,6 +66,16 @@ export function StockSearch() {
     currentFilters,
     refresh,
   } = useRouteSearch<InventoryTransactionResponse, TransactionSearchFormData>();
+
+  const parsedFilters = {
+    ...currentFilters,
+    dateRange:
+      typeof currentFilters.dateRange === "string"
+        ? currentFilters.dateRange
+            .split(",")
+            .map((d: string) => (d ? new Date(d) : null))
+        : [null, null],
+  };
 
   const handleOpenCreateModal = () => {
     modal({
@@ -66,12 +93,47 @@ export function StockSearch() {
 
   const columns: ColumnConfig<InventoryTransactionResponse>[] = [
     { key: "id", label: "ID" },
-    { key: "transactionType", label: "Tipo de Movimentação", render: (item: InventoryTransactionResponse) => transactionTypeLabels[item.transactionType] || item.transactionType },
-    { key: "name", label: "Nome", render: (item: InventoryTransactionResponse) => item.name || "-" },
-    { key: "description", label: "Descrição", render: (item: InventoryTransactionResponse) => item.description || "-" },
-    { key: "referenceDocument", label: "Doc. Referência", render: (item: InventoryTransactionResponse) => item.referenceDocument || "-" },
-    { key: "transactionDate", label: "Data", render: (item: InventoryTransactionResponse) => new Date(item.transactionDate).toLocaleDateString() },
-    { key: "isActive", label: "Status", render: (item: InventoryTransactionResponse) => item.isActive ? "Concluído" : "Cancelado" },
+    {
+      key: "transactionType",
+      label: "Tipo de Movimentação",
+      render: (item: InventoryTransactionResponse) =>
+        transactionTypeLabels[item.transactionType] || item.transactionType,
+    },
+    {
+      key: "name",
+      label: "Nome",
+      render: (item: InventoryTransactionResponse) => item.name || "-",
+    },
+    {
+      key: "description",
+      label: "Descrição",
+      render: (item: InventoryTransactionResponse) => item.description || "-",
+    },
+    {
+      key: "referenceDocument",
+      label: "Doc. Referência",
+      render: (item: InventoryTransactionResponse) =>
+        item.referenceDocument || "-",
+    },
+    {
+      key: "transactionDate",
+      label: "Data",
+      render: (item: InventoryTransactionResponse) =>
+        new Date(item.transactionDate).toLocaleDateString(),
+    },
+    {
+      key: "transactionStatus",
+      label: "Status",
+      render: (item: InventoryTransactionResponse) => {
+        const statusMap: Record<string, { label: string; color: string }> = {
+          Pending: { label: "Pendente", color: "yellow" },
+          Completed: { label: "Concluída", color: "green" },
+          Cancelled: { label: "Cancelada", color: "red" },
+        };
+        const st = statusMap[item.transactionStatus];
+        return st ? <Badge color={st.color} variant="light">{st.label}</Badge> : item.transactionStatus;
+      },
+    },
   ];
 
   const handleRowDoubleClick = async (id: string | number) => {
@@ -115,13 +177,17 @@ export function StockSearch() {
             title="Consulta de Movimentações"
             schema={transactionSearchSchema}
             defaultValues={initialFilters}
-            currentFilters={currentFilters}
+            currentFilters={parsedFilters}
             columns={columns}
             pagedData={pagedData}
             loading={loading}
             onSearch={handleSearch}
             selectedId={selectedId}
-            onRowSelect={(id: string | number | null) => setSelectedId((prev: string | number | null) => (prev === id ? null : id))}
+            onRowSelect={(id: string | number | null) =>
+              setSelectedId((prev: string | number | null) =>
+                prev === id ? null : id,
+              )
+            }
             onRowDoubleClick={handleRowDoubleClick}
           >
             <Grid.Col span={{ base: 12, md: 6 }}>
@@ -158,13 +224,14 @@ export function StockSearch() {
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Select
-                name="isActive"
+                name="transactionStatus"
                 label="Status"
                 placeholder="Todos"
                 data={[
                   { value: "", label: "Todos" },
-                  { value: "true", label: "Concluído" },
-                  { value: "false", label: "Cancelado" },
+                  { value: "Pending", label: "Pendente" },
+                  { value: "Completed", label: "Concluída" },
+                  { value: "Cancelled", label: "Cancelada" },
                 ]}
               />
             </Grid.Col>
@@ -182,10 +249,10 @@ export function StockSearch() {
         loading={loadingDetails}
       />
 
-      <PendingRequisitionsModal 
-        opened={requisitionsOpened} 
-        onClose={closeRequisitions} 
-        onFulfill={() => refresh()} 
+      <PendingRequisitionsModal
+        opened={requisitionsOpened}
+        onClose={closeRequisitions}
+        onFulfill={() => refresh()}
       />
     </>
   );

@@ -24,7 +24,7 @@ export function NotificationGroup({ children }: { children: React.ReactNode }) {
     <NotificationGroupContext.Provider value={{ reportStatus }}>
       <Popover position="bottom-end" withArrow shadow="md" keepMounted>
         <Popover.Target>
-          <Indicator color="red" size={12} disabled={!hasAnyNotification} offset={4}>
+          <Indicator color="red.6" size={10} processing disabled={!hasAnyNotification} offset={4}>
             <ActionIcon variant="subtle" color="gray" size="lg" radius="xl">
               <IconBellRinging size={22} stroke={1.5} />
             </ActionIcon>

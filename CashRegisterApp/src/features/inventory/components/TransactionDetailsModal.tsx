@@ -1,4 +1,4 @@
-import { Badge, Text } from "@mantine/core";
+import { Badge, Text, Group } from "@mantine/core";
 import type { IInventoryTransactionDetailsResponse } from "../interfaces";
 import { transactionTypeLabels } from "../pages/Stock/Search";
 import { EntityDetailsModal } from "../../../components/Layout/EntityDetailsModal";
@@ -70,9 +70,12 @@ export function TransactionDetailsModal({
         {
           label: "Quantidade",
           render: (item) => (
-            <Badge variant="filled" color="brainstorm.6">
-              {item.quantity}
-            </Badge>
+            <Group gap="xs">
+              <Badge variant="filled" color="brainstorm.6">
+                {item.quantity}
+              </Badge>
+              <Text size="xs" fw={500} c="dimmed">{item.uomSymbol}</Text>
+            </Group>
           ),
         },
         {

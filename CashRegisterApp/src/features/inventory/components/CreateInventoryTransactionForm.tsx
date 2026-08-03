@@ -24,7 +24,7 @@ export function CreateInventoryTransactionForm({ onSuccess }: CreateInventoryTra
       items: values.items.map(item => ({
         ...item,
         productId: Number(item.productId),
-        uomId: Number(item.uomId),
+        uomId: Number(item.uomId.split('_')[0]), // Extrai o ID da chave composta (ex: "13_Global" -> 13)
         sourceWarehouseId: values.globalSourceWarehouseId ? Number(values.globalSourceWarehouseId) : undefined,
         destinationWarehouseId: values.globalDestinationWarehouseId ? Number(values.globalDestinationWarehouseId) : undefined,
       })),

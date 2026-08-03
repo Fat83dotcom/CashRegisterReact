@@ -46,7 +46,7 @@ export function CategoryForm({ onSuccess }: CategoryFormProps) {
         onSubmit={handleSubmit}
         defaultValues={{
           name: "",
-          parentCategoryId: null,
+          parentCategoryId: "",
         }}
       >
         {() => (

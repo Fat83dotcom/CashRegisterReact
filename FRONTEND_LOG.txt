@@ -1,1 +1,2 @@
 2026-04-14 20:35:26 - Refactored src/ directory structure to Feature-Sliced Design. Created features: auth, users, settings, inventory, sales, financial, main, person. Moved components to components/Layout and updated all imports. Compiled perfectly with 0 TypeScript errors.
+seg 27 jul 2026 20:23:40 -03 - [Frontend] Atualizado componente NotificationGroup para utilizar a propriedade processing do Mantine Indicator, adicionando animacao suave de radar.
