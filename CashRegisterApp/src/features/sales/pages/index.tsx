@@ -1,10 +1,17 @@
-import { Container, Title, Text } from "@mantine/core";
+import { IconShoppingCart, IconHistory } from "@tabler/icons-react";
+import { ModuleDashboardTemplate } from "../../../components/Layout/ModuleDashboardTemplate";
 
 export function SalesHome() {
+  const cards = [
+    { subtitle: "Operação", title: "Nova Venda", icon: IconShoppingCart, link: "/sales/new", color: "teal" },
+    { subtitle: "Consulta", title: "Histórico", icon: IconHistory, link: "/sales/history", color: "gray" },
+  ];
+
   return (
-    <Container>
-      <Title order={2}>Painel de Vendas</Title>
-      <Text mt="md">Bem-vindo ao módulo de vendas. Em breve você poderá realizar e consultar o histórico de vendas.</Text>
-    </Container>
+    <ModuleDashboardTemplate
+      title="Painel de Vendas"
+      description="Bem-vindo ao módulo de vendas. Utilize o painel para realizar novas vendas via PDV ou consultar o histórico de transações."
+      cards={cards}
+    />
   );
 }
