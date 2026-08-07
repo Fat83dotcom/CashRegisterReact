@@ -76,6 +76,14 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: "search",
+            lazy: lazyPage(
+              () => import("./features/users/pages"),
+              "UserHome",
+              "usersLoader",
+            ),
+          },
+          {
             path: "create",
             lazy: lazyPage(
               () => import("./features/users/pages"),

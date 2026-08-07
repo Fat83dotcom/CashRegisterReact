@@ -3,11 +3,13 @@ import { Stack, Text, NavLink as MantineNavLink, Box } from "@mantine/core";
 import { 
   IconUsers, 
   IconUserPlus, 
-  IconChevronRight 
+  IconChevronRight,
+  IconLayoutDashboard
 } from "@tabler/icons-react";
 
 const links = [
-  { link: "/user", label: "Consultar Usuários", icon: IconUsers },
+  { link: "/user", label: "Painel de Acessos", icon: IconLayoutDashboard },
+  { link: "/user/search", label: "Consultar Usuários", icon: IconUsers },
   { link: "/user/create", label: "Novo Usuário", icon: IconUserPlus },
 ];
 
