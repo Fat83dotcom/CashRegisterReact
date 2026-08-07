@@ -3,11 +3,21 @@ import { Stack, Text, NavLink as MantineNavLink, Box } from "@mantine/core";
 import { 
   IconHome, 
   IconInfoCircle,
-  IconChevronRight 
+  IconChevronRight,
+  IconBox,
+  IconReportMoney,
+  IconShoppingCart,
+  IconUsers,
+  IconSettings
 } from "@tabler/icons-react";
 
 const links = [
   { link: "/", label: "Home", icon: IconHome },
+  { link: "/inventory/home", label: "Estoque", icon: IconBox },
+  { link: "/financial", label: "Financeiro", icon: IconReportMoney },
+  { link: "/sales", label: "Vendas", icon: IconShoppingCart },
+  { link: "/user", label: "Usuários", icon: IconUsers },
+  { link: "/settings", label: "Configurações", icon: IconSettings },
   { link: "/about", label: "Sobre o Sistema", icon: IconInfoCircle },
 ];
 
