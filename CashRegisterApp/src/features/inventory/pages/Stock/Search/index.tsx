@@ -30,9 +30,9 @@ import type {
 import { PendingRequisitionsModal } from "../../../components/PendingRequisitionsModal";
 
 export const transactionTypeLabels: Record<string, string> = {
-  PurchaseEntry: "Entrada (Compra)",
+  PurchaseEntry: "Entrada",
   Transfer: "Transferência",
-  RequisitionExit: "Saída (Requisição)",
+  RequisitionExit: "Saída",
   Reversal: "Estorno",
   InventoryAdjustmentEntry: "Ajuste de Estoque (+)",
   InventoryAdjustmentExit: "Ajuste de Estoque (-)",
@@ -131,7 +131,13 @@ export function StockSearch() {
           Cancelled: { label: "Cancelada", color: "red" },
         };
         const st = statusMap[item.transactionStatus];
-        return st ? <Badge color={st.color} variant="light">{st.label}</Badge> : item.transactionStatus;
+        return st ? (
+          <Badge color={st.color} variant="light">
+            {st.label}
+          </Badge>
+        ) : (
+          item.transactionStatus
+        );
       },
     },
   ];
@@ -213,9 +219,9 @@ export function StockSearch() {
                 placeholder="Todos"
                 data={[
                   { value: "", label: "Todos" },
-                  { value: "PurchaseEntry", label: "Entrada (Compra)" },
+                  { value: "PurchaseEntry", label: "Entrada" },
                   { value: "Transfer", label: "Transferência" },
-                  { value: "RequisitionExit", label: "Saída (Requisição)" },
+                  { value: "RequisitionExit", label: "Saída" },
                   { value: "Reversal", label: "Estorno" },
                   { value: "InventoryAdjustmentEntry", label: "Ajuste (+)" },
                   { value: "InventoryAdjustmentExit", label: "Ajuste (-)" },

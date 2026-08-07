@@ -1,9 +1,25 @@
 import { useState, useEffect } from "react";
-import { Button, Center, Paper, Stack, Text, Select, NumberInput, TextInput, Title } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Paper,
+  Stack,
+  Text,
+  Select,
+  NumberInput,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { Form } from "../../../components/Form";
-import { adjustStockSchema, type AdjustStockFormData } from "../schemas/adjustStockSchema";
+import {
+  adjustStockSchema,
+  type AdjustStockFormData,
+} from "../schemas/adjustStockSchema";
 import { InventoryService } from "../api/inventoryService";
-import type { ICreateInventoryTransactionRequest, IProductConversionItemResponse } from "../interfaces";
+import type {
+  ICreateInventoryTransactionRequest,
+  IProductConversionItemResponse,
+} from "../interfaces";
 import { notifications } from "@mantine/notifications";
 import { useFormContext } from "react-hook-form";
 
@@ -16,19 +32,32 @@ interface AdjustStockFormProps {
   onSuccess?: () => void;
 }
 
-function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity: number, productId: number }) {
-  const { formState: { errors }, watch, setValue, register } = useFormContext<AdjustStockFormData>();
+function AdjustStockFormFields({
+  currentQuantity,
+  productId,
+}: {
+  currentQuantity: number;
+  productId: number;
+}) {
+  const {
+    formState: { errors },
+    watch,
+    setValue,
+    register,
+  } = useFormContext<AdjustStockFormData>();
   const adjustmentType = watch("adjustmentType");
   const quantity = watch("quantity") || 0;
   const uomId = watch("uomId");
   const baseQuantity = watch("baseQuantity") || 0;
 
-  const [conversions, setConversions] = useState<IProductConversionItemResponse[]>([]);
+  const [conversions, setConversions] = useState<
+    IProductConversionItemResponse[]
+  >([]);
 
   useEffect(() => {
-    InventoryService.getProductConversions(productId).then(res => {
+    InventoryService.getProductConversions(productId).then((res) => {
       setConversions(res);
-      const baseRule = res.find(c => c.ruleType === "Base");
+      const baseRule = res.find((c) => c.ruleType === "Base");
       if (baseRule && !uomId) {
         setValue("uomId", baseRule.uomId.toString());
       }
@@ -40,9 +69,10 @@ function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity
       setValue("baseQuantity", 0);
       return;
     }
-    const selectedConversion = conversions.find(c => {
-       const key = c.ruleType === "Base" ? c.uomId.toString() : `${c.uomId}_${c.ruleType}`;
-       return key === uomId;
+    const selectedConversion = conversions.find((c) => {
+      const key =
+        c.ruleType === "Base" ? c.uomId.toString() : `${c.uomId}_${c.ruleType}`;
+      return key === uomId;
     });
     if (selectedConversion) {
       setValue("baseQuantity", quantity * selectedConversion.multiplier);
@@ -50,9 +80,10 @@ function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity
   }, [quantity, uomId, conversions, setValue]);
 
   // Calculo apenas visual (utilizando a quantidade base convertida)
-  const newBalance = adjustmentType === "InventoryAdjustmentEntry" 
-    ? currentQuantity + baseQuantity 
-    : currentQuantity - baseQuantity;
+  const newBalance =
+    adjustmentType === "InventoryAdjustmentEntry"
+      ? currentQuantity + baseQuantity
+      : currentQuantity - baseQuantity;
 
   return (
     <Stack gap="md">
@@ -60,8 +91,8 @@ function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity
         label="Tipo de Ajuste"
         placeholder="Selecione o tipo"
         data={[
-          { value: "InventoryAdjustmentEntry", label: "Entrada (Sobra de Contagem, Doação, etc.)" },
-          { value: "InventoryAdjustmentExit", label: "Saída (Perda, Avaria, Roubo, etc.)" },
+          { value: "InventoryAdjustmentEntry", label: "Entrada (+)" },
+          { value: "InventoryAdjustmentExit", label: "Saída (-)" },
         ]}
         value={adjustmentType}
         onChange={(val) => setValue("adjustmentType", val as any)}
@@ -75,9 +106,12 @@ function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity
         value={uomId || null}
         onChange={(val) => setValue("uomId", val || "")}
         error={errors.uomId?.message}
-        data={conversions.map(c => ({
-          value: c.ruleType === "Base" ? c.uomId.toString() : `${c.uomId}_${c.ruleType}`,
-          label: `[${c.ruleType === "ProductSpecific" ? "Produto" : c.ruleType}] ${c.uomSymbol} (Fator: ${c.multiplier})`
+        data={conversions.map((c) => ({
+          value:
+            c.ruleType === "Base"
+              ? c.uomId.toString()
+              : `${c.uomId}_${c.ruleType}`,
+          label: `[${c.ruleType === "ProductSpecific" ? "Produto" : c.ruleType}] ${c.uomSymbol} (Fator: ${c.multiplier})`,
         }))}
         withAsterisk
       />
@@ -102,8 +136,12 @@ function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity
 
       {baseQuantity > 0 && adjustmentType && (
         <Paper withBorder p="sm">
-          <Text size="sm" c="dimmed">Saldo Atual: {currentQuantity} (Base)</Text>
-          <Text size="sm" c="dimmed">Ajuste de: {baseQuantity} (Base)</Text>
+          <Text size="sm" c="dimmed">
+            Saldo Atual: {currentQuantity} (Base)
+          </Text>
+          <Text size="sm" c="dimmed">
+            Ajuste de: {baseQuantity} (Base)
+          </Text>
           <Text size="md" fw={700} c={newBalance < 0 ? "red" : "brainstorm.6"}>
             Novo Saldo Previsto: {newBalance}
           </Text>
@@ -113,19 +151,19 @@ function AdjustStockFormFields({ currentQuantity, productId }: { currentQuantity
   );
 }
 
-export function AdjustStockForm({ 
-  productId, 
-  productName, 
-  warehouseId, 
-  warehouseName, 
-  currentQuantity, 
-  onSuccess 
+export function AdjustStockForm({
+  productId,
+  productName,
+  warehouseId,
+  warehouseName,
+  currentQuantity,
+  onSuccess,
 }: AdjustStockFormProps) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values: AdjustStockFormData) => {
     setLoading(true);
-    
+
     try {
       const request: ICreateInventoryTransactionRequest = {
         transactionType: values.adjustmentType,
@@ -133,27 +171,33 @@ export function AdjustStockForm({
         items: [
           {
             productId: productId,
-            uomId: Number(values.uomId.split('_')[0]), // Extrai o ID numérico da chave composta
+            uomId: Number(values.uomId.split("_")[0]), // Extrai o ID numérico da chave composta
             transactionQuantity: values.quantity,
             baseQuantity: values.baseQuantity,
-            sourceWarehouseId: values.adjustmentType === "InventoryAdjustmentExit" ? warehouseId : undefined,
-            destinationWarehouseId: values.adjustmentType === "InventoryAdjustmentEntry" ? warehouseId : undefined,
-          }
+            sourceWarehouseId:
+              values.adjustmentType === "InventoryAdjustmentExit"
+                ? warehouseId
+                : undefined,
+            destinationWarehouseId:
+              values.adjustmentType === "InventoryAdjustmentEntry"
+                ? warehouseId
+                : undefined,
+          },
         ],
       };
 
       const response = await InventoryService.createTransaction(request);
-      
+
       if (response && response.id > 0) {
         notifications.show({
-            title: "Sucesso",
-            message: "Estoque ajustado com sucesso!",
-            color: "green",
+          title: "Sucesso",
+          message: "Estoque ajustado com sucesso!",
+          color: "green",
         });
         if (onSuccess) onSuccess();
       }
     } catch (error) {
-       // Erros tratados pelo interceptor
+      // Erros tratados pelo interceptor
     } finally {
       setLoading(false);
     }
@@ -175,9 +219,18 @@ export function AdjustStockForm({
 
       <Paper withBorder p="md" mb="xl" radius="md">
         <Stack gap="xs">
-          <Text size="sm" c="dimmed" fw={500}>Informações do Saldo</Text>
-          <Text size="lg" fw={700} c="brainstorm.6">{productName}</Text>
-          <Text size="sm" fw={500}>Almoxarifado: <Text span fw={700} c="brainstorm.6">{warehouseName}</Text></Text>
+          <Text size="sm" c="dimmed" fw={500}>
+            Informações do Saldo
+          </Text>
+          <Text size="lg" fw={700} c="brainstorm.6">
+            {productName}
+          </Text>
+          <Text size="sm" fw={500}>
+            Almoxarifado:{" "}
+            <Text span fw={700} c="brainstorm.6">
+              {warehouseName}
+            </Text>
+          </Text>
         </Stack>
       </Paper>
 
@@ -188,7 +241,10 @@ export function AdjustStockForm({
       >
         {() => (
           <Stack gap="md">
-            <AdjustStockFormFields currentQuantity={currentQuantity} productId={productId} />
+            <AdjustStockFormFields
+              currentQuantity={currentQuantity}
+              productId={productId}
+            />
 
             <Center mt="xl">
               <Button

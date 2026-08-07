@@ -1,11 +1,34 @@
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Button, ActionIcon, Stack, Text, Divider, Box, Grid, Group, Paper } from "@mantine/core";
-import { IconTrash, IconPlus, IconArrowDownBar, IconX } from "@tabler/icons-react";
+import {
+  Button,
+  ActionIcon,
+  Stack,
+  Text,
+  Divider,
+  Box,
+  Grid,
+  Group,
+  Paper,
+} from "@mantine/core";
+import {
+  IconTrash,
+  IconPlus,
+  IconArrowDownBar,
+  IconX,
+} from "@tabler/icons-react";
 import type { CreateInventoryTransactionFormData } from "../../schemas/inventoryTransactionSchema";
 import { InventoryService } from "../../api/inventoryService";
-import { Select, TextInput, Textarea, AsyncSelect } from "../../../../components/Form";
-import type { IWarehouseResponse, IProductConversionItemResponse } from "../../interfaces";
+import {
+  Select,
+  TextInput,
+  Textarea,
+  AsyncSelect,
+} from "../../../../components/Form";
+import type {
+  IWarehouseResponse,
+  IProductConversionItemResponse,
+} from "../../interfaces";
 
 const fetchProducts = async (query: string) => {
   const response = await InventoryService.searchProducts({
@@ -16,12 +39,12 @@ const fetchProducts = async (query: string) => {
   return response.items || [];
 };
 
-function AvailableBalanceIndicator({ 
-  productId, 
+function AvailableBalanceIndicator({
+  productId,
   warehouseId,
-  onChangeQuantity
-}: { 
-  productId?: number; 
+  onChangeQuantity,
+}: {
+  productId?: number;
   warehouseId?: number;
   onChangeQuantity?: (value: number | string) => void;
 }) {
@@ -46,19 +69,19 @@ function AvailableBalanceIndicator({
       </Text>
       {balance > 0 && onChangeQuantity && (
         <>
-          <Button 
-            size="compact-xs" 
-            variant="light" 
-            color="brainstorm.6" 
+          <Button
+            size="compact-xs"
+            variant="light"
+            color="brainstorm.6"
             onClick={() => onChangeQuantity(balance)}
             leftSection={<IconArrowDownBar size={12} />}
           >
             Usar Máximo
           </Button>
-          <Button 
-            size="compact-xs" 
-            variant="light" 
-            color="yellow" 
+          <Button
+            size="compact-xs"
+            variant="light"
+            color="yellow"
             onClick={() => onChangeQuantity("")}
             leftSection={<IconX size={12} />}
           >
@@ -88,24 +111,27 @@ const fetchUoms = async (query: string) => {
   return response.items || [];
 };
 
-function TransactionItemRow({ 
-  index, 
-  handleRemoveItem, 
-  transactionType, 
-  globalSourceWarehouseId 
-}: { 
-  index: number; 
+function TransactionItemRow({
+  index,
+  handleRemoveItem,
+  transactionType,
+  globalSourceWarehouseId,
+}: {
+  index: number;
   handleRemoveItem: (idx: number) => void;
   transactionType: string;
   globalSourceWarehouseId?: string;
 }) {
-  const { watch, setValue } = useFormContext<CreateInventoryTransactionFormData>();
-  
+  const { watch, setValue } =
+    useFormContext<CreateInventoryTransactionFormData>();
+
   const productId = watch(`items.${index}.productId`);
   const uomId = watch(`items.${index}.uomId`);
   const transactionQuantity = watch(`items.${index}.transactionQuantity`);
-  
-  const [conversions, setConversions] = useState<IProductConversionItemResponse[]>([]);
+
+  const [conversions, setConversions] = useState<
+    IProductConversionItemResponse[]
+  >([]);
   const [showNewConversion, setShowNewConversion] = useState(false);
   const [newMultiplier, setNewMultiplier] = useState<number | "">("");
   const [isSavingRule, setIsSavingRule] = useState(false);
@@ -118,9 +144,9 @@ function TransactionItemRow({
       setBaseUomId(null);
       return;
     }
-    InventoryService.getProductConversions(Number(productId)).then(res => {
+    InventoryService.getProductConversions(Number(productId)).then((res) => {
       setConversions(res);
-      const baseRule = res.find(c => c.ruleType === "Base");
+      const baseRule = res.find((c) => c.ruleType === "Base");
       if (baseRule) setBaseUomId(baseRule.uomId);
 
       // Auto-selecionar a unidade Base se uomId estiver vazio
@@ -133,14 +159,18 @@ function TransactionItemRow({
   // Recalcular quantidade base de forma síncrona
   useEffect(() => {
     if (!uomId || !transactionQuantity || conversions.length === 0) return;
-    
-    const selectedConversion = conversions.find(c => {
-       const key = c.ruleType === "Base" ? c.uomId.toString() : `${c.uomId}_${c.ruleType}`;
-       return key === uomId;
+
+    const selectedConversion = conversions.find((c) => {
+      const key =
+        c.ruleType === "Base" ? c.uomId.toString() : `${c.uomId}_${c.ruleType}`;
+      return key === uomId;
     });
-    
+
     if (selectedConversion) {
-      setValue(`items.${index}.baseQuantity`, Number(transactionQuantity) * selectedConversion.multiplier);
+      setValue(
+        `items.${index}.baseQuantity`,
+        Number(transactionQuantity) * selectedConversion.multiplier,
+      );
     }
   }, [transactionQuantity, uomId, conversions]);
 
@@ -157,19 +187,21 @@ function TransactionItemRow({
   const handleSaveRule = async () => {
     const tempUomId = watch(`items.${index}.temp_uomId` as any); // Unidade temporária do Learning Card
     if (!newMultiplier || !baseUomId || !tempUomId) return;
-    
+
     setIsSavingRule(true);
     try {
       await InventoryService.createConversion({
         fromUomId: Number(tempUomId),
         toUomId: baseUomId,
         multiplier: Number(newMultiplier),
-        productId: Number(productId)
+        productId: Number(productId),
       });
       setShowNewConversion(false);
-      
+
       // Atualiza a lista de conversões para embutir a recém-criada
-      const res = await InventoryService.getProductConversions(Number(productId));
+      const res = await InventoryService.getProductConversions(
+        Number(productId),
+      );
       setConversions(res);
       setValue(`items.${index}.uomId`, tempUomId.toString());
     } finally {
@@ -178,7 +210,7 @@ function TransactionItemRow({
   };
 
   return (
-    <Box p="sm" style={{ border: '1px solid #eee', borderRadius: 8 }}>
+    <Box p="sm" style={{ border: "1px solid #eee", borderRadius: 8 }}>
       <Grid gutter="xs" align="flex-end">
         <Grid.Col span={{ base: 12, md: 5 }}>
           <AsyncSelect<any>
@@ -197,18 +229,21 @@ function TransactionItemRow({
             label="Conversão de Unidade"
             placeholder="Selecione..."
             disabled={!productId}
-            value={showNewConversion ? "+new" : (uomId || null)}
+            value={showNewConversion ? "+new" : uomId || null}
             onChange={handleUomChange}
             data={[
-              ...conversions.map(c => ({
-                value: c.ruleType === "Base" ? c.uomId.toString() : `${c.uomId}_${c.ruleType}`,
-                label: `[${c.ruleType === "ProductSpecific" ? "Produto" : c.ruleType}] ${c.uomSymbol} (Fator: ${c.multiplier})`
+              ...conversions.map((c) => ({
+                value:
+                  c.ruleType === "Base"
+                    ? c.uomId.toString()
+                    : `${c.uomId}_${c.ruleType}`,
+                label: `[${c.ruleType === "ProductSpecific" ? "Produto" : c.ruleType}] ${c.uomSymbol} (Fator: ${c.multiplier})`,
               })),
-              { value: "+new", label: "+ Nova Conversão de Unidades" }
+              { value: "+new", label: "+ Nova Conversão de Unidades" },
             ]}
           />
         </Grid.Col>
-        
+
         <Grid.Col span={{ base: 12, md: 3 }}>
           <TextInput
             name={`items.${index}.transactionQuantity`}
@@ -218,7 +253,13 @@ function TransactionItemRow({
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 1 }}>
-          <ActionIcon color="red" onClick={() => handleRemoveItem(index)} variant="light" size="lg" mb={4}>
+          <ActionIcon
+            color="red"
+            onClick={() => handleRemoveItem(index)}
+            variant="light"
+            size="lg"
+            mb={4}
+          >
             <IconTrash size={20} />
           </ActionIcon>
         </Grid.Col>
@@ -245,32 +286,51 @@ function TransactionItemRow({
               label="Multiplicador (Equivale a quantas bases?)"
               type="number"
               value={newMultiplier}
-              onChange={(e) => setNewMultiplier(e.target.value as unknown as number)}
+              onChange={(e) =>
+                setNewMultiplier(e.target.value as unknown as number)
+              }
               placeholder="Ex: 10"
               style={{ flex: 1 }}
             />
-            <Button color="brainstorm.6" onClick={handleSaveRule} loading={isSavingRule} disabled={!newMultiplier}>
+            <Button
+              color="brainstorm.6"
+              onClick={handleSaveRule}
+              loading={isSavingRule}
+              disabled={!newMultiplier}
+            >
               Salvar Regra
             </Button>
           </Group>
         </Paper>
       )}
 
-      {(transactionType === "RequisitionExit" || transactionType === "Transfer") && Number(productId) > 0 && (
-        <Box mt="xs">
-          <AvailableBalanceIndicator 
-              productId={Number(productId)} 
-              warehouseId={globalSourceWarehouseId ? Number(globalSourceWarehouseId) : undefined} 
-              onChangeQuantity={(val) => setValue(`items.${index}.transactionQuantity`, val as number)}
-          />
-        </Box>
-      )}
+      {(transactionType === "RequisitionExit" ||
+        transactionType === "Transfer") &&
+        Number(productId) > 0 && (
+          <Box mt="xs">
+            <AvailableBalanceIndicator
+              productId={Number(productId)}
+              warehouseId={
+                globalSourceWarehouseId
+                  ? Number(globalSourceWarehouseId)
+                  : undefined
+              }
+              onChangeQuantity={(val) =>
+                setValue(`items.${index}.transactionQuantity`, val as number)
+              }
+            />
+          </Box>
+        )}
     </Box>
   );
 }
 
 export function InventoryTransactionFormFields() {
-  const { formState: { errors }, watch, setValue } = useFormContext<CreateInventoryTransactionFormData>();
+  const {
+    formState: { errors },
+    watch,
+    setValue,
+  } = useFormContext<CreateInventoryTransactionFormData>();
 
   const transactionType = watch("transactionType");
   const globalSourceWarehouseId = watch("globalSourceWarehouseId");
@@ -284,7 +344,7 @@ export function InventoryTransactionFormFields() {
         uomId: "",
         transactionQuantity: 1,
         baseQuantity: 1,
-      }
+      },
     ]);
   };
 
@@ -303,8 +363,8 @@ export function InventoryTransactionFormFields() {
             label="Tipo de Movimentação"
             placeholder="Selecione o tipo"
             data={[
-              { value: "PurchaseEntry", label: "Entrada (Compra)" },
-              { value: "RequisitionExit", label: "Saída (Requisição)" },
+              { value: "PurchaseEntry", label: "Entrada" },
+              { value: "RequisitionExit", label: "Saída" },
               { value: "Transfer", label: "Transferência" },
             ]}
             withAsterisk
@@ -335,50 +395,62 @@ export function InventoryTransactionFormFields() {
           />
         </Grid.Col>
 
-        {(transactionType === "RequisitionExit" || transactionType === "Transfer") && (
-           <Grid.Col span={{ base: 12, md: transactionType === "Transfer" ? 6 : 12 }}>
-             <AsyncSelect<IWarehouseResponse>
+        {(transactionType === "RequisitionExit" ||
+          transactionType === "Transfer") && (
+          <Grid.Col
+            span={{ base: 12, md: transactionType === "Transfer" ? 6 : 12 }}
+          >
+            <AsyncSelect<IWarehouseResponse>
               name="globalSourceWarehouseId"
               label="Almoxarifado de Origem"
               placeholder="Selecione a origem..."
               fetcher={fetchWarehouses}
               getLabel={(w) => w.name}
               getValue={(w) => w.id?.toString() || ""}
-             />
-           </Grid.Col>
+            />
+          </Grid.Col>
         )}
 
-        {(transactionType === "PurchaseEntry" || transactionType === "Transfer") && (
-           <Grid.Col span={{ base: 12, md: transactionType === "Transfer" ? 6 : 12 }}>
-             <AsyncSelect<IWarehouseResponse>
+        {(transactionType === "PurchaseEntry" ||
+          transactionType === "Transfer") && (
+          <Grid.Col
+            span={{ base: 12, md: transactionType === "Transfer" ? 6 : 12 }}
+          >
+            <AsyncSelect<IWarehouseResponse>
               name="globalDestinationWarehouseId"
               label="Almoxarifado de Destino"
               placeholder="Selecione o destino..."
               fetcher={fetchWarehouses}
               getLabel={(w) => w.name}
               getValue={(w) => w.id?.toString() || ""}
-             />
-           </Grid.Col>
+            />
+          </Grid.Col>
         )}
       </Grid>
 
       <Divider my="sm" label="Itens da Movimentação" labelPosition="center" />
 
       {items.map((_, index) => (
-         <TransactionItemRow 
-           key={index}
-           index={index}
-           handleRemoveItem={handleRemoveItem}
-           transactionType={transactionType}
-           globalSourceWarehouseId={globalSourceWarehouseId}
-         />
+        <TransactionItemRow
+          key={index}
+          index={index}
+          handleRemoveItem={handleRemoveItem}
+          transactionType={transactionType}
+          globalSourceWarehouseId={globalSourceWarehouseId}
+        />
       ))}
 
       {errors.items?.root?.message && (
-        <Text c="red" size="sm">{errors.items.root.message}</Text>
+        <Text c="red" size="sm">
+          {errors.items.root.message}
+        </Text>
       )}
 
-      <Button variant="outline" onClick={handleAddItem} leftSection={<IconPlus size={16}/>}>
+      <Button
+        variant="outline"
+        onClick={handleAddItem}
+        leftSection={<IconPlus size={16} />}
+      >
         Adicionar Produto
       </Button>
     </Stack>
