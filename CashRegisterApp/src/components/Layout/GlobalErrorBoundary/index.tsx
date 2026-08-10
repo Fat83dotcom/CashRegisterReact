@@ -1,9 +1,10 @@
-import { useRouteError, isRouteErrorResponse } from "react-router-dom";
-import { Container, Title, Text, Button, Center, Stack } from "@mantine/core";
-import { IconAlertTriangle } from "@tabler/icons-react";
+import { useRouteError, isRouteErrorResponse, useNavigate } from "react-router-dom";
+import { Container, Title, Text, Button, Center, Stack, Group } from "@mantine/core";
+import { IconAlertTriangle, IconHome, IconReload } from "@tabler/icons-react";
 
 export function GlobalErrorBoundary() {
   const error = useRouteError() as any;
+  const navigate = useNavigate();
 
   // Se o erro for 401, o authListener do apiClient já despachou o evento "unauthorized"
   // e o AuthContext está no processo de redirecionar para o login via ProtectedRoute. 
@@ -23,9 +24,23 @@ export function GlobalErrorBoundary() {
               ? error.statusText
               : error?.message || "Algo deu errado durante a comunicação com o servidor."}
           </Text>
-          <Button mt="xl" onClick={() => window.location.reload()} color="brainstorm.6">
-            Recarregar Página
-          </Button>
+          
+          <Group mt="xl">
+            <Button 
+              leftSection={<IconReload size={18} />} 
+              onClick={() => window.location.reload()} 
+              variant="default"
+            >
+              Recarregar Página
+            </Button>
+            <Button 
+              leftSection={<IconHome size={18} />} 
+              onClick={() => navigate("/")} 
+              color="green"
+            >
+              Voltar para a Home
+            </Button>
+          </Group>
         </Stack>
       </Center>
     </Container>

@@ -2,6 +2,7 @@ import { Badge, Text, Group } from "@mantine/core";
 import type { IInventoryTransactionDetailsResponse } from "../interfaces";
 import { transactionTypeLabels } from "../pages/Stock/Search";
 import { EntityDetailsModal } from "../../../components/Layout/EntityDetailsModal";
+import { formatDateTime } from "../../../utils/date";
 
 interface TransactionDetailsModalProps {
   opened: boolean;
@@ -41,9 +42,7 @@ export function TransactionDetailsModal({
         },
         {
           label: "Data",
-          value: transaction?.createdAt
-            ? new Date(transaction.createdAt).toLocaleString()
-            : "-",
+          value: formatDateTime(transaction?.createdAt),
         },
         {
           label: "Nome",

@@ -20,9 +20,9 @@ function RequisitionFormFields() {
   });
 
   const loadProducts = async (search: string) => {
-    const response = await InventoryService.searchProducts({
+    const response = await InventoryService.searchSharedProducts({
       page: 1,
-      pageSize: 20,
+      pageSize: 50,
       searchTerm: search
     });
     return response.items;

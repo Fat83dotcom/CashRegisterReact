@@ -7,6 +7,7 @@ import {
 } from "react";
 import { notifications } from "@mantine/notifications";
 import { AuthService } from "../api/authServices";
+import dayjs from "dayjs";
 import type { LoginFormData } from "../schemas/loginSchema";
 
 interface IAuthContextType {
@@ -21,6 +22,7 @@ export interface ILoginResponse {
   userName: string;
   name: { firstName: string; lastName: string };
   role: string;
+  timezone: string;
 }
 
 const AuthContext = createContext<IAuthContextType | null>(null);
@@ -34,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await AuthService.me();
       if (response) {
+        dayjs.tz.setDefault(response.timezone);
         setUser(response);
         setIsAuthenticated(true);
       }

@@ -15,10 +15,10 @@ const fetchUnits = async (query: string) => {
 };
 
 const fetchProducts = async (query: string) => {
-  const res = await InventoryService.searchProducts({
-    searchTerm: query,
+  const res = await InventoryService.searchSharedProducts({
     page: 1,
-    pageSize: 20,
+    pageSize: 50,
+    searchTerm: query,
   });
   return res.items || [];
 };

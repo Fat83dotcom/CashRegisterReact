@@ -1,4 +1,5 @@
 import { IconCheck } from "@tabler/icons-react";
+import dayjs from "dayjs";
 import { apiClient } from "../../../lib/api";
 import type { ICreateUserResponse } from "../pages/Interfaces/ICreateUserResponse";
 import type { ICreateUserRequest } from "../pages/Interfaces/ICreateUserRequest";
@@ -88,6 +89,20 @@ export const UserService = {
           icon: React.createElement(IconCheck),
         });
         resetForm();
+      })
+      .catch((e) => console.log(e)),
+
+  updateTimezone: (data: { timezone: string }) =>
+    apiClient
+      .put<void, typeof data>("/user/timezone", data)
+      .then(() => {
+        notifications.show({
+          title: "Sucesso",
+          message: "Fuso horário atualizado. A alteração já está valendo!",
+          color: "green",
+          icon: React.createElement(IconCheck),
+        });
+        dayjs.tz.setDefault(data.timezone);
       })
       .catch((e) => console.log(e)),
 };

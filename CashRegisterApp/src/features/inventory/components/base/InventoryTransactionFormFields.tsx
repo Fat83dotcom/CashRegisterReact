@@ -31,7 +31,7 @@ import type {
 } from "../../interfaces";
 
 const fetchProducts = async (query: string) => {
-  const response = await InventoryService.searchProducts({
+  const response = await InventoryService.searchSharedProducts({
     searchTerm: query,
     page: 1,
     pageSize: 20,

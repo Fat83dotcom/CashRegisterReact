@@ -11,6 +11,7 @@ import { FinancialNavigation } from "./features/financial/pages/navigation";
 import { RequisitionsPage } from "./features/financial/pages/Operations/Requisitions";
 import { SettingsHome } from "./features/settings/pages";
 import { ChangePassword } from "./features/settings/pages/ChangePassword";
+import { PreferencesPage } from "./features/settings/pages/Preferences";
 import { SettingsNavigation } from "./features/settings/pages/navigation";
 import { Login } from "./features/auth/pages";
 import { SalesHome } from "./features/sales/pages";
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <SettingsHome /> },
           { path: "security", element: <ChangePassword /> },
+          { path: "preferences", element: <PreferencesPage /> },
         ],
       },
       {

@@ -72,14 +72,14 @@ export const InventoryService = {
     if (params.dateRange) {
       const dates = typeof params.dateRange === "string" ? params.dateRange.split(",") : params.dateRange;
       if (dates[0]) {
-        // Envia exatamente a data selecionada sem o offset de fuso (-03:00).
-        // Assim, o .NET recebe (Unspecified) no mesmo dia, sem pular para o dia seguinte no model binder.
-        const startStr = dayjs(dates[0]).format("YYYY-MM-DDT00:00:00");
-        queryParams.append("StartDate", startStr);
+        // Envia o limite inicial real em UTC Absoluto
+        const startUtc = dayjs(dates[0]).startOf("day").toISOString();
+        queryParams.append("StartDate", startUtc);
       }
       if (dates[1]) {
-        const endStr = dayjs(dates[1]).format("YYYY-MM-DDT23:59:59");
-        queryParams.append("EndDate", endStr);
+        // Envia o limite final real em UTC Absoluto
+        const endUtc = dayjs(dates[1]).endOf("day").toISOString();
+        queryParams.append("EndDate", endUtc);
       }
     }
 
@@ -284,6 +284,28 @@ export const InventoryService = {
 
     return apiClient.get<IPagedResponse<IProductResponse>>(
       `/product/Search?${queryParams.toString()}`,
+    );
+  },
+
+  searchSharedProducts: async (
+    params: SearchParams & { searchTerm?: string; categoryId?: string; warehouseId?: string },
+  ): Promise<IPagedResponse<IProductResponse>> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("Page", params.page.toString());
+    queryParams.append("PageSize", params.pageSize.toString());
+
+    if (params.searchTerm) {
+      queryParams.append("Term", params.searchTerm);
+    }
+    if (params.categoryId) {
+      queryParams.append("CategoryId", params.categoryId);
+    }
+    if (params.warehouseId) {
+      queryParams.append("WarehouseId", params.warehouseId);
+    }
+
+    return apiClient.get<IPagedResponse<IProductResponse>>(
+      `/product/SearchShared?${queryParams.toString()}`,
     );
   },
 

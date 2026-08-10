@@ -1,10 +1,11 @@
-import { IconShieldLock, IconUserEdit } from "@tabler/icons-react";
+import { IconShieldLock, IconUserEdit, IconClock } from "@tabler/icons-react";
 import { ModuleDashboardTemplate } from "../../../components/Layout/ModuleDashboardTemplate";
 
 export function SettingsHome() {
   const cards = [
     { subtitle: "Segurança", title: "Alterar Senha", icon: IconShieldLock, link: "/settings/security", color: "red" },
     { subtitle: "Perfil", title: "Editar Perfil", icon: IconUserEdit, link: "/settings", color: "blue" },
+    { subtitle: "Geral", title: "Preferências", icon: IconClock, link: "/settings/preferences", color: "violet" },
   ];
 
   return (

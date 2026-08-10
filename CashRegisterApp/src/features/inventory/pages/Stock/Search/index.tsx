@@ -28,6 +28,7 @@ import type {
   InventoryTransactionResponse,
 } from "../../../interfaces";
 import { PendingRequisitionsModal } from "../../../components/PendingRequisitionsModal";
+import { formatDate } from "../../../../../utils/date";
 
 export const transactionTypeLabels: Record<string, string> = {
   PurchaseEntry: "Entrada",
@@ -119,7 +120,7 @@ export function StockSearch() {
       key: "transactionDate",
       label: "Data",
       render: (item: InventoryTransactionResponse) =>
-        new Date(item.transactionDate).toLocaleDateString(),
+        formatDate(item.transactionDate),
     },
     {
       key: "transactionStatus",

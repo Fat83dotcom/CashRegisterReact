@@ -5,8 +5,9 @@ import {
 } from "@tabler/icons-react";
 import { Autocomplete, Center, Group, Menu } from "@mantine/core";
 
+import { useMemo, useState } from "react";
 import classes from "./styles/HeaderSearch.module.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UserMenu } from "../UserMenu";
 import { useAuth } from "../../../features/auth/contexts/AuthContext";
 import { NotificationGroup } from "../NotificationGroup";
@@ -91,10 +92,35 @@ const links: NavLinkItem[] = [
 
 export function HeaderSearch() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
 
   const filteredLinks = links.filter(
     (link) => !link.roles || (user && link.roles.includes(user.role)),
   );
+
+  const searchableRoutes = useMemo(() => {
+    const flatList: { label: string; link: string }[] = [];
+
+    filteredLinks.forEach((mainLink) => {
+      if (mainLink.link && !mainLink.link.startsWith("#")) {
+        flatList.push({ label: mainLink.label, link: mainLink.link });
+      }
+
+      if (mainLink.sections) {
+        mainLink.sections.forEach((section) => {
+          section.items.forEach((item) => {
+            flatList.push({
+              label: `${mainLink.label} > ${item.label}`,
+              link: item.link,
+            });
+          });
+        });
+      }
+    });
+
+    return flatList;
+  }, [filteredLinks]);
 
   const items = filteredLinks.map((link) => {
     const menuItems = link.sections?.map((section) => (
@@ -175,7 +201,16 @@ export function HeaderSearch() {
         className={classes.search}
         placeholder="Pesquisar..."
         leftSection={<IconSearch size={16} stroke={1.5} />}
-        data={["Usuários", "Produtos", "Almoxarifados", "Vendas", "Relatórios"]}
+        data={searchValue.trim().length > 0 ? searchableRoutes.map((r) => r.label) : []}
+        value={searchValue}
+        onChange={setSearchValue}
+        onOptionSubmit={(val) => {
+          const selected = searchableRoutes.find((r) => r.label === val);
+          if (selected) {
+            navigate(selected.link);
+            setSearchValue("");
+          }
+        }}
         visibleFrom="xs"
       />
 

@@ -3,7 +3,7 @@ import {
   Burger,
   Container,
   Group,
-  Paper,
+  // Paper,
   Text,
   Center,
 } from "@mantine/core";
@@ -83,23 +83,23 @@ export function RootLayout() {
       </AppShell.Navbar>
       <AppShell.Main>
         <Container size="xl" p="0">
-          <Paper
+          {/* <Paper
             shadow="sm"
             radius="md"
             p="sm"
             withBorder
             style={{ minHeight: "calc(100vh - 100px)" }}
-          >
-            {isFormRoute ? (
-              <Center style={{ minHeight: "calc(100vh - 150px)" }}>
-                <Container size="sm" w="100%">
-                  <Outlet />
-                </Container>
-              </Center>
-            ) : (
-              <Outlet />
-            )}
-          </Paper>
+          > */}
+          {isFormRoute ? (
+            <Center style={{ minHeight: "calc(100vh - 150px)" }}>
+              <Container size="sm" w="100%">
+                <Outlet />
+              </Container>
+            </Center>
+          ) : (
+            <Outlet />
+          )}
+          {/* </Paper> */}
         </Container>
       </AppShell.Main>
     </AppShell>
