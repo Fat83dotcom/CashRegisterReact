@@ -9,6 +9,11 @@ import type { IChangePasswordRequest } from "../../settings/pages/Interfaces/ICh
 import { notifications } from "@mantine/notifications";
 import React from "react";
 
+export interface ITimezoneResponse {
+  id: string;
+  displayName: string;
+}
+
 export interface ISearchUserRequest {
   name?: string;
   taxId?: string;
@@ -105,4 +110,7 @@ export const UserService = {
         dayjs.tz.setDefault(data.timezone);
       })
       .catch((e) => console.log(e)),
+
+  getTimezones: (): Promise<ITimezoneResponse[]> => 
+    apiClient.get<ITimezoneResponse[]>("/user/timezones"),
 };
